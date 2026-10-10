@@ -115,8 +115,10 @@ Planned endpoints are not complete until tests and routes exist.
 The current Agent loop is service-level only and verified with a mock provider. Registered model tools are:
 
 - `list_materials`
+- `resolve_material`
 - `get_inventory`
+- `get_demand_forecast`
 - `recommend_suppliers`
 - `create_purchase_draft`
 
-Approval and rejection endpoints are not exposed as model tools.
+`get_demand_forecast` returns horizon, inventory snapshot, forecast demand, shortage, and a server-created evidence reference. `create_purchase_draft` validates that forecast evidence exists and that requested quantities do not exceed the server-calculated shortage. Approval and rejection endpoints are not exposed as model tools.

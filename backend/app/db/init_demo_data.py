@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, delete, func, select
 
 from backend.app.models import (
     ApprovalRecord,
+    AgentRun,
     AuditLog,
     DemandHistory,
     Inventory,
@@ -14,6 +15,7 @@ from backend.app.models import (
     Supplier,
     SupplierMaterial,
     SupplierPerformance,
+    ToolTrace,
 )
 from backend.app.services.seed import DEMO_SEED, seed_demo_data
 
@@ -29,6 +31,8 @@ def main() -> None:
     engine = create_engine(args.database_url)
     with engine.begin() as connection:
         for table in [
+            ToolTrace,
+            AgentRun,
             AuditLog,
             ApprovalRecord,
             PurchaseOrderItem,

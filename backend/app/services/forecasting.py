@@ -45,3 +45,20 @@ def baseline_forecast(session: Session, material_id: int, horizon_days: int) -> 
         "shortage_quantity": shortage,
         "notes": ["Phase 1 simplification: confirmed inbound supply is not included."],
     }
+
+
+def get_demand_forecast(session: Session, material_id: int, horizon_days: int) -> dict:
+    forecast = baseline_forecast(session, material_id, horizon_days)
+    inventory = get_inventory_snapshot(session, material_id)
+    evidence_ref = f"forecast:{material_id}:{horizon_days}:{inventory['version']}"
+    return {
+        "tool_name": "get_demand_forecast",
+        "evidence_ref": evidence_ref,
+        "material_id": material_id,
+        "horizon_days": horizon_days,
+        "forecast_demand": forecast["forecast_demand"],
+        "shortage_quantity": forecast["shortage_quantity"],
+        "inventory": inventory,
+        "model_name": forecast["model_name"],
+        "notes": forecast["notes"],
+    }

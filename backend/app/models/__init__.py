@@ -1,6 +1,7 @@
 from backend.app.models.base import Base
 from backend.app.models.procurement import (
     ApprovalRecord,
+    AgentRun,
     AuditLog,
     DemandHistory,
     Inventory,
@@ -10,11 +11,13 @@ from backend.app.models.procurement import (
     Supplier,
     SupplierMaterial,
     SupplierPerformance,
+    ToolTrace,
 )
 
 __all__ = [
     "Base",
     "ApprovalRecord",
+    "AgentRun",
     "AuditLog",
     "DemandHistory",
     "Inventory",
@@ -24,4 +27,5 @@ __all__ = [
     "Supplier",
     "SupplierMaterial",
     "SupplierPerformance",
+    "ToolTrace",
 ]

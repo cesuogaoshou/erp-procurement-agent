@@ -18,7 +18,7 @@ from backend.app.schemas.procurement import (
     RecommendationOut,
     TokenOut,
 )
-from backend.app.services.auth import AuthError, authenticate_demo_user, issue_token, verify_token
+from backend.app.services.auth import AuthError, auth_secret_from_env, authenticate_demo_user, issue_token, verify_token
 from backend.app.services.approvals import (
     AuthContext,
     ApprovalActionInput,
@@ -38,13 +38,13 @@ from backend.app.services.recommendations import recommend_for_material
 def create_app(
     engine: Engine | None = None,
     *,
-    auth_secret: str = "dev-demo-secret-change-me",
+    auth_secret: str | None = None,
     allow_header_auth: bool = False,
 ) -> FastAPI:
     app = FastAPI(title="ERP Intelligent Procurement Agent")
     app.state.engine = engine or create_sqlite_engine()
     app.state.session_factory = create_session_factory(app.state.engine)
-    app.state.auth_secret = auth_secret
+    app.state.auth_secret = auth_secret or auth_secret_from_env()
     app.state.allow_header_auth = allow_header_auth
 
     def get_session() -> Generator[Session, None, None]:

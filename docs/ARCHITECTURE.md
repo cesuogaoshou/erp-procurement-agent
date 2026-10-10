@@ -6,7 +6,7 @@
 - Service layer: inventory, forecast, shortage, recommendation, draft, approval, permissions, and audit behavior.
 - Algorithm layer: baseline forecast, shortage formula, supplier scoring, and evaluation metrics.
 - Model layer: SQLAlchemy models and database session management.
-- Agent layer: provider abstraction, tool schemas, bounded tool loop, and later trace persistence.
+- Agent layer: provider abstraction, tool schemas, bounded tool loop, persisted run state, and tool traces.
 
 ## Data Flow
 
@@ -18,7 +18,7 @@
 6. Draft creation validates evidence again before persisting a purchase draft.
 7. A buyer submits the draft for approval using the authenticated user context.
 8. An approver approves or rejects the pending order. Approval revalidates the stored version, current quote, supplier relationship, MOQ, capacity, line amounts, and total. Approved orders receive a formal order number.
-9. The Agent loop can call read-only tools first and then `create_purchase_draft`; approval actions remain outside the model tool surface.
+9. The Agent loop can resolve materials, call read-only inventory/forecast/recommendation tools, and then call `create_purchase_draft`; approval actions remain outside the model tool surface.
 
 ## Boundaries
 
@@ -34,4 +34,8 @@ Approval state changes, approval records, and audit logs are written in one data
 
 ## Agent Boundary
 
-The Agent provider interface is implemented with a mock provider for offline tests. It has a hard maximum tool-call count and rejects any tool name not in the registered schema. The available tool set intentionally excludes approval and rejection. Real Function Calling with an external LLM is not accepted until credentials are configured and provider-specific tests run.
+The Agent provider interface is implemented with a mock provider for offline tests and an OpenAI Function Calling adapter that handles missing credentials, timeout, HTTP, and malformed response errors. It has a hard maximum tool-call count and rejects any tool name not in the registered schema. The available tool set intentionally excludes approval and rejection.
+
+Agent runs are persisted in `agent_runs`, and every tool call is persisted in `tool_traces`, so run status, draft IDs, and pending approval state remain queryable after application restart when using a persistent database. The current implementation uses a lightweight persisted state graph compatible with LangGraph-style nodes; the `langgraph` package is not installed in this environment, so real LangGraph execution is not accepted yet.
+
+Real Function Calling with an external LLM is not accepted until credentials are configured and provider-specific tests run.

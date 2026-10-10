@@ -9,7 +9,7 @@ Acceptance:
 - Simulated data generator is reproducible and documents distributions.
 - Baseline evaluation runs and reports raw metrics and risks.
 
-Status: complete for offline deterministic backend. Done: deterministic backend flow, CSV export, expanded baseline backtest, frozen and challenge supplier label sets, purchase draft persistence, server-signed demo token auth, approval status transitions, role checks, approval idempotency, audit logs, transaction rollback tests, and SQLite Alembic migration verification. Not passed: real MySQL migration/data initialization and concurrent approval validation because credentials are unavailable.
+Status: complete for offline deterministic backend. Done: deterministic backend flow, CSV export, expanded baseline backtest, moving-average vs optional Prophet comparison harness, frozen and challenge supplier label sets, purchase draft persistence, server-signed demo token auth, approval status transitions, role checks, approval idempotency, audit logs, transaction rollback tests, and SQLite Alembic migration verification. Not passed: real MySQL migration/data initialization and concurrent approval validation because credentials are unavailable.
 
 ## Phase 2: 2026-10-15 to 2026-10-20
 
@@ -19,7 +19,7 @@ Acceptance:
 - Real model can run from natural language request to purchase draft when credentials are configured.
 - Ambiguity, no candidates, and tool failures return controlled states.
 
-Status: started offline. Done: provider abstraction, mock provider, tool schemas, bounded Agent loop, read-only tools, and `create_purchase_draft` tool. Not passed: real external LLM Function Calling because credentials are unavailable.
+Status: started offline. Done: provider abstraction, mock provider, OpenAI adapter error handling, tool schemas, bounded Agent loop, read-only tools, forecast evidence validation, `create_purchase_draft` tool, persisted run/tool traces, and controlled states for ambiguity, no candidates, tool errors, timeout, call limits, and duplicate draft idempotency. Not passed: real external LLM Function Calling because credentials are unavailable. Real LangGraph package execution is not accepted because the dependency is unavailable; current state management is persisted and LangGraph-style.
 
 ## Phase 3: 2026-10-21 to 2026-10-24
 

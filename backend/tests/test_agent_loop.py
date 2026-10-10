@@ -18,7 +18,14 @@ def test_agent_tool_schema_excludes_approval_tools_and_includes_read_only_plus_d
     tools = build_agent_tools()
     names = [tool.name for tool in tools]
 
-    assert names == ["list_materials", "get_inventory", "recommend_suppliers", "create_purchase_draft"]
+    assert names == [
+        "list_materials",
+        "resolve_material",
+        "get_inventory",
+        "get_demand_forecast",
+        "recommend_suppliers",
+        "create_purchase_draft",
+    ]
     assert all("approve" not in name and "reject" not in name for name in names)
     assert tools[-1].write_mode == "create_draft"
 
@@ -27,6 +34,7 @@ def test_agent_loop_runs_read_only_tools_before_creating_purchase_draft():
     provider = MockLLMProvider(
         [
             ToolCall("list_materials", {}),
+            ToolCall("get_demand_forecast", {"material_id": 1, "horizon_days": 30}),
             ToolCall(
                 "recommend_suppliers",
                 {"material_id": 1, "quantity": "120", "required_in_days": 20, "budget": "5000.00"},
@@ -37,17 +45,17 @@ def test_agent_loop_runs_read_only_tools_before_creating_purchase_draft():
                     "supplier_id": 1,
                     "items": [{"material_id": 1, "quantity": "120"}],
                     "idempotency_key": "agent-draft-001",
-                    "evidence_refs": ["recommendation:agent-loop"],
+                    "evidence_refs": ["use_latest_forecast", "recommendation:agent-loop"],
                 },
             ),
         ]
     )
-    loop = AgentLoop(engine=_engine(), provider=provider, max_tool_calls=4)
+    loop = AgentLoop(engine=_engine(), provider=provider, max_tool_calls=5)
 
     result = loop.run("Need 120 units of material 1 within 20 days")
 
     assert result.status == "draft_created"
-    assert result.tool_calls == ["list_materials", "recommend_suppliers", "create_purchase_draft"]
+    assert result.tool_calls == ["list_materials", "get_demand_forecast", "recommend_suppliers", "create_purchase_draft"]
     assert result.purchase_order_id is not None
     assert result.total_amount == Decimal("972.00")
 

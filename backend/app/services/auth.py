@@ -2,6 +2,7 @@ import base64
 import hashlib
 import hmac
 import json
+import os
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
@@ -10,6 +11,8 @@ DEMO_ACCOUNTS = {
     "buyer": {"password": "buyer-pass", "user_id": "buyer-1", "role": "buyer"},
     "approver": {"password": "approver-pass", "user_id": "approver-1", "role": "approver"},
 }
+
+DEFAULT_DEMO_AUTH_SECRET = "dev-demo-secret-change-me"
 
 
 @dataclass(frozen=True)
@@ -24,6 +27,13 @@ class AuthError(ValueError):
     def __init__(self, detail: str) -> None:
         super().__init__(detail)
         self.detail = detail
+
+
+def auth_secret_from_env() -> str:
+    value = os.getenv("ERP_AUTH_SECRET")
+    if value == "":
+        raise ValueError("ERP_AUTH_SECRET_empty")
+    return value or DEFAULT_DEMO_AUTH_SECRET
 
 
 def authenticate_demo_user(username: str, password: str) -> TokenClaims:
