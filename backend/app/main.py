@@ -10,12 +10,15 @@ from backend.app.schemas.procurement import (
     ForecastOut,
     ForecastRequest,
     InventoryOut,
+    LoginIn,
     MaterialOut,
     PurchaseDraftIn,
     PurchaseDraftOut,
     RecommendationIn,
     RecommendationOut,
+    TokenOut,
 )
+from backend.app.services.auth import AuthError, authenticate_demo_user, issue_token, verify_token
 from backend.app.services.approvals import (
     AuthContext,
     ApprovalActionInput,
@@ -32,10 +35,17 @@ from backend.app.services.inventory import get_inventory_snapshot, list_material
 from backend.app.services.recommendations import recommend_for_material
 
 
-def create_app(engine: Engine | None = None) -> FastAPI:
+def create_app(
+    engine: Engine | None = None,
+    *,
+    auth_secret: str = "dev-demo-secret-change-me",
+    allow_header_auth: bool = False,
+) -> FastAPI:
     app = FastAPI(title="ERP Intelligent Procurement Agent")
     app.state.engine = engine or create_sqlite_engine()
     app.state.session_factory = create_session_factory(app.state.engine)
+    app.state.auth_secret = auth_secret
+    app.state.allow_header_auth = allow_header_auth
 
     def get_session() -> Generator[Session, None, None]:
         session = app.state.session_factory()
@@ -45,14 +55,45 @@ def create_app(engine: Engine | None = None) -> FastAPI:
             session.close()
 
     def get_auth_context(
-        user_id: str = Header(alias="X-User-Id"),
-        role: str = Header(alias="X-User-Role"),
+        authorization: str | None = Header(default=None, alias="Authorization"),
+        user_id: str | None = Header(default=None, alias="X-User-Id"),
+        role: str | None = Header(default=None, alias="X-User-Role"),
     ) -> AuthContext:
-        return AuthContext(user_id=user_id, role=role)
+        if authorization is not None and authorization.startswith("Bearer "):
+            token = authorization.removeprefix("Bearer ").strip()
+            try:
+                claims = verify_token(token, secret=app.state.auth_secret)
+            except AuthError as exc:
+                raise HTTPException(status_code=401, detail=exc.detail) from exc
+            return AuthContext(user_id=claims.user_id, role=claims.role)
+        if app.state.allow_header_auth and user_id and role:
+            return AuthContext(user_id=user_id, role=role)
+        raise HTTPException(status_code=401, detail="authentication_required")
 
     @app.get("/health")
     def health() -> dict[str, str]:
         return {"status": "ok"}
+
+    @app.post("/auth/login", response_model=TokenOut)
+    def login(request: LoginIn):
+        try:
+            claims = authenticate_demo_user(request.username, request.password)
+        except AuthError as exc:
+            raise HTTPException(status_code=401, detail=exc.detail) from exc
+        expires_in = 3600
+        token = issue_token(
+            username=request.username,
+            user_id=claims.user_id,
+            role=claims.role,
+            secret=app.state.auth_secret,
+            ttl_seconds=expires_in,
+        )
+        return {
+            "access_token": token,
+            "expires_in": expires_in,
+            "user_id": claims.user_id,
+            "role": claims.role,
+        }
 
     @app.get("/materials", response_model=list[MaterialOut])
     def materials(session: Session = Depends(get_session)):

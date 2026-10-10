@@ -53,7 +53,7 @@ def test_api_approval_uses_auth_headers_not_body_actor_claims():
     with session_scope(engine) as session:
         seed_demo_data(session)
 
-    app = create_app(engine)
+    app = create_app(engine, auth_secret="test-secret", allow_header_auth=True)
     client = TestClient(app)
 
     draft = client.post(

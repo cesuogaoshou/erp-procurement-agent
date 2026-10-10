@@ -8,6 +8,21 @@ Base path is `/`.
 
 Returns service status.
 
+### `POST /auth/login`
+
+Demo-only login for the course environment. There is no full user management module. The server has two preset accounts:
+
+- `buyer` / `buyer-pass`
+- `approver` / `approver-pass`
+
+Request:
+
+```json
+{"username": "buyer", "password": "buyer-pass"}
+```
+
+Returns a signed bearer token. Approval endpoints derive user and role from this server-signed token.
+
 ### `GET /materials`
 
 Lists materials.
@@ -55,12 +70,9 @@ Returns a draft purchase order with backend-calculated unit price, line amount, 
 
 ### Approval Authentication
 
-Approval endpoints use the authentication context from request headers:
+Approval endpoints use `Authorization: Bearer <token>` by default. The token is issued by `POST /auth/login` and signed by the server. Client-controlled `X-User-Id` and `X-User-Role` headers are not trusted in normal mode.
 
-- `X-User-Id`
-- `X-User-Role`, currently `buyer` or `approver`
-
-Request body actor fields are not trusted for authorization.
+`X-User-Id` and `X-User-Role` are accepted only when the app is explicitly constructed with `allow_header_auth=True` for tests. Request body actor fields are never trusted for authorization.
 
 ### `POST /purchase-orders/{id}/submit`
 
@@ -97,3 +109,14 @@ Request:
 - `GET /purchase-orders`
 
 Planned endpoints are not complete until tests and routes exist.
+
+## Agent Tools
+
+The current Agent loop is service-level only and verified with a mock provider. Registered model tools are:
+
+- `list_materials`
+- `get_inventory`
+- `recommend_suppliers`
+- `create_purchase_draft`
+
+Approval and rejection endpoints are not exposed as model tools.

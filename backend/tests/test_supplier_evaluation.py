@@ -48,3 +48,7 @@ def test_supplier_evaluation_challenge_set_reports_label_width_and_candidate_cou
     assert result["candidate_count"]["min"] >= 3
     assert "price_sort_top3_hit_rate_percent" in result
     assert "composite_top3_hit_rate_percent" in result
+    assert all("candidate_count" in detail for detail in result["details"])
+    assert all("acceptable_label_count" in detail for detail in result["details"])
+    assert all("hit_delta" in detail for detail in result["details"])
+    assert all("failure_reason" in detail for detail in result["details"])

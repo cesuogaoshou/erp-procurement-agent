@@ -4,7 +4,7 @@
 
 Initialized on 2026-10-10 from the original ERP intelligent procurement Agent outline in the repository root.
 
-The project has completed deterministic backend acceptance work through approval loop basics: local Git baseline, backend skeleton, SQLAlchemy models, Alembic migrations, reproducible simulated CSV data, inventory and shortage calculation, supplier recommendation, purchase draft persistence, role-gated approval transitions, audit logs, API routes, baseline backtesting, and supplier Top-3 evaluation.
+The project has completed deterministic backend acceptance work through approval loop basics and started offline Agent orchestration: local Git baseline, backend skeleton, SQLAlchemy models, Alembic migrations, reproducible simulated CSV data, inventory and shortage calculation, supplier recommendation, purchase draft persistence, server-signed demo token authentication, role-gated approval transitions, audit logs, API routes, mock-provider Agent loop, baseline backtesting, and supplier Top-3 evaluation.
 
 ## Read Order
 
@@ -24,6 +24,10 @@ The project has completed deterministic backend acceptance work through approval
 - `backend/app/models/`: SQLAlchemy data model.
 - `backend/app/schemas/`: Pydantic request and response schemas.
 - `backend/app/services/`: deterministic business services independent of LLM.
+- `backend/app/services/auth.py`: preset demo accounts and signed bearer token verification.
+- `backend/app/services/agent_provider.py`: provider protocol and mock provider for offline tests.
+- `backend/app/services/agent_tools.py`: model tool schemas and deterministic tool execution.
+- `backend/app/services/agent_loop.py`: bounded Agent tool loop.
 - `backend/app/algorithms/`: forecasting, shortage, recommendation, and metrics.
 - `backend/app/db/`: engine, sessions, initialization, and seed loading.
 - `backend/evaluation/`: baseline evaluation scripts.
@@ -47,10 +51,10 @@ The original development outline remains in the repository root and is not copie
 - `python -m backend.evaluation.run_baseline`: completed with 160 backtest samples and wrote `reports/generated/baseline_eval.json`.
 - `python -m backend.evaluation.run_supplier_eval`: completed with 60 frozen recommendation cases, 60 challenge recommendation cases, wrote `data/raw/recommendation_cases.csv`, `data/raw/recommendation_challenge_cases.csv`, and `reports/generated/supplier_eval.json`.
 - `python -m scripts.export_seed_data`: wrote UTF-8 CSV files under `data/raw/`.
-- `python -m pytest backend/tests -q`: passed 24 tests for deterministic services, API flow, approval permissions/idempotency/rollback, and evaluation metadata.
+- `python -m pytest backend/tests -q`: passed 32 tests for deterministic services, API flow, signed-token auth, approval permissions/idempotency/rollback, mock Agent loop, and evaluation metadata.
 - `python -m alembic upgrade head` with temporary SQLite `DATABASE_URL`: applied approval migration through revision `20261010_0003`.
 - `python -m backend.app.db.init_demo_data --database-url sqlite+pysqlite:///./tmp_alembic_approval_check.sqlite`: inserted 10 materials, 10 inventory rows, 5400 demand rows, 10 suppliers, 100 supplier-material rows, 100 performance rows, and 0 purchase orders after migrations.
 
 ## Current External Blocker
 
-MySQL service `MySQL84` was previously found running, but both no-password `root` and sample `erp_user/change-me` TCP connections were rejected. This session found no `.env` file and no `DATABASE_URL`/MySQL environment variable. Real MySQL migration, initialization, and concurrent approval validation remain blocked pending explicit credentials or a test database user. SQLite tests do not substitute for the MySQL concurrency check.
+MySQL service `MySQL84` was previously found running, but both no-password `root` and sample `erp_user/change-me` TCP connections were rejected. Recent sessions found no `.env` file and no `DATABASE_URL`/MySQL environment variable. Real MySQL migration, initialization, and concurrent approval validation remain blocked pending explicit credentials or a test database user. SQLite tests do not substitute for the MySQL concurrency check. Real external LLM Function Calling also remains blocked pending credentials; only mock-provider Agent tests are complete.

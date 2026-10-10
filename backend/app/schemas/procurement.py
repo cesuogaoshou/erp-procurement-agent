@@ -101,3 +101,16 @@ class ApprovalActionIn(BaseModel):
     reason: str | None = Field(default=None, max_length=500)
     actor_user_id: str | None = Field(default=None, max_length=80)
     actor_role: str | None = Field(default=None, max_length=32)
+
+
+class LoginIn(BaseModel):
+    username: str = Field(min_length=1, max_length=80)
+    password: str = Field(min_length=1, max_length=120)
+
+
+class TokenOut(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int
+    user_id: str
+    role: str

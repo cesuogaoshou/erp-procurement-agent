@@ -138,10 +138,14 @@ def evaluate_supplier_recommendations(
             {
                 "case_id": case.case_id,
                 "labels": sorted(labels),
+                "acceptable_label_count": len(labels),
+                "candidate_count": len(composite.recommendations) + len(composite.excluded),
                 "price_top3": price_top3,
                 "composite_top3": composite_top3,
                 "price_hit": price_hit,
                 "composite_hit": composite_hit,
+                "hit_delta": _hit_delta(price_hit, composite_hit),
+                "failure_reason": _failure_reason(labels, price_top3, composite_top3),
             }
         )
 
@@ -361,6 +365,26 @@ def _summary(values: list[int]) -> dict:
         "max": max(values),
         "avg": str((Decimal(sum(values)) / Decimal(len(values))).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)),
     }
+
+
+def _hit_delta(price_hit: bool, composite_hit: bool) -> str:
+    if price_hit == composite_hit:
+        return "same"
+    if composite_hit:
+        return "composite_only"
+    return "price_only"
+
+
+def _failure_reason(labels: set[int], price_top3: list[int], composite_top3: list[int]) -> str | None:
+    price_hit = bool(labels.intersection(price_top3))
+    composite_hit = bool(labels.intersection(composite_top3))
+    if price_hit and composite_hit:
+        return None
+    if not price_hit and not composite_hit:
+        return "neither_method_hit_acceptable_label"
+    if not price_hit:
+        return "price_sort_missed_acceptable_label"
+    return "composite_missed_acceptable_label"
 
 
 def _percent(numerator: int, denominator: int) -> str:
