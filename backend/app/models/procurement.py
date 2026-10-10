@@ -88,8 +88,10 @@ class PurchaseOrder(Base):
     idempotency_key: Mapped[str] = mapped_column(String(120), unique=True, index=True)
     total_amount: Mapped[Decimal] = mapped_column(Numeric(14, 2))
     evidence_refs_json: Mapped[str] = mapped_column(Text)
+    formal_order_number: Mapped[str | None] = mapped_column(String(32), unique=True, nullable=True)
     version: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
 
     supplier: Mapped[Supplier] = relationship()
     items: Mapped[list["PurchaseOrderItem"]] = relationship(back_populates="order", cascade="all, delete-orphan")
@@ -107,3 +109,33 @@ class PurchaseOrderItem(Base):
 
     order: Mapped[PurchaseOrder] = relationship(back_populates="items")
     material: Mapped[Material] = relationship()
+
+
+class ApprovalRecord(Base):
+    __tablename__ = "approval_records"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("purchase_orders.id"), index=True)
+    actor_user_id: Mapped[str] = mapped_column(String(80), index=True)
+    decision: Mapped[str] = mapped_column(String(32), index=True)
+    idempotency_key: Mapped[str] = mapped_column(String(120), unique=True, index=True)
+    order_version_before: Mapped[int] = mapped_column(Integer)
+    order_version_after: Mapped[int] = mapped_column(Integer)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+
+    order: Mapped[PurchaseOrder] = relationship()
+
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("purchase_orders.id"), index=True)
+    actor_user_id: Mapped[str] = mapped_column(String(80), index=True)
+    actor_role: Mapped[str] = mapped_column(String(32))
+    action: Mapped[str] = mapped_column(String(64), index=True)
+    details_json: Mapped[str] = mapped_column(Text, default="{}")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+
+    order: Mapped[PurchaseOrder] = relationship()

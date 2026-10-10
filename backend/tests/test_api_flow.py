@@ -48,6 +48,56 @@ def test_api_exposes_inventory_forecast_and_recommendations():
     assert draft.json()["total_amount"] == "972.00"
 
 
+def test_api_approval_uses_auth_headers_not_body_actor_claims():
+    engine = create_sqlite_engine("sqlite+pysqlite:///:memory:")
+    with session_scope(engine) as session:
+        seed_demo_data(session)
+
+    app = create_app(engine)
+    client = TestClient(app)
+
+    draft = client.post(
+        "/purchase-drafts",
+        json={
+            "supplier_id": 1,
+            "items": [{"material_id": 1, "quantity": "120"}],
+            "idempotency_key": "api-approval-draft-001",
+            "evidence_refs": ["recommendation:api-approval"],
+        },
+    ).json()
+    pending = client.post(
+        f"/purchase-orders/{draft['id']}/submit",
+        headers={"X-User-Id": "buyer-1", "X-User-Role": "buyer"},
+    )
+
+    unauthorized = client.post(
+        f"/purchase-orders/{draft['id']}/approve",
+        headers={"X-User-Id": "buyer-1", "X-User-Role": "buyer"},
+        json={
+            "expected_order_version": pending.json()["version"],
+            "idempotency_key": "api-approval-body-ignored",
+            "actor_user_id": "approver-1",
+            "actor_role": "approver",
+        },
+    )
+    approved = client.post(
+        f"/purchase-orders/{draft['id']}/approve",
+        headers={"X-User-Id": "approver-1", "X-User-Role": "approver"},
+        json={
+            "expected_order_version": pending.json()["version"],
+            "idempotency_key": "api-approval-success",
+        },
+    )
+
+    assert pending.status_code == 200
+    assert pending.json()["status"] == "pending_approval"
+    assert unauthorized.status_code == 403
+    assert unauthorized.json()["detail"] == "approver_role_required"
+    assert approved.status_code == 200
+    assert approved.json()["status"] == "approved"
+    assert approved.json()["formal_order_number"] == f"PO-{draft['id']:06d}"
+
+
 class DecimalString:
     def __init__(self, value):
         self.value = float(value)

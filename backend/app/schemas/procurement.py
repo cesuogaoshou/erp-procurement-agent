@@ -90,4 +90,14 @@ class PurchaseDraftOut(BaseModel):
     status: str
     total_amount: Decimal
     idempotency_key: str
+    version: int
+    formal_order_number: str | None = None
     items: list[PurchaseDraftItemOut]
+
+
+class ApprovalActionIn(BaseModel):
+    expected_order_version: int = Field(ge=1)
+    idempotency_key: str = Field(min_length=8, max_length=120)
+    reason: str | None = Field(default=None, max_length=500)
+    actor_user_id: str | None = Field(default=None, max_length=80)
+    actor_role: str | None = Field(default=None, max_length=32)

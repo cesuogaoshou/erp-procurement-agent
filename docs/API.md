@@ -53,6 +53,41 @@ Request:
 
 Returns a draft purchase order with backend-calculated unit price, line amount, and total amount. Repeating the same `idempotency_key` returns the existing draft.
 
+### Approval Authentication
+
+Approval endpoints use the authentication context from request headers:
+
+- `X-User-Id`
+- `X-User-Role`, currently `buyer` or `approver`
+
+Request body actor fields are not trusted for authorization.
+
+### `POST /purchase-orders/{id}/submit`
+
+Buyer-only transition from `draft` to `pending_approval`.
+
+### `POST /purchase-orders/{id}/approve`
+
+Approver-only transition from `pending_approval` to `approved`, with backend revalidation of order version, supplier status, supplier-material relationship, MOQ, capacity, current quote, line amounts, and total amount.
+
+Request:
+
+```json
+{"expected_order_version": 2, "idempotency_key": "approval-001"}
+```
+
+Returns the approved order with a generated `formal_order_number`.
+
+### `POST /purchase-orders/{id}/reject`
+
+Approver-only transition from `pending_approval` to `rejected`.
+
+Request:
+
+```json
+{"expected_order_version": 2, "idempotency_key": "reject-001", "reason": "price too high"}
+```
+
 ## Planned
 
 - `GET /suppliers`
@@ -60,7 +95,5 @@ Returns a draft purchase order with backend-calculated unit price, line amount, 
 - `GET /agent/runs/{id}`
 - `GET /traces`
 - `GET /purchase-orders`
-- `POST /purchase-orders/{id}/approve`
-- `POST /purchase-orders/{id}/reject`
 
 Planned endpoints are not complete until tests and routes exist.

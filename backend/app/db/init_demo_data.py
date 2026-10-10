@@ -4,6 +4,8 @@ import os
 from sqlalchemy import create_engine, delete, func, select
 
 from backend.app.models import (
+    ApprovalRecord,
+    AuditLog,
     DemandHistory,
     Inventory,
     Material,
@@ -27,6 +29,8 @@ def main() -> None:
     engine = create_engine(args.database_url)
     with engine.begin() as connection:
         for table in [
+            AuditLog,
+            ApprovalRecord,
             PurchaseOrderItem,
             PurchaseOrder,
             SupplierPerformance,

@@ -9,7 +9,7 @@ Acceptance:
 - Simulated data generator is reproducible and documents distributions.
 - Baseline evaluation runs and reports raw metrics and risks.
 
-Status: mostly complete. Done: deterministic backend flow, CSV export, expanded baseline backtest, independent supplier label set, purchase draft persistence, idempotency tests, and SQLite Alembic migration verification. Not passed: real MySQL migration/data initialization because credentials are unavailable.
+Status: complete for offline deterministic backend. Done: deterministic backend flow, CSV export, expanded baseline backtest, frozen and challenge supplier label sets, purchase draft persistence, approval status transitions, role checks, approval idempotency, audit logs, transaction rollback tests, and SQLite Alembic migration verification. Not passed: real MySQL migration/data initialization and concurrent approval validation because credentials are unavailable.
 
 ## Phase 2: 2026-10-15 to 2026-10-20
 
@@ -29,7 +29,7 @@ Acceptance:
 - Complete demo loop with buyer and approver roles.
 - Duplicate approval and unauthorized approval tests pass.
 
-Status: not started.
+Status: backend approval slice complete without frontend. Remaining Phase 3 work is minimal frontend and real MySQL concurrency verification once credentials are available.
 
 ## Phase 4: 2026-10-25 to 2026-10-27
 

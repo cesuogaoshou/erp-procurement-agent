@@ -1,11 +1,12 @@
 from collections.abc import Generator
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session
 
 from backend.app.db.session import create_session_factory, create_sqlite_engine
 from backend.app.schemas.procurement import (
+    ApprovalActionIn,
     ForecastOut,
     ForecastRequest,
     InventoryOut,
@@ -14,6 +15,16 @@ from backend.app.schemas.procurement import (
     PurchaseDraftOut,
     RecommendationIn,
     RecommendationOut,
+)
+from backend.app.services.approvals import (
+    AuthContext,
+    ApprovalActionInput,
+    ApprovalConflict,
+    ApprovalPermissionError,
+    ApprovalValidationError,
+    approve_order,
+    reject_order,
+    submit_for_approval,
 )
 from backend.app.services.purchase_drafts import DraftItemInput, PurchaseDraftInput, create_purchase_draft
 from backend.app.services.forecasting import baseline_forecast
@@ -32,6 +43,12 @@ def create_app(engine: Engine | None = None) -> FastAPI:
             yield session
         finally:
             session.close()
+
+    def get_auth_context(
+        user_id: str = Header(alias="X-User-Id"),
+        role: str = Header(alias="X-User-Role"),
+    ) -> AuthContext:
+        return AuthContext(user_id=user_id, role=role)
 
     @app.get("/health")
     def health() -> dict[str, str]:
@@ -90,7 +107,76 @@ def create_app(engine: Engine | None = None) -> FastAPI:
             session.rollback()
             raise HTTPException(status_code=409, detail=str(exc)) from exc
 
+    @app.post("/purchase-orders/{order_id}/submit", response_model=PurchaseDraftOut)
+    def submit_purchase_order(
+        order_id: int,
+        session: Session = Depends(get_session),
+        auth: AuthContext = Depends(get_auth_context),
+    ):
+        try:
+            order = submit_for_approval(session, order_id, auth)
+            session.commit()
+            return order
+        except ApprovalPermissionError as exc:
+            session.rollback()
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
+        except ApprovalConflict as exc:
+            session.rollback()
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+    @app.post("/purchase-orders/{order_id}/approve", response_model=PurchaseDraftOut)
+    def approve_purchase_order(
+        order_id: int,
+        request: ApprovalActionIn,
+        session: Session = Depends(get_session),
+        auth: AuthContext = Depends(get_auth_context),
+    ):
+        try:
+            order = approve_order(session, order_id, auth, _approval_input(request))
+            session.commit()
+            return order
+        except ApprovalPermissionError as exc:
+            session.rollback()
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
+        except ApprovalValidationError as exc:
+            session.rollback()
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        except ApprovalConflict as exc:
+            session.rollback()
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+    @app.post("/purchase-orders/{order_id}/reject", response_model=PurchaseDraftOut)
+    def reject_purchase_order(
+        order_id: int,
+        request: ApprovalActionIn,
+        session: Session = Depends(get_session),
+        auth: AuthContext = Depends(get_auth_context),
+    ):
+        try:
+            order = reject_order(session, order_id, auth, _approval_input(request))
+            session.commit()
+            return order
+        except ApprovalPermissionError as exc:
+            session.rollback()
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
+        except ApprovalValidationError as exc:
+            session.rollback()
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        except ApprovalConflict as exc:
+            session.rollback()
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
+
     return app
+
+
+def _approval_input(request: ApprovalActionIn) -> ApprovalActionInput:
+    return ApprovalActionInput(
+        expected_order_version=request.expected_order_version,
+        idempotency_key=request.idempotency_key,
+        reason=request.reason,
+        body_actor_user_id=request.actor_user_id,
+        body_actor_role=request.actor_role,
+    )
 
 
 app = create_app()
