@@ -4,7 +4,7 @@
 
 Initialized on 2026-10-10 from the original ERP intelligent procurement Agent outline in the repository root.
 
-The project has completed a Phase 1 foundation slice: backend skeleton, SQLAlchemy models, reproducible simulated seed data, inventory and shortage calculation, supplier recommendation, API routes, and baseline evaluation command.
+The project has completed most Phase 1 backend acceptance work: local Git baseline, backend skeleton, SQLAlchemy models, Alembic migrations, reproducible simulated CSV data, inventory and shortage calculation, supplier recommendation, purchase draft persistence, API routes, baseline backtesting, and supplier Top-3 evaluation.
 
 ## Read Order
 
@@ -40,6 +40,13 @@ The original development outline remains in the repository root and is not copie
 
 ## Latest Verified Commands
 
-- `python -m pytest backend/tests -q`: 7 passed.
-- `python -m backend.evaluation.run_baseline`: completed and wrote `reports/generated/baseline_eval.json`.
-- `python -m backend.app.main --check`: printed `app ok`.
+- `git commit -m "chore: establish phase 1 foundation baseline"`: created local baseline commit `8903dec`.
+- `python -m alembic upgrade head` with temporary SQLite `DATABASE_URL`: applied initial schema and purchase draft migrations.
+- `python -m backend.app.db.init_demo_data --database-url sqlite+pysqlite:///./tmp_alembic_check.sqlite`: inserted 10 materials, 10 suppliers, 5400 demand rows, 100 supplier-material rows, 100 performance rows.
+- `python -m backend.evaluation.run_baseline`: completed with 160 backtest samples and wrote `reports/generated/baseline_eval.json`.
+- `python -m backend.evaluation.run_supplier_eval`: completed with 60 frozen recommendation cases and wrote `reports/generated/supplier_eval.json`.
+- `python -m scripts.export_seed_data`: wrote UTF-8 CSV files under `data/raw/`.
+
+## Current External Blocker
+
+MySQL service `MySQL84` is running, but both no-password `root` and sample `erp_user/change-me` TCP connections were rejected. MySQL migration and initialization against the real server remain blocked pending credentials or user/database creation.

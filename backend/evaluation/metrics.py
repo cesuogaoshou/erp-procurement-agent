@@ -8,6 +8,7 @@ class RegressionMetrics:
     sample_count: int
     positive_actual_count: int
     zero_actual_count: int
+    mape_coverage_percent: Decimal
     mape_percent: Decimal | None
     mae: Decimal
     wape_percent: Decimal | None
@@ -48,6 +49,10 @@ def evaluate_regression(actual: Iterable[Decimal], predicted: Iterable[Decimal])
         sample_count=len(actual_values),
         positive_actual_count=len(positive_pairs),
         zero_actual_count=len(actual_values) - len(positive_pairs),
+        mape_coverage_percent=(Decimal(len(positive_pairs)) / Decimal(len(actual_values)) * Decimal("100")).quantize(
+            Decimal("0.01"),
+            rounding=ROUND_HALF_UP,
+        ),
         mape_percent=mape,
         mae=mae,
         wape_percent=wape,

@@ -9,7 +9,7 @@ Acceptance:
 - Simulated data generator is reproducible and documents distributions.
 - Baseline evaluation runs and reports raw metrics and risks.
 
-Status: foundation slice complete; remaining Phase 1 work includes purchase draft persistence, richer CSV export, independent recommendation labels, and MySQL integration verification.
+Status: mostly complete. Done: deterministic backend flow, CSV export, expanded baseline backtest, independent supplier label set, purchase draft persistence, idempotency tests, and SQLite Alembic migration verification. Not passed: real MySQL migration/data initialization because credentials are unavailable.
 
 ## Phase 2: 2026-10-15 to 2026-10-20
 

@@ -15,6 +15,8 @@ from backend.app.models import (
 
 
 DEMO_SEED = 20261010
+DEMO_BASE_DATE = date(2026, 10, 10)
+DEMO_HISTORY_DAYS = 540
 
 
 def seed_demo_data(session: Session, seed: int = DEMO_SEED) -> None:
@@ -23,6 +25,13 @@ def seed_demo_data(session: Session, seed: int = DEMO_SEED) -> None:
         Material(code="MAT-001", name="标准轴承", unit="pcs", safety_stock=Decimal("80")),
         Material(code="MAT-002", name="铝合金外壳", unit="pcs", safety_stock=Decimal("45")),
         Material(code="MAT-003", name="工业传感器", unit="pcs", safety_stock=Decimal("30")),
+        Material(code="MAT-004", name="伺服电机", unit="pcs", safety_stock=Decimal("25")),
+        Material(code="MAT-005", name="控制面板", unit="pcs", safety_stock=Decimal("35")),
+        Material(code="MAT-006", name="密封圈", unit="pcs", safety_stock=Decimal("120")),
+        Material(code="MAT-007", name="电源模块", unit="pcs", safety_stock=Decimal("40")),
+        Material(code="MAT-008", name="导轨组件", unit="pcs", safety_stock=Decimal("55")),
+        Material(code="MAT-009", name="包装托盘", unit="pcs", safety_stock=Decimal("150")),
+        Material(code="MAT-010", name="紧固件套包", unit="set", safety_stock=Decimal("200")),
     ]
     session.add_all(materials)
     session.flush()
@@ -41,22 +50,29 @@ def seed_demo_data(session: Session, seed: int = DEMO_SEED) -> None:
         Supplier(name="北辰制造", active=True),
         Supplier(name="南方供应链", active=True),
         Supplier(name="远航物资", active=True),
+        Supplier(name="西部智造", active=True),
+        Supplier(name="恒信工业", active=True),
+        Supplier(name="启明电子", active=True),
+        Supplier(name="海川零件", active=True),
+        Supplier(name="云岭材料", active=True),
         Supplier(name="停用供应商", active=False),
     ]
     session.add_all(suppliers)
     session.flush()
 
-    base_date = date(2026, 10, 10)
+    base_date = DEMO_BASE_DATE
     for material in materials:
-        for offset in range(120):
+        for offset in range(DEMO_HISTORY_DAYS):
             weekly = 4 if offset % 7 in (1, 2, 3) else 0
-            trend = offset // 40
+            trend = offset // 120
+            annual = 3 if (offset % 365) in range(70, 130) else 0
+            intermittent = 0 if material.id not in (6, 9, 10) or offset % 9 != 0 else rng.randint(8, 16)
             noise = rng.randint(0, 4)
-            quantity = Decimal(8 + weekly + trend + noise)
+            quantity = Decimal(6 + material.id + weekly + trend + annual + intermittent + noise)
             session.add(
                 DemandHistory(
                     material_id=material.id,
-                    demand_date=base_date - timedelta(days=120 - offset),
+                    demand_date=base_date - timedelta(days=DEMO_HISTORY_DAYS - offset),
                     quantity=quantity,
                 )
             )

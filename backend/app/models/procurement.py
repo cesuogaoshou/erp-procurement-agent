@@ -1,7 +1,7 @@
 from datetime import UTC, date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, String
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.models.base import Base
@@ -77,3 +77,33 @@ class SupplierPerformance(Base):
     inspected_quantity: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     accepted_quantity: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     complaint_count: Mapped[int] = mapped_column(Integer)
+
+
+class PurchaseOrder(Base):
+    __tablename__ = "purchase_orders"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    supplier_id: Mapped[int] = mapped_column(ForeignKey("suppliers.id"), index=True)
+    status: Mapped[str] = mapped_column(String(32), default="draft", index=True)
+    idempotency_key: Mapped[str] = mapped_column(String(120), unique=True, index=True)
+    total_amount: Mapped[Decimal] = mapped_column(Numeric(14, 2))
+    evidence_refs_json: Mapped[str] = mapped_column(Text)
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+
+    supplier: Mapped[Supplier] = relationship()
+    items: Mapped[list["PurchaseOrderItem"]] = relationship(back_populates="order", cascade="all, delete-orphan")
+
+
+class PurchaseOrderItem(Base):
+    __tablename__ = "purchase_order_items"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("purchase_orders.id"), index=True)
+    material_id: Mapped[int] = mapped_column(ForeignKey("materials.id"), index=True)
+    quantity: Mapped[Decimal] = mapped_column(Numeric(12, 2))
+    unit_price: Mapped[Decimal] = mapped_column(Numeric(12, 2))
+    line_amount: Mapped[Decimal] = mapped_column(Numeric(14, 2))
+
+    order: Mapped[PurchaseOrder] = relationship(back_populates="items")
+    material: Mapped[Material] = relationship()

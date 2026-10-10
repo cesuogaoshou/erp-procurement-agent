@@ -29,6 +29,7 @@ def run_shortage_backtest(session, horizon_days: int = 30) -> dict:
     predicted_shortages: list[Decimal] = []
     actual_demands: list[Decimal] = []
     predicted_demands: list[Decimal] = []
+    windows: list[dict] = []
 
     materials = list(session.scalars(select(Material).order_by(Material.id)))
     for material in materials:
@@ -63,6 +64,16 @@ def run_shortage_backtest(session, horizon_days: int = 30) -> dict:
             actual_demands.append(actual_demand)
             predicted_shortages.append(predicted_shortage)
             actual_shortages.append(actual_shortage)
+            windows.append(
+                {
+                    "material_id": material.id,
+                    "cutoff_date": holdout[0].demand_date.isoformat(),
+                    "train_start": train[0].demand_date.isoformat(),
+                    "train_end": train[-1].demand_date.isoformat(),
+                    "holdout_start": holdout[0].demand_date.isoformat(),
+                    "holdout_end": holdout[-1].demand_date.isoformat(),
+                }
+            )
 
     shortage_metrics = evaluate_regression(actual_shortages, predicted_shortages)
     demand_metrics = evaluate_regression(actual_demands, predicted_demands)
@@ -72,6 +83,7 @@ def run_shortage_backtest(session, horizon_days: int = 30) -> dict:
         "horizon_days": horizon_days,
         "shortage_metrics": _metrics_to_dict(shortage_metrics),
         "demand_metrics": _metrics_to_dict(demand_metrics),
+        "backtest_windows": windows,
         "notes": [
             "Baseline uses 30-day moving sum from simulated data.",
             "Phase 1 simplification: confirmed inbound supply is not included.",
@@ -85,6 +97,7 @@ def _metrics_to_dict(metrics) -> dict:
         "sample_count": metrics.sample_count,
         "positive_actual_count": metrics.positive_actual_count,
         "zero_actual_count": metrics.zero_actual_count,
+        "mape_coverage_percent": str(metrics.mape_coverage_percent),
         "mape_percent": _decimal_or_none(metrics.mape_percent),
         "mae": str(metrics.mae),
         "wape_percent": _decimal_or_none(metrics.wape_percent),

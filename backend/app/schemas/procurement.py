@@ -63,3 +63,31 @@ class ExcludedSupplierOut(BaseModel):
 class RecommendationOut(BaseModel):
     recommendations: list[RecommendationItemOut]
     excluded: list[ExcludedSupplierOut]
+
+
+class PurchaseDraftItemIn(BaseModel):
+    material_id: int
+    quantity: Decimal = Field(gt=0)
+
+
+class PurchaseDraftIn(BaseModel):
+    supplier_id: int
+    items: list[PurchaseDraftItemIn] = Field(min_length=1)
+    idempotency_key: str = Field(min_length=8, max_length=120)
+    evidence_refs: list[str] = Field(min_length=1)
+
+
+class PurchaseDraftItemOut(BaseModel):
+    material_id: int
+    quantity: Decimal
+    unit_price: Decimal
+    line_amount: Decimal
+
+
+class PurchaseDraftOut(BaseModel):
+    id: int
+    supplier_id: int
+    status: str
+    total_amount: Decimal
+    idempotency_key: str
+    items: list[PurchaseDraftItemOut]

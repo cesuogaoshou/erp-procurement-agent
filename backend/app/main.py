@@ -10,9 +10,12 @@ from backend.app.schemas.procurement import (
     ForecastRequest,
     InventoryOut,
     MaterialOut,
+    PurchaseDraftIn,
+    PurchaseDraftOut,
     RecommendationIn,
     RecommendationOut,
 )
+from backend.app.services.purchase_drafts import DraftItemInput, PurchaseDraftInput, create_purchase_draft
 from backend.app.services.forecasting import baseline_forecast
 from backend.app.services.inventory import get_inventory_snapshot, list_materials
 from backend.app.services.recommendations import recommend_for_material
@@ -65,6 +68,27 @@ def create_app(engine: Engine | None = None) -> FastAPI:
             "recommendations": result.recommendations,
             "excluded": result.excluded,
         }
+
+    @app.post("/purchase-drafts", response_model=PurchaseDraftOut)
+    def purchase_drafts(request: PurchaseDraftIn, session: Session = Depends(get_session)):
+        try:
+            order = create_purchase_draft(
+                session,
+                PurchaseDraftInput(
+                    supplier_id=request.supplier_id,
+                    items=[
+                        DraftItemInput(material_id=item.material_id, quantity=item.quantity)
+                        for item in request.items
+                    ],
+                    idempotency_key=request.idempotency_key,
+                    evidence_refs=request.evidence_refs,
+                ),
+            )
+            session.commit()
+            return order
+        except ValueError as exc:
+            session.rollback()
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
 
     return app
 

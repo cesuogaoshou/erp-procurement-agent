@@ -23,7 +23,6 @@ Build an ERP intelligent procurement decision system that analyzes future materi
 
 ## Deferred
 
-- Purchase draft persistence is deferred to the next Phase 1 slice.
 - Prophet integration after the baseline evaluator exists.
 - Real LLM provider and Function Calling after deterministic business flow.
 - Minimal frontend after stable APIs.
