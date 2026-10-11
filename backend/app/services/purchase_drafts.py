@@ -20,6 +20,7 @@ class PurchaseDraftInput:
     items: list[DraftItemInput]
     idempotency_key: str
     evidence_refs: list[str]
+    evidence_payloads: list[dict] | None = None
 
 
 def create_purchase_draft(session: Session, request: PurchaseDraftInput) -> PurchaseOrder:
@@ -72,7 +73,7 @@ def create_purchase_draft(session: Session, request: PurchaseDraftInput) -> Purc
         status="draft",
         idempotency_key=request.idempotency_key,
         total_amount=total_amount.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP),
-        evidence_refs_json=json.dumps(request.evidence_refs, ensure_ascii=False),
+        evidence_refs_json=_evidence_json(request),
         items=order_items,
     )
     session.add(order)
@@ -86,3 +87,15 @@ def _round_order_quantity(*, requested: Decimal, moq: Decimal, package_multiple:
     base = max(requested, moq)
     units = (base / package_multiple).to_integral_value(rounding=ROUND_CEILING)
     return units * package_multiple
+
+
+def _evidence_json(request: PurchaseDraftInput) -> str:
+    if request.evidence_payloads is None:
+        return json.dumps(request.evidence_refs, ensure_ascii=False)
+    return json.dumps(
+        {
+            "refs": request.evidence_refs,
+            "forecast_evidence": request.evidence_payloads,
+        },
+        ensure_ascii=False,
+    )

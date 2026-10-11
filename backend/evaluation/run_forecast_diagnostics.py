@@ -3,6 +3,7 @@ import json
 import logging
 import time
 from collections import defaultdict
+from dataclasses import asdict
 from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
@@ -12,12 +13,12 @@ from sqlalchemy import select
 
 from backend.app.algorithms.shortage import calculate_shortage
 from backend.app.db.session import create_sqlite_engine, session_scope
-from backend.app.models import DemandHistory
+from backend.app.models import DemandHistory, Inventory
 from backend.app.services.seed import seed_demo_data
+from backend.app.services.forecasting import ProphetForecastConfig, dynamic_prophet_config, frozen_forecast_strategy_config
 from backend.evaluation.metrics import evaluate_regression
 from backend.evaluation.run_baseline import _metrics_to_dict
 from backend.evaluation.run_forecast_comparison import (
-    ProphetForecastConfig,
     _build_windows,
     _moving_average_predict,
 )
@@ -46,7 +47,7 @@ def run_forecast_diagnostics(session, horizon_days: int = 30) -> dict:
     DEFAULT_CURVE_DIR.mkdir(parents=True, exist_ok=True)
     windows = _build_windows(session, horizon_days)
     splits = _load_splits(SPLIT_PATH)
-    prophet_config = ProphetForecastConfig()
+    prophet_config = dynamic_prophet_config()
     rows = _build_window_rows(windows, prophet_config, splits)
     _write_rows(rows, DEFAULT_ROWS_PATH)
     curve_paths = _write_representative_curves(session, rows, DEFAULT_CURVE_DIR)
@@ -66,15 +67,17 @@ def run_forecast_diagnostics(session, horizon_days: int = 30) -> dict:
         "row_output": str(DEFAULT_ROWS_PATH),
         "curve_outputs": curve_paths,
         "implementation_checks": _implementation_checks(session, windows, horizon_days),
+        "inventory_scope": _inventory_scope(session),
         "split_usage": _split_usage(rows, splits),
         "data_shape": _data_shape_summary(session),
+        "service_strategy_config": asdict(frozen_forecast_strategy_config()),
         "selected_prophet_config": _config_to_report(prophet_config),
         "validation_grid": validation_grid,
         "model_diagnostics": _model_diagnostics(rows),
         "notes": [
             "Diagnostics use the already-inspected rolling windows; they are not an untouched final test set.",
             "The frozen demand data and recommendation labels were not regenerated or modified.",
-            "Shortage metrics use the same static inventory snapshot for all historical windows, matching existing evaluation behavior.",
+            "Shortage metrics are a fixed-inventory scenario using the same static 2026-10-10 inventory snapshot for all windows.",
         ],
     }
 
@@ -146,10 +149,13 @@ def _make_prophet_predictor(config: ProphetForecastConfig):
             raise ValueError(f"insufficient_history: required {config.min_train_days}, got {len(window['train'])}")
         train = window["train"][-config.train_window_days :] if config.train_window_days else window["train"]
         frame = pd.DataFrame([{"ds": row.demand_date.isoformat(), "y": float(row.quantity)} for row in train])
+        yearly_seasonality = config.yearly_seasonality
+        if config.yearly_min_train_days is not None and len(window["train"]) < config.yearly_min_train_days:
+            yearly_seasonality = False
         model = Prophet(
             daily_seasonality=config.daily_seasonality,
             weekly_seasonality=config.weekly_seasonality,
-            yearly_seasonality=config.yearly_seasonality,
+            yearly_seasonality=yearly_seasonality,
             changepoint_prior_scale=config.changepoint_prior_scale,
             seasonality_prior_scale=config.seasonality_prior_scale,
         )
@@ -171,11 +177,11 @@ def _run_validation_grid(validation_rows: list[dict], windows: list[dict]) -> li
         if (window["metadata"]["material_id"], window["metadata"]["cutoff_date"]) in validation_keys
     ]
     configs = [
-        ProphetForecastConfig(name="current_weekly_yearly_no_min_guard", min_train_days=1),
         ProphetForecastConfig(name="weekly_yearly_min365", min_train_days=365),
-        ProphetForecastConfig(name="weekly_no_yearly_min180", min_train_days=180, yearly_seasonality=False),
+        dynamic_prophet_config(),
+        ProphetForecastConfig(name="weekly_only_min90", min_train_days=90, yearly_seasonality=False, short_history_mode="weekly_only"),
         ProphetForecastConfig(name="trend_only_min180", min_train_days=180, weekly_seasonality=False, yearly_seasonality=False),
-        ProphetForecastConfig(name="weekly_no_yearly_recent180", min_train_days=180, train_window_days=180, yearly_seasonality=False),
+        ProphetForecastConfig(name="weekly_only_recent180", min_train_days=180, train_window_days=180, yearly_seasonality=False, short_history_mode="weekly_only"),
     ]
     results = []
     for config in configs:
@@ -230,6 +236,21 @@ def _implementation_checks(session, windows: list[dict], horizon_days: int) -> d
             "negative Prophet predictions clipped before 30-day sum",
             "shortage formula reused from backend calculate_shortage",
         ],
+    }
+
+
+def _inventory_scope(session) -> dict:
+    inventory_rows = list(session.scalars(select(Inventory).order_by(Inventory.material_id)))
+    return {
+        "experiment_type": "fixed_inventory_scenario",
+        "snapshot_date": "2026-10-10",
+        "inventory_row_count": len(inventory_rows),
+        "can_reconstruct_historical_inventory": False,
+        "reason": (
+            "The available seed/export data contains one static inventory row per material and no dated "
+            "historical inventory movement table. Therefore the shortage evaluation is not a true historical "
+            "inventory backtest."
+        ),
     }
 
 
@@ -423,9 +444,15 @@ def _failure_reasons(rows: list[dict]) -> dict[str, int]:
 def _zero_shortage_coverage(actual: list[Decimal], predicted: list[Decimal]) -> dict:
     zero_actual = [index for index, value in enumerate(actual) if value == 0]
     if not zero_actual:
-        return {"actual_zero_count": 0, "predicted_zero_count": 0, "coverage_percent": "0.00"}
+        return {
+            "status": "not_applicable",
+            "actual_zero_count": 0,
+            "predicted_zero_count": 0,
+            "coverage_percent": None,
+        }
     predicted_zero = sum(1 for index in zero_actual if predicted[index] == 0)
     return {
+        "status": "ok",
         "actual_zero_count": len(zero_actual),
         "predicted_zero_count": predicted_zero,
         "coverage_percent": str((Decimal(predicted_zero) / Decimal(len(zero_actual)) * Decimal("100")).quantize(Decimal("0.01"))),
@@ -461,6 +488,8 @@ def _config_to_report(config: ProphetForecastConfig) -> dict:
         "daily_seasonality": config.daily_seasonality,
         "weekly_seasonality": config.weekly_seasonality,
         "yearly_seasonality": config.yearly_seasonality,
+        "yearly_min_train_days": config.yearly_min_train_days,
+        "short_history_mode": config.short_history_mode,
         "changepoint_prior_scale": config.changepoint_prior_scale,
         "seasonality_prior_scale": config.seasonality_prior_scale,
     }

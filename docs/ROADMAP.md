@@ -38,7 +38,7 @@ Goal: freeze evaluation datasets and run prediction, recommendation, and Agent e
 Acceptance:
 - Raw outputs, sample counts, charts, and failure cases are preserved.
 
-Status: in progress for forecasting diagnostics. Current evidence preserves the original Prophet comparison baseline and hashes under `reports/generated/forecast_diagnostics/baseline_20261011/`, writes per-window diagnostics to `reports/generated/forecast_diagnostics/forecast_window_diagnostics.csv`, and writes diagnostic JSON plus representative curves under `reports/generated/forecast_diagnostics/`. The declared holdout/test windows have already been inspected for diagnostics, so they cannot be described as fully untouched independent final test evidence.
+Status: frozen for current course delivery. Current evidence preserves the original Prophet comparison baseline and hashes under `reports/generated/forecast_diagnostics/baseline_20261011/`, writes per-window diagnostics to `reports/generated/forecast_diagnostics/forecast_window_diagnostics.csv`, and writes diagnostic JSON plus representative curves under `reports/generated/forecast_diagnostics/`. The latest exploratory comparison keeps full 160-window moving-average results, reports long-history Prophet as 50/160 successful windows, adds same-window moving-average metrics for those 50 windows, adds dynamic seasonality with 140/160 successful windows, and reports a separate hybrid strategy with 20/160 moving-average fallbacks. Service prediction is now frozen as `forecast_strategy_v1_20261011`: dynamic Prophet is the main path, short-history failures fall back to 30-day moving average, and forecast evidence is returned and persisted through Agent traces and purchase draft evidence payloads. The declared holdout/test windows have already been inspected for diagnostics, so they cannot be described as fully untouched independent final test evidence. Shortage experiments reuse the static 2026-10-10 inventory snapshot and are fixed-inventory scenario tests, not true historical inventory backtests. Generated reports remain Git-ignored but reproducible; include `reports/generated/forecast_comparison.json`, `reports/generated/forecast_diagnostics/`, `reports/generated/baseline_eval.json`, supplier eval, MySQL report if rerun, and real model acceptance JSON in the course delivery package.
 
 ## Phase 5: 2026-10-28 to 2026-10-29
 
@@ -47,4 +47,4 @@ Goal: prepare report, screenshots, dependency lock, source code, and data packag
 Acceptance:
 - Reproducible delivery package and demo rehearsal complete.
 
-Status: not started.
+Status: next task is minimal frontend development. Do not broaden backend prediction tuning unless a new explicit change request reopens forecasting.

@@ -31,6 +31,16 @@ class ForecastOut(BaseModel):
     material_id: int
     horizon_days: int
     model_name: str
+    strategy_type: str
+    selected_model_name: str
+    config_version: str
+    fallback_model_name: str
+    fallback_reason: str | None = None
+    training_range: dict[str, Any]
+    forecast_range: dict[str, Any]
+    config: dict[str, Any]
+    evidence_ref: str
+    forecast_evidence: dict[str, Any]
     forecast_demand: Decimal
     safety_stock: Decimal
     available_supply: Decimal

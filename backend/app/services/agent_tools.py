@@ -143,7 +143,7 @@ def execute_agent_tool(
             "excluded": result.excluded,
         }
     if name == "create_purchase_draft":
-        _validate_forecast_evidence(arguments, evidence_registry or {})
+        resolved_refs, forecast_evidence = _validate_forecast_evidence(arguments, evidence_registry or {})
         order = create_purchase_draft(
             session,
             PurchaseDraftInput(
@@ -153,14 +153,18 @@ def execute_agent_tool(
                     for item in arguments["items"]
                 ],
                 idempotency_key=str(arguments["idempotency_key"]),
-                evidence_refs=[str(item) for item in arguments["evidence_refs"]],
+                evidence_refs=resolved_refs,
+                evidence_payloads=forecast_evidence,
             ),
         )
         return order
     raise ValueError(f"tool_not_allowed:{name}")
 
 
-def _validate_forecast_evidence(arguments: dict[str, Any], evidence_registry: dict[str, dict[str, Any]]) -> None:
+def _validate_forecast_evidence(
+    arguments: dict[str, Any],
+    evidence_registry: dict[str, dict[str, Any]],
+) -> tuple[list[str], list[dict[str, Any]]]:
     refs = [str(item) for item in arguments.get("evidence_refs", [])]
     if "use_latest_forecast" in refs and evidence_registry:
         refs = [next(reversed(evidence_registry))]
@@ -176,3 +180,4 @@ def _validate_forecast_evidence(arguments: dict[str, Any], evidence_registry: di
         quantity = Decimal(str(item["quantity"]))
         if quantity > Decimal(forecast["shortage_quantity"]):
             raise ValueError("quantity_exceeds_forecast_shortage")
+    return refs, [forecast["forecast_evidence"] for forecast in forecasts]
