@@ -18,13 +18,13 @@ Build an ERP intelligent procurement decision system that analyzes future materi
 - Forecast shortage = `max(0, forecast demand + safety stock - available supply)`.
 - Available supply currently excludes in-transit supply in Phase 1 and must be documented as a simplification.
 - Supplier recommendation filters by active status, material relationship, MOQ, lead time, capacity, and budget before scoring.
+- Purchase draft quantity is calculated and rounded by the backend to satisfy MOQ and package multiple rules; model-supplied quantities are treated as requests, not authority.
 - Price and complaint metrics are cost metrics. Delivery and quality are benefit metrics.
 - Backend calculates all numerical results and amounts.
 
 ## Deferred
 
-- Prophet integration after the baseline evaluator exists.
-- Real LLM provider and Function Calling after deterministic business flow.
+- Real Prophet comparison and real LLM Function Calling are now implemented; keep raw reports and failure details when rerunning.
 - Minimal frontend after stable APIs.
 - Real external supplier systems, payment, email, RAG, MCP service, multi-agent, LSTM, and general ERP modules are out of MVP scope.
 

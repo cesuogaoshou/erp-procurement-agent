@@ -157,6 +157,10 @@ def _validate_order_snapshot(session: Session, order: PurchaseOrder) -> None:
             raise ApprovalValidationError("quantity_must_be_positive")
         if item.quantity < relationship.moq:
             raise ApprovalValidationError("quantity_below_moq")
+        if Decimal(relationship.package_multiple) <= 0:
+            raise ApprovalValidationError("package_multiple_must_be_positive")
+        if item.quantity % Decimal(relationship.package_multiple) != 0:
+            raise ApprovalValidationError("quantity_not_package_multiple")
         if item.quantity > relationship.capacity:
             raise ApprovalValidationError("capacity_below_quantity")
 

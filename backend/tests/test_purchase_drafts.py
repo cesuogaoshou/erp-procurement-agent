@@ -36,6 +36,33 @@ def test_create_purchase_draft_calculates_amount_and_is_idempotent():
         assert session.scalar(select(PurchaseOrder).where(PurchaseOrder.idempotency_key == "draft-key-001")).id == first.id
 
 
+def test_create_purchase_draft_rounds_quantity_to_moq_and_package_multiple():
+    engine = create_sqlite_engine("sqlite+pysqlite:///:memory:")
+    with session_scope(engine) as session:
+        seed_demo_data(session)
+        from backend.app.models import SupplierMaterial
+
+        relationship = session.scalar(
+            select(SupplierMaterial).where(
+                SupplierMaterial.supplier_id == 1,
+                SupplierMaterial.material_id == 1,
+            )
+        )
+        relationship.moq = Decimal("25")
+        relationship.package_multiple = Decimal("10")
+        request = PurchaseDraftInput(
+            supplier_id=1,
+            items=[DraftItemInput(material_id=1, quantity=Decimal("21"))],
+            idempotency_key="draft-key-package-rounding",
+            evidence_refs=["recommendation:test"],
+        )
+
+        order = create_purchase_draft(session, request)
+
+        assert order.items[0].quantity == Decimal("30")
+        assert order.items[0].line_amount == Decimal("243.00")
+
+
 def test_create_purchase_draft_rejects_supplier_without_material_relationship():
     engine = create_sqlite_engine("sqlite+pysqlite:///:memory:")
     with session_scope(engine) as session:

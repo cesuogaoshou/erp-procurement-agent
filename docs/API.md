@@ -66,7 +66,7 @@ Request:
 }
 ```
 
-Returns a draft purchase order with backend-calculated unit price, line amount, and total amount. Repeating the same `idempotency_key` returns the existing draft.
+Returns a draft purchase order with backend-calculated order quantity, unit price, line amount, and total amount. The backend rounds requested quantity up to satisfy supplier MOQ and `package_multiple`; repeating the same `idempotency_key` returns the existing draft.
 
 ### Approval Authentication
 
@@ -80,7 +80,7 @@ Buyer-only transition from `draft` to `pending_approval`.
 
 ### `POST /purchase-orders/{id}/approve`
 
-Approver-only transition from `pending_approval` to `approved`, with backend revalidation of order version, supplier status, supplier-material relationship, MOQ, capacity, current quote, line amounts, and total amount.
+Approver-only transition from `pending_approval` to `approved`, with backend revalidation of order version, supplier status, supplier-material relationship, MOQ, package multiple, capacity, current quote, line amounts, and total amount.
 
 Request:
 
@@ -112,7 +112,7 @@ Planned endpoints are not complete until tests and routes exist.
 
 ## Agent Tools
 
-The current Agent loop is service-level only and verified with a mock provider. Registered model tools are:
+The Agent loop is service-level and verified with mock providers plus real DeepSeek/OpenAI-compatible Function Calling. Registered model tools are:
 
 - `list_materials`
 - `resolve_material`

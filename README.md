@@ -33,3 +33,19 @@ python -m backend.evaluation.run_supplier_eval
 ```
 
 评测输出必须保留真实结果。未达标时记录风险和局限，不调整测试集掩盖问题。
+## Local Integration Checks
+
+```powershell
+$env:OPENAI_BASE_URL = "https://api.deepseek.com"
+$env:OPENAI_MODEL_USER = "deepseek-v4-flash"
+
+python -m alembic upgrade head
+python -m backend.evaluation.run_forecast_comparison
+python -m backend.evaluation.run_real_model_acceptance
+
+$env:RUN_MYSQL_INTEGRATION = "1"
+$env:MYSQL_INTEGRATION_REPORT_PATH = "reports/generated/mysql_integration.json"
+python -m pytest backend/tests/test_mysql_integration.py -q
+```
+
+Model selection uses `OPENAI_MODEL_USER` first, then falls back to `OPENAI_MODEL`. Do not commit real API keys.

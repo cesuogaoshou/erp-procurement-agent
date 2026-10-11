@@ -17,7 +17,7 @@
 5. Recommendation service filters supplier candidates and scores eligible suppliers.
 6. Draft creation validates evidence again before persisting a purchase draft.
 7. A buyer submits the draft for approval using the authenticated user context.
-8. An approver approves or rejects the pending order. Approval revalidates the stored version, current quote, supplier relationship, MOQ, capacity, line amounts, and total. Approved orders receive a formal order number.
+8. An approver approves or rejects the pending order. Approval revalidates the stored version, current quote, supplier relationship, MOQ, package multiple, capacity, line amounts, and total. Approved orders receive a formal order number.
 9. The Agent loop can resolve materials, call read-only inventory/forecast/recommendation tools, and then call `create_purchase_draft`; approval actions remain outside the model tool surface.
 
 ## Boundaries
@@ -30,12 +30,12 @@ Phase 1 deliberately excludes in-transit supply. The data model can be extended 
 
 ## Approval Consistency
 
-Approval state changes, approval records, and audit logs are written in one database transaction. Repeated approval/rejection requests use `idempotency_key`; stale versions and non-pending orders are rejected. MySQL row-lock concurrency behavior still requires real MySQL verification when credentials are available.
+Approval state changes, approval records, and audit logs are written in one database transaction. Repeated approval/rejection requests use `idempotency_key`; stale versions and non-pending orders are rejected. MySQL opt-in tests cover concurrent approval, duplicate approval idempotency, and transaction rollback.
 
 ## Agent Boundary
 
-The Agent provider interface is implemented with a mock provider for offline tests and an OpenAI Function Calling adapter that handles missing credentials, timeout, HTTP, and malformed response errors. It has a hard maximum tool-call count and rejects any tool name not in the registered schema. The available tool set intentionally excludes approval and rejection.
+The Agent provider interface is implemented with a mock provider for offline tests and an OpenAI-compatible Function Calling adapter that handles missing credentials, timeout, HTTP, and malformed response errors. It has a hard maximum tool-call count and rejects any tool name not in the registered schema. The available tool set intentionally excludes approval and rejection.
 
-Agent runs are persisted in `agent_runs`, and every tool call is persisted in `tool_traces`, so run status, draft IDs, and pending approval state remain queryable after application restart when using a persistent database. The current implementation uses a lightweight persisted state graph compatible with LangGraph-style nodes; the `langgraph` package is not installed in this environment, so real LangGraph execution is not accepted yet.
+Agent runs are persisted in `agent_runs`, and every tool call is persisted in `tool_traces`, so run status, draft IDs, and pending approval state remain queryable after application restart when using a persistent database. Real LangGraph execution is validated through a `StateGraph` wrapper around the existing Agent loop. LangGraph in-memory checkpoints are used only during graph execution; restart-after-query and approval interruption/resume support come from persisted database state, not from a cross-process LangGraph checkpoint store.
 
-Real Function Calling with an external LLM is not accepted until credentials are configured and provider-specific tests run.
+Real DeepSeek/OpenAI-compatible Function Calling is accepted for natural-language draft creation and controlled boundary states. Approval remains a backend/API action outside the model tool surface.

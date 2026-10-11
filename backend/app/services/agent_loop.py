@@ -147,6 +147,11 @@ class AgentLoop:
                 observations.append({"tool": call.name, "output": _serializable_observation(output)})
                 run.state_json = json.dumps({"node": "tool_completed", "last_tool": call.name}, sort_keys=True)
                 run.updated_at = datetime.now(UTC)
+            run.status = "max_tool_calls_exceeded"
+            run.error = "max_tool_calls_exceeded"
+            run.state_json = json.dumps({"node": "max_tool_calls_exceeded"}, sort_keys=True)
+            run.updated_at = datetime.now(UTC)
+            session.commit()
             raise AgentRunLimitExceeded("max_tool_calls_exceeded")
 
 

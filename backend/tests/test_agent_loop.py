@@ -1,6 +1,9 @@
 from decimal import Decimal
 
 from backend.app.db.session import create_sqlite_engine, session_scope
+from sqlalchemy import select
+
+from backend.app.models import AgentRun, ToolTrace
 from backend.app.services.agent_loop import AgentLoop, AgentRunLimitExceeded
 from backend.app.services.agent_provider import MockLLMProvider, ToolCall
 from backend.app.services.agent_tools import build_agent_tools, execute_agent_tool
@@ -96,3 +99,30 @@ def test_agent_loop_enforces_tool_call_limit():
         assert str(exc) == "max_tool_calls_exceeded"
     else:
         raise AssertionError("expected AgentRunLimitExceeded")
+
+
+def test_agent_loop_persists_tool_call_limit_state_for_restart_query():
+    engine = _engine()
+    provider = MockLLMProvider(
+        [
+            ToolCall("list_materials", {}),
+            ToolCall("list_materials", {}),
+            ToolCall("list_materials", {}),
+        ]
+    )
+    loop = AgentLoop(engine=engine, provider=provider, max_tool_calls=2)
+
+    try:
+        loop.run("loop forever")
+    except AgentRunLimitExceeded:
+        pass
+    else:
+        raise AssertionError("expected AgentRunLimitExceeded")
+
+    with session_scope(engine) as session:
+        run = session.scalars(select(AgentRun)).one()
+        traces = session.scalars(select(ToolTrace).where(ToolTrace.run_id == run.id)).all()
+
+    assert run.status == "max_tool_calls_exceeded"
+    assert run.error == "max_tool_calls_exceeded"
+    assert [trace.tool_name for trace in traces] == ["list_materials", "list_materials"]

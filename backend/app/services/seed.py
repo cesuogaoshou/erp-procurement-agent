@@ -86,6 +86,7 @@ def seed_demo_data(session: Session, seed: int = DEMO_SEED) -> None:
                     unit_price=Decimal("8.00") + Decimal(index) * Decimal("0.80") + Decimal(material.id) / 10,
                     lead_time_days=7 + index * 3,
                     moq=Decimal("20"),
+                    package_multiple=Decimal("10") if material.id in (9, 10) else Decimal("1"),
                     capacity=Decimal("300") - Decimal(index * 20),
                 )
             )

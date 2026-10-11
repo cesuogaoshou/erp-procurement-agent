@@ -74,7 +74,7 @@ def export_seed_dataset(session: Session, output_dir: str | Path) -> None:
     )
     _write_csv(
         path / "supplier_materials.csv",
-        ["supplier_id", "material_id", "unit_price", "lead_time_days", "moq", "capacity"],
+        ["supplier_id", "material_id", "unit_price", "lead_time_days", "moq", "package_multiple", "capacity"],
         [
             {
                 "supplier_id": item.supplier_id,
@@ -82,6 +82,7 @@ def export_seed_dataset(session: Session, output_dir: str | Path) -> None:
                 "unit_price": item.unit_price,
                 "lead_time_days": item.lead_time_days,
                 "moq": item.moq,
+                "package_multiple": item.package_multiple,
                 "capacity": item.capacity,
             }
             for item in session.scalars(

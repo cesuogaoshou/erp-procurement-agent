@@ -1,6 +1,6 @@
 import os
 
-from backend.app.services.agent_provider import OpenAIFunctionCallingProvider, ProviderError
+from backend.app.services.agent_provider import OpenAIFunctionCallingProvider, ProviderError, model_from_env
 from backend.app.services.agent_tools import build_agent_tools
 from backend.app.services.auth import auth_secret_from_env
 
@@ -123,6 +123,16 @@ def test_requirements_include_cryptography_for_mysql8_caching_sha2_password():
         packages = {line.strip().split("==")[0].lower() for line in requirements if line.strip()}
 
     assert "cryptography" in packages
+
+
+def test_model_from_env_prefers_user_model_over_default_model(monkeypatch):
+    monkeypatch.setenv("OPENAI_MODEL", "gpt-4o-mini")
+    monkeypatch.setenv("OPENAI_MODEL_USER", "deepseek-v4-flash")
+
+    assert model_from_env() == "deepseek-v4-flash"
+
+    monkeypatch.delenv("OPENAI_MODEL_USER", raising=False)
+    assert model_from_env() == "gpt-4o-mini"
 
 
 def test_auth_secret_reads_environment_and_rejects_empty(monkeypatch):

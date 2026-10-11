@@ -1,6 +1,6 @@
 import json
 from dataclasses import dataclass
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_CEILING, ROUND_HALF_UP
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -47,18 +47,21 @@ def create_purchase_draft(session: Session, request: PurchaseDraftInput) -> Purc
         )
         if relationship is None or not relationship.supplier.active:
             raise ValueError("supplier_material_not_found")
-        if item.quantity < relationship.moq:
-            raise ValueError("quantity_below_moq")
-        if item.quantity > relationship.capacity:
+        order_quantity = _round_order_quantity(
+            requested=item.quantity,
+            moq=Decimal(relationship.moq),
+            package_multiple=Decimal(relationship.package_multiple),
+        )
+        if order_quantity > relationship.capacity:
             raise ValueError("capacity_below_quantity")
 
         unit_price = Decimal(relationship.unit_price).quantize(Decimal("0.01"))
-        line_amount = (unit_price * item.quantity).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        line_amount = (unit_price * order_quantity).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         total_amount += line_amount
         order_items.append(
             PurchaseOrderItem(
                 material_id=item.material_id,
-                quantity=item.quantity,
+                quantity=order_quantity,
                 unit_price=unit_price,
                 line_amount=line_amount,
             )
@@ -75,3 +78,11 @@ def create_purchase_draft(session: Session, request: PurchaseDraftInput) -> Purc
     session.add(order)
     session.flush()
     return order
+
+
+def _round_order_quantity(*, requested: Decimal, moq: Decimal, package_multiple: Decimal) -> Decimal:
+    if package_multiple <= 0:
+        raise ValueError("package_multiple_must_be_positive")
+    base = max(requested, moq)
+    units = (base / package_multiple).to_integral_value(rounding=ROUND_CEILING)
+    return units * package_multiple

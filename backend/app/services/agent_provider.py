@@ -104,6 +104,10 @@ def _chat_completions_url(base_url: str) -> str:
     return f"{normalized}/chat/completions"
 
 
+def model_from_env() -> str | None:
+    return os.getenv("OPENAI_MODEL_USER") or os.getenv("OPENAI_MODEL")
+
+
 def _openai_tool_schemas() -> list[dict[str, Any]]:
     return [
         {

@@ -4,7 +4,7 @@
 
 Initialized on 2026-10-10 from the original ERP intelligent procurement Agent outline in the repository root.
 
-The project has completed deterministic backend acceptance work through approval loop basics, MySQL integration verification, and real OpenAI-compatible/DeepSeek Agent orchestration: local Git baseline, backend skeleton, SQLAlchemy models, Alembic migrations, reproducible simulated CSV data, inventory and shortage calculation, supplier recommendation, purchase draft persistence, server-signed demo token authentication, role-gated approval transitions, audit logs, API routes, mock-provider Agent loop, OpenAI-compatible tool schema dispatch, real Function Calling to purchase draft, persisted run/tool traces, baseline and forecast-comparison backtesting, and supplier Top-3 evaluation.
+The project has completed deterministic backend acceptance work through approval loop basics, MySQL integration verification, real OpenAI-compatible/DeepSeek Agent orchestration, real Prophet comparison, and real LangGraph execution: local Git baseline, backend skeleton, SQLAlchemy models, Alembic migrations, reproducible simulated CSV data, inventory and shortage calculation, supplier recommendation, MOQ/package-multiple purchase draft rounding, purchase draft persistence, server-signed demo token authentication, role-gated approval transitions, audit logs, API routes, mock-provider Agent loop, OpenAI-compatible tool schema dispatch, real Function Calling to purchase draft, real `StateGraph` wrapper execution, persisted run/tool traces, baseline and forecast-comparison backtesting, and supplier Top-3 evaluation.
 
 ## Read Order
 
@@ -28,8 +28,10 @@ The project has completed deterministic backend acceptance work through approval
 - `backend/app/services/agent_provider.py`: provider protocol and mock provider for offline tests.
 - `backend/app/services/agent_tools.py`: model tool schemas and deterministic tool execution.
 - `backend/app/services/agent_loop.py`: bounded Agent tool loop.
-- `backend/tests/test_mysql_integration.py`: opt-in MySQL integration test for approval concurrency, rollback, and Agent persistence.
-- `backend/evaluation/run_forecast_comparison.py`: moving-average vs optional Prophet backtest over identical windows.
+- `backend/app/services/langgraph_runner.py`: real LangGraph `StateGraph` wrapper around the bounded procurement Agent loop.
+- `backend/tests/test_mysql_integration.py`: opt-in MySQL integration tests for approval concurrency, duplicate approval idempotency, rollback, and Agent persistence.
+- `backend/evaluation/run_forecast_comparison.py`: moving-average vs real Prophet backtest over identical windows, with explicit failure reporting.
+- `backend/evaluation/run_real_model_acceptance.py`: real-provider business-loop and boundary-case acceptance runner.
 - `backend/app/algorithms/`: forecasting, shortage, recommendation, and metrics.
 - `backend/app/db/`: engine, sessions, initialization, and seed loading.
 - `backend/evaluation/`: baseline evaluation scripts.
@@ -62,10 +64,16 @@ The original development outline remains in the repository root and is not copie
 - `python -m alembic current` with MySQL `DATABASE_URL`: reported `20261010_0004 (head)`.
 - MySQL data count check with current `DATABASE_URL`: materials 10, inventory 10, demand_history 5400, suppliers 10, supplier_materials 100, supplier_performance 100, purchase_orders 0 before integration test writes.
 - `$env:RUN_MYSQL_INTEGRATION='1'; $env:MYSQL_INTEGRATION_REPORT_PATH='reports/generated/mysql_integration.json'; python -m pytest backend/tests/test_mysql_integration.py -q`: passed 1 MySQL integration test covering approval row-lock concurrency, transaction rollback, and Agent run/tool trace/pending draft queryability after reconnect.
-- `python -m pytest backend/tests -q`: passed 45 tests and skipped the opt-in MySQL integration test by default.
+- `python -m pytest backend/tests -q`: passed 52 tests and skipped the 3 opt-in MySQL integration tests by default.
 - `OPENAI_BASE_URL=https://api.deepseek.com` and `OPENAI_MODEL_USER=deepseek-v4-flash` were configured in the user environment without printing secrets.
 - Real DeepSeek/OpenAI-compatible Function Calling smoke wrote `reports/generated/real_llm_function_calling.json`: status `draft_created`, tool calls `list_materials`, `get_inventory`, `get_demand_forecast`, `recommend_suppliers`, `create_purchase_draft`, run id 6, purchase order id 7, and `real_function_calling=true`. Approval/rejection tools were not exposed or called.
+- `python -m pip show prophet langgraph cmdstanpy`: confirmed Prophet 1.5.0, LangGraph 1.2.14, and CmdStanPy 1.3.0 are installed locally.
+- `python -m alembic upgrade head` with MySQL `DATABASE_URL`: applied package-multiple revisions through `20261011_0006`.
+- `python -m backend.evaluation.run_forecast_comparison`: completed real moving-average and Prophet comparison over 160 identical windows; report path `reports/generated/forecast_comparison.json`; Prophet status `ok`, `failures: []`, runtime 33793 ms, demand MAPE 29.56%, shortage MAPE 34.31%.
+- `python -m pytest backend/tests/test_langgraph_execution.py -q`: passed 2 tests for real LangGraph execution plus persisted run/tool/order state queryability through a new DB session.
+- `$env:RUN_MYSQL_INTEGRATION='1'; $env:MYSQL_INTEGRATION_REPORT_PATH='reports/generated/mysql_integration.json'; python -m pytest backend/tests/test_mysql_integration.py -q`: passed 3 MySQL integration tests covering dual-session concurrent approval, duplicate approval idempotency, rollback, and restart-style Agent persistence.
+- `python -m backend.evaluation.run_real_model_acceptance`: wrote `reports/generated/real_model_acceptance.json`; real DeepSeek created a draft, buyer submitted it, the model could not approve it, approver approved it to formal order `PO-000028`, duplicate operations reused existing state, and boundary cases returned expected business states.
 
-## Current External Blocker
+## Current Backend Acceptance Status
 
-MySQL integration is now verified with the current `DATABASE_URL`, including migration head, deterministic seed counts, approval concurrency, rollback, and Agent persistence after reconnect. SQLite tests still do not substitute for this check; rerun the opt-in MySQL test when schema or transaction behavior changes. Real external DeepSeek/OpenAI-compatible Function Calling is accepted for the natural-language-to-draft path. Real Prophet and real LangGraph execution are not accepted because the optional packages are unavailable in this environment.
+MySQL integration is now verified with the current `DATABASE_URL`, including migration head, deterministic seed counts, dual-session approval concurrency, duplicate approval idempotency, rollback, and Agent persistence after reconnect. SQLite tests still do not substitute for this check; rerun the opt-in MySQL tests when schema or transaction behavior changes. Real external DeepSeek/OpenAI-compatible Function Calling is accepted for the natural-language-to-draft path and controlled boundary states. Real Prophet execution is accepted for comparison reporting, but current metrics are worse than moving average on the simulated frozen windows and must be reported honestly. Real LangGraph execution is accepted for graph invocation; cross-process recovery is provided by database persistence rather than a durable LangGraph checkpoint backend.

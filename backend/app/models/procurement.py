@@ -58,6 +58,7 @@ class SupplierMaterial(Base):
     unit_price: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     lead_time_days: Mapped[int] = mapped_column(Integer)
     moq: Mapped[Decimal] = mapped_column(Numeric(12, 2))
+    package_multiple: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=Decimal("1"))
     capacity: Mapped[Decimal] = mapped_column(Numeric(12, 2))
 
     supplier: Mapped[Supplier] = relationship()

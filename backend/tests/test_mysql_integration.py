@@ -207,8 +207,136 @@ def test_mysql_approval_concurrency_rollback_and_agent_persistence(mysql_engine)
         "order_status_after_reconnect": stored_order.status,
     }
 
+    _write_report_section("core", report)
+
+
+def test_mysql_duplicate_approval_idempotency_uses_existing_record(mysql_engine):
+    run_key = str(int(time.time() * 1000))
+    factory = create_session_factory(mysql_engine)
+
+    with factory() as session:
+        order = create_purchase_draft(
+            session,
+            PurchaseDraftInput(
+                supplier_id=1,
+                items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
+                idempotency_key=f"mysql-duplicate-approval-{run_key}",
+                evidence_refs=["recommendation:mysql-duplicate"],
+            ),
+        )
+        pending = submit_for_approval(session, order.id, AuthContext(user_id="buyer-1", role="buyer"))
+        order_id = pending.id
+        expected_version = pending.version
+        request = ApprovalActionInput(
+            expected_order_version=expected_version,
+            idempotency_key=f"mysql-duplicate-approval-key-{run_key}",
+        )
+        first = approve_order(session, order_id, AuthContext(user_id="approver-1", role="approver"), request)
+        second = approve_order(session, order_id, AuthContext(user_id="approver-1", role="approver"), request)
+        session.commit()
+
+    with factory() as session:
+        stored = session.get(PurchaseOrder, order_id)
+        approvals = list(session.scalars(select(ApprovalRecord).where(ApprovalRecord.order_id == order_id)))
+        audits = list(session.scalars(select(AuditLog).where(AuditLog.order_id == order_id)))
+
+    assert first.id == second.id == order_id
+    assert stored.status == "approved"
+    assert len(approvals) == 1
+    assert [audit.action for audit in audits].count("approved") == 1
+    _write_report_section(
+        "duplicate_approval",
+        {
+            "order_id": order_id,
+            "status": stored.status,
+            "approval_records": len(approvals),
+            "audit_actions": [audit.action for audit in audits],
+        },
+    )
+
+
+def test_mysql_two_session_stale_approval_conflicts_after_first_commit(mysql_engine):
+    run_key = str(int(time.time() * 1000))
+    factory = create_session_factory(mysql_engine)
+
+    with factory() as setup:
+        order = create_purchase_draft(
+            setup,
+            PurchaseDraftInput(
+                supplier_id=1,
+                items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
+                idempotency_key=f"mysql-two-session-{run_key}",
+                evidence_refs=["recommendation:mysql-two-session"],
+            ),
+        )
+        pending = submit_for_approval(setup, order.id, AuthContext(user_id="buyer-1", role="buyer"))
+        order_id = pending.id
+        expected_version = pending.version
+        setup.commit()
+
+    session_a = factory()
+    session_b = factory()
+    try:
+        first = approve_order(
+            session_a,
+            order_id,
+            AuthContext(user_id="approver-a", role="approver"),
+            ApprovalActionInput(
+                expected_order_version=expected_version,
+                idempotency_key=f"mysql-two-session-a-{run_key}",
+            ),
+        )
+        session_a.commit()
+
+        try:
+            approve_order(
+                session_b,
+                order_id,
+                AuthContext(user_id="approver-b", role="approver"),
+                ApprovalActionInput(
+                    expected_order_version=expected_version,
+                    idempotency_key=f"mysql-two-session-b-{run_key}",
+                ),
+            )
+        except Exception as exc:
+            session_b.rollback()
+            conflict = str(exc)
+        else:
+            session_b.commit()
+            conflict = ""
+    finally:
+        session_a.close()
+        session_b.close()
+
+    with factory() as session:
+        stored = session.get(PurchaseOrder, order_id)
+        approvals = list(session.scalars(select(ApprovalRecord).where(ApprovalRecord.order_id == order_id)))
+
+    assert first.status == "approved"
+    assert conflict == "order_not_pending_approval"
+    assert stored.status == "approved"
+    assert len(approvals) == 1
+    _write_report_section(
+        "two_session_stale_approval",
+        {
+            "order_id": order_id,
+            "first_status": first.status,
+            "second_error": conflict,
+            "stored_status": stored.status,
+            "approval_records": len(approvals),
+        },
+    )
+
+
+def _write_report_section(section: str, payload: dict[str, object]) -> None:
     report_path = os.getenv("MYSQL_INTEGRATION_REPORT_PATH")
-    if report_path:
-        path = Path(report_path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    if not report_path:
+        return
+    path = Path(report_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        report = json.loads(path.read_text(encoding="utf-8"))
+    else:
+        report = {}
+    report[section] = payload
+    path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")

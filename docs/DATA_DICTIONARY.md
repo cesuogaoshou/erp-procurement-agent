@@ -47,6 +47,7 @@ All current data is simulated using seed `20261010`. CSV exports are written wit
 - `unit_price`: current quoted unit price.
 - `lead_time_days`: quoted delivery lead time.
 - `moq`: minimum order quantity.
+- `package_multiple`: order quantity package multiple; draft creation rounds up to satisfy both MOQ and this multiple.
 - `capacity`: maximum supply capacity for the planning request.
 
 ### `supplier_performance`
@@ -61,19 +62,36 @@ All current data is simulated using seed `20261010`. CSV exports are written wit
 ### `purchase_orders`
 
 - `supplier_id`: one supplier per draft or formal order.
-- `status`: currently `draft` only in Phase 1.
+- `status`: `draft`, `pending_approval`, `approved`, or `rejected`.
 - `idempotency_key`: unique write key for retry-safe draft creation.
 - `total_amount`: backend-calculated order amount.
 - `evidence_refs_json`: references to recommendation or forecast evidence.
 - `version`: optimistic version placeholder for later approval.
+- `formal_order_number`: generated only on approval.
 
 ### `purchase_order_items`
 
 - `order_id`: purchase order reference.
 - `material_id`: material reference.
-- `quantity`: requested quantity.
+- `quantity`: backend-validated order quantity after MOQ/package-multiple rounding.
 - `unit_price`: backend-selected supplier quote.
 - `line_amount`: backend-calculated quantity times unit price.
+
+### `agent_runs`
+
+- `id`: Agent run primary key.
+- `status`: run terminal or controlled business state.
+- `prompt`: original user request.
+- `state_json`: persisted run state.
+- `purchase_order_id`: linked draft order when one was created.
+
+### `tool_traces`
+
+- `agent_run_id`: Agent run reference.
+- `tool_name`: executed tool.
+- `arguments_json`: model-supplied arguments after schema parsing.
+- `output_json`: deterministic backend tool result.
+- `error`: captured tool error, if any.
 
 ## Phase 1 Simplification
 
