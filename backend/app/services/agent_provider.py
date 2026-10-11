@@ -48,7 +48,7 @@ class OpenAIFunctionCallingProvider:
     ) -> None:
         self.model = model
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        self.base_url = base_url
+        self.base_url = _chat_completions_url(base_url)
         self.timeout_seconds = timeout_seconds
         self.real_function_calling = True
 
@@ -95,6 +95,13 @@ def _observation_message(observations: list[dict[str, Any]]) -> dict[str, str]:
         "content": "Recent tool observations: "
         + json.dumps(observations[-5:], ensure_ascii=False, default=str),
     }
+
+
+def _chat_completions_url(base_url: str) -> str:
+    normalized = base_url.rstrip("/")
+    if normalized.endswith("/chat/completions"):
+        return normalized
+    return f"{normalized}/chat/completions"
 
 
 def _openai_tool_schemas() -> list[dict[str, Any]]:

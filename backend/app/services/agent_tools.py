@@ -120,7 +120,7 @@ def execute_agent_tool(
         return {"status": "resolved", "material": matches[0]}
     if name == "get_inventory":
         snapshot = get_inventory_snapshot(session, int(arguments["material_id"]))
-        return snapshot.__dict__
+        return snapshot
     if name == "get_demand_forecast":
         forecast = get_demand_forecast(
             session,

@@ -66,6 +66,33 @@ def test_openai_provider_sends_agent_tool_schemas_and_excludes_approval_tools(mo
     assert "evidence_refs" in payload["tools"][-1]["function"]["parameters"]["required"]
 
 
+def test_openai_provider_accepts_openai_compatible_base_root(monkeypatch):
+    captured = {}
+
+    class Response:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"choices": [{"message": {"tool_calls": []}}]}
+
+    def fake_post(url, *, headers, json, timeout):
+        captured["url"] = url
+        return Response()
+
+    monkeypatch.setattr("backend.app.services.agent_provider.httpx.post", fake_post)
+    provider = OpenAIFunctionCallingProvider(
+        model="deepseek-v4-flash",
+        api_key="test-key",
+        base_url="https://api.deepseek.com",
+    )
+
+    call = provider.next_tool_call("continue", [])
+
+    assert call is None
+    assert captured["url"] == "https://api.deepseek.com/chat/completions"
+
+
 def test_openai_provider_serializes_observations_as_system_context_not_tool_messages(monkeypatch):
     captured = {}
 

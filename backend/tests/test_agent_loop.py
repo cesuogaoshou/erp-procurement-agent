@@ -3,7 +3,7 @@ from decimal import Decimal
 from backend.app.db.session import create_sqlite_engine, session_scope
 from backend.app.services.agent_loop import AgentLoop, AgentRunLimitExceeded
 from backend.app.services.agent_provider import MockLLMProvider, ToolCall
-from backend.app.services.agent_tools import build_agent_tools
+from backend.app.services.agent_tools import build_agent_tools, execute_agent_tool
 from backend.app.services.seed import seed_demo_data
 
 
@@ -28,6 +28,16 @@ def test_agent_tool_schema_excludes_approval_tools_and_includes_read_only_plus_d
     ]
     assert all("approve" not in name and "reject" not in name for name in names)
     assert tools[-1].write_mode == "create_draft"
+
+
+def test_agent_get_inventory_tool_returns_serializable_inventory_snapshot():
+    engine = _engine()
+    with session_scope(engine) as session:
+        snapshot = execute_agent_tool(session, "get_inventory", {"material_id": 1})
+
+    assert snapshot["material_id"] == 1
+    assert "available_supply" in snapshot
+    assert "version" in snapshot
 
 
 def test_agent_loop_runs_read_only_tools_before_creating_purchase_draft():
