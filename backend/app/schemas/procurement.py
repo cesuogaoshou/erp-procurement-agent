@@ -124,3 +124,62 @@ class TokenOut(BaseModel):
     expires_in: int
     user_id: str
     role: str
+
+
+class AgentRunIn(BaseModel):
+    prompt: str = Field(min_length=1, max_length=2000)
+    thread_id: str | None = Field(default=None, max_length=120)
+    use_langgraph: bool = True
+
+
+class AgentRunOut(BaseModel):
+    run_id: int | None
+    status: str
+    tool_calls: list[str]
+    purchase_order_id: int | None = None
+    total_amount: Decimal | None = None
+    error: str | None = None
+    real_function_calling: bool = False
+    langgraph_executed: bool = False
+
+
+class AgentRunSummaryOut(BaseModel):
+    id: int
+    status: str
+    prompt: str
+    error: str | None = None
+    purchase_order_id: int | None = None
+    created_at: str
+    updated_at: str
+
+
+class ToolTraceOut(BaseModel):
+    id: int
+    run_id: int
+    step_index: int
+    tool_name: str
+    arguments: dict[str, Any]
+    output: dict[str, Any] | list[Any]
+    status: str
+    error: str | None = None
+    created_at: str
+
+
+class PurchaseOrderSummaryOut(BaseModel):
+    id: int
+    supplier_id: int
+    supplier_name: str
+    status: str
+    total_amount: Decimal
+    idempotency_key: str
+    version: int
+    formal_order_number: str | None = None
+    evidence_refs: dict[str, Any] | list[Any]
+    items: list[PurchaseDraftItemOut]
+    created_at: str
+    updated_at: str
+
+
+class DemandHistoryPointOut(BaseModel):
+    date: str
+    quantity: Decimal

@@ -29,7 +29,7 @@ Acceptance:
 - Complete demo loop with buyer and approver roles.
 - Duplicate approval and unauthorized approval tests pass.
 
-Status: backend approval slice complete without frontend. MySQL dual-session concurrency, duplicate approval idempotency, rollback, and persistence verification passed with the current `DATABASE_URL`. A real model business loop has been validated through draft creation, buyer submit, approver approval, formal order generation, blocked model approval, and duplicate-operation idempotency. Remaining Phase 3 work is minimal frontend if still required by the course/demo package.
+Status: complete for backend approval and first minimal frontend. MySQL dual-session concurrency, duplicate approval idempotency, rollback, and persistence verification passed with the current `DATABASE_URL`. A real model business loop has been validated through draft creation, buyer submit, approver approval, formal order generation, blocked model approval, and duplicate-operation idempotency. The frontend now provides four minimal pages for intelligent procurement, data analysis, approval, and execution records, using signed demo tokens and backend-owned permissions.
 
 ## Phase 4: 2026-10-25 to 2026-10-27
 
@@ -47,4 +47,4 @@ Goal: prepare report, screenshots, dependency lock, source code, and data packag
 Acceptance:
 - Reproducible delivery package and demo rehearsal complete.
 
-Status: next task is minimal frontend development. Do not broaden backend prediction tuning unless a new explicit change request reopens forecasting.
+Status: first minimal frontend development is complete and browser-validated for the core demo loop. Next work should focus on report/screenshots/dependency/package preparation, not prediction tuning, unless a new explicit change request reopens forecasting.

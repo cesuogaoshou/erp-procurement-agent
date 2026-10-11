@@ -100,15 +100,47 @@ Request:
 {"expected_order_version": 2, "idempotency_key": "reject-001", "reason": "price too high"}
 ```
 
+### `POST /agent/runs`
+
+Buyer-only endpoint that runs the procurement Agent through the real LangGraph wrapper by default. It uses the configured OpenAI-compatible provider in normal runtime, or an injected provider in tests. Approval and rejection tools remain unavailable to the model.
+
+Request:
+
+```json
+{"prompt": "为 MAT-001 创建采购草稿，采购数量120，交期20天，预算5000。", "use_langgraph": true}
+```
+
+Returns Agent run status, tool calls, run id, optional purchase order id, and whether real Function Calling / LangGraph execution was used.
+
+### `GET /agent/runs`
+
+Lists recent persisted Agent runs for the execution-record page.
+
+### `GET /agent/runs/{id}`
+
+Returns one persisted Agent run summary.
+
+### `GET /agent/runs/{id}/traces`
+
+Returns ordered tool traces for one run. `arguments` and `output` are parsed JSON. Forecast traces include model/config/fallback/evidence fields.
+
+### `GET /purchase-orders`
+
+Lists recent purchase orders with supplier name, status, version, formal order number, items, and persisted evidence JSON.
+
+### `GET /demand-history/{material_id}`
+
+Authenticated read-only endpoint for frontend analysis charts.
+
+Query parameter:
+
+```text
+days=120
+```
+
 ## Planned
 
 - `GET /suppliers`
-- `POST /agent/runs`
-- `GET /agent/runs/{id}`
-- `GET /traces`
-- `GET /purchase-orders`
-
-Planned endpoints are not complete until tests and routes exist.
 
 ## Agent Tools
 
