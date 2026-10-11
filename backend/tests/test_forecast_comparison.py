@@ -1,7 +1,12 @@
 from backend.app.db.session import create_sqlite_engine, session_scope
 from backend.app.services.forecasting import get_demand_forecast
 from backend.app.services.seed import seed_demo_data
-from backend.evaluation.run_forecast_comparison import run_forecast_comparison
+from backend.evaluation.run_forecast_comparison import (
+    ProphetForecastConfig,
+    _build_windows,
+    _evaluate_prophet,
+    run_forecast_comparison,
+)
 
 
 def test_forecast_comparison_reports_baseline_and_prophet_sections():
@@ -17,8 +22,23 @@ def test_forecast_comparison_reports_baseline_and_prophet_sections():
     assert "shortage_metrics" in result["models"]["moving_average_30d"]
     assert "zero_shortage_coverage" in result["models"]["moving_average_30d"]
     assert "runtime_ms" in result["models"]["moving_average_30d"]
-    assert result["models"]["prophet"]["status"] in {"ok", "failed"}
+    assert result["models"]["prophet"]["status"] in {"ok", "partial", "failed"}
     assert "failures" in result["models"]["prophet"]
+
+
+def test_prophet_reports_insufficient_history_without_fitting_short_windows():
+    engine = create_sqlite_engine("sqlite+pysqlite:///:memory:")
+    with session_scope(engine) as session:
+        seed_demo_data(session)
+        windows = _build_windows(session, horizon_days=30)[:2]
+        result = _evaluate_prophet(
+            windows,
+            config=ProphetForecastConfig(min_train_days=999),
+        )
+
+    assert result["status"] == "failed"
+    assert result["failures"]
+    assert all("insufficient_history" in item["error"] for item in result["failures"])
 
 
 def test_get_demand_forecast_returns_inventory_shortage_and_evidence_ref():

@@ -9,7 +9,7 @@ Acceptance:
 - Simulated data generator is reproducible and documents distributions.
 - Baseline evaluation runs and reports raw metrics and risks.
 
-Status: complete for deterministic backend and MySQL integration. Done: deterministic backend flow, CSV export, expanded baseline backtest, real Prophet-vs-moving-average comparison on identical windows, frozen and challenge supplier label sets, purchase draft persistence, MOQ/package-multiple order rounding, server-signed demo token auth, approval status transitions, role checks, approval idempotency, audit logs, transaction rollback tests, SQLite Alembic migration verification, and MySQL migration/data/concurrency/rollback/persistence verification with the current `DATABASE_URL`.
+Status: complete for deterministic backend and MySQL integration. Done: deterministic backend flow, CSV export, expanded baseline backtest, real Prophet-vs-moving-average comparison on identical windows, Prophet diagnostic reporting with insufficient-history failures, frozen and challenge supplier label sets, purchase draft persistence, MOQ/package-multiple order rounding, server-signed demo token auth, approval status transitions, role checks, approval idempotency, audit logs, transaction rollback tests, SQLite Alembic migration verification, and MySQL migration/data/concurrency/rollback/persistence verification with the current `DATABASE_URL`.
 
 ## Phase 2: 2026-10-15 to 2026-10-20
 
@@ -38,7 +38,7 @@ Goal: freeze evaluation datasets and run prediction, recommendation, and Agent e
 Acceptance:
 - Raw outputs, sample counts, charts, and failure cases are preserved.
 
-Status: not started.
+Status: in progress for forecasting diagnostics. Current evidence preserves the original Prophet comparison baseline and hashes under `reports/generated/forecast_diagnostics/baseline_20261011/`, writes per-window diagnostics to `reports/generated/forecast_diagnostics/forecast_window_diagnostics.csv`, and writes diagnostic JSON plus representative curves under `reports/generated/forecast_diagnostics/`. The declared holdout/test windows have already been inspected for diagnostics, so they cannot be described as fully untouched independent final test evidence.
 
 ## Phase 5: 2026-10-28 to 2026-10-29
 

@@ -1,5 +1,6 @@
 import json
 import time
+from dataclasses import asdict, dataclass
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
@@ -13,6 +14,18 @@ from backend.app.models import DemandHistory, Inventory, Material
 from backend.app.services.seed import seed_demo_data
 from backend.evaluation.metrics import evaluate_regression
 from backend.evaluation.run_baseline import _metrics_to_dict
+
+
+@dataclass(frozen=True)
+class ProphetForecastConfig:
+    name: str = "prophet_weekly_yearly_min365"
+    min_train_days: int = 365
+    train_window_days: int | None = None
+    daily_seasonality: bool = False
+    weekly_seasonality: bool = True
+    yearly_seasonality: bool = True
+    changepoint_prior_scale: float = 0.05
+    seasonality_prior_scale: float = 10.0
 
 
 def main() -> None:
@@ -39,7 +52,7 @@ def run_forecast_comparison(session, horizon_days: int = 30) -> dict:
         },
         "notes": [
             "Both models use identical material/cutoff windows.",
-            "Prophet status may be failed when the optional prophet package is unavailable.",
+            "Prophet requires enough training history and reports insufficient windows as failures.",
             "No target threshold is assumed; results are raw comparison outputs.",
         ],
     }
@@ -132,13 +145,15 @@ def _moving_average_predict(window: dict) -> Decimal:
     return sum(Decimal(row.quantity) for row in train)
 
 
-def _evaluate_prophet(windows: list[dict]) -> dict:
+def _evaluate_prophet(windows: list[dict], config: ProphetForecastConfig | None = None) -> dict:
+    config = config or ProphetForecastConfig()
     try:
         from prophet import Prophet  # type: ignore
     except Exception as exc:
         return {
             "status": "failed",
             "model_name": "prophet",
+            "config": asdict(config),
             "runtime_ms": 0,
             "failures": [{"error": f"prophet_unavailable:{exc.__class__.__name__}"}],
         }
@@ -146,17 +161,29 @@ def _evaluate_prophet(windows: list[dict]) -> dict:
     def prophet_predict(window: dict) -> Decimal:
         import pandas as pd  # type: ignore
 
-        train = window["train"]
+        if len(window["train"]) < config.min_train_days:
+            raise ValueError(
+                f"insufficient_history: required {config.min_train_days}, got {len(window['train'])}"
+            )
+        train = window["train"][-config.train_window_days :] if config.train_window_days else window["train"]
         frame = pd.DataFrame(
             [{"ds": row.demand_date.isoformat(), "y": float(row.quantity)} for row in train]
         )
-        model = Prophet(daily_seasonality=False, weekly_seasonality=True, yearly_seasonality=True)
+        model = Prophet(
+            daily_seasonality=config.daily_seasonality,
+            weekly_seasonality=config.weekly_seasonality,
+            yearly_seasonality=config.yearly_seasonality,
+            changepoint_prior_scale=config.changepoint_prior_scale,
+            seasonality_prior_scale=config.seasonality_prior_scale,
+        )
         model.fit(frame)
         future = model.make_future_dataframe(periods=len(window["holdout"]), freq="D", include_history=False)
         forecast = model.predict(future)
         return Decimal(str(forecast["yhat"].clip(lower=0).sum())).quantize(Decimal("0.01"))
 
-    return _evaluate_model(windows, "prophet", prophet_predict)
+    result = _evaluate_model(windows, "prophet", prophet_predict)
+    result["config"] = asdict(config)
+    return result
 
 
 def _zero_shortage_coverage(actual: list[Decimal], predicted: list[Decimal]) -> dict:
