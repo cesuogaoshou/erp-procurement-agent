@@ -4,7 +4,7 @@
 
 Initialized on 2026-10-10 from the original ERP intelligent procurement Agent outline in the repository root.
 
-The project has completed deterministic backend acceptance work through approval loop basics and advanced offline Agent orchestration: local Git baseline, backend skeleton, SQLAlchemy models, Alembic migrations, reproducible simulated CSV data, inventory and shortage calculation, supplier recommendation, purchase draft persistence, server-signed demo token authentication, role-gated approval transitions, audit logs, API routes, mock-provider Agent loop, persisted run/tool traces, baseline and forecast-comparison backtesting, and supplier Top-3 evaluation.
+The project has completed deterministic backend acceptance work through approval loop basics, MySQL integration verification, and advanced offline Agent orchestration: local Git baseline, backend skeleton, SQLAlchemy models, Alembic migrations, reproducible simulated CSV data, inventory and shortage calculation, supplier recommendation, purchase draft persistence, server-signed demo token authentication, role-gated approval transitions, audit logs, API routes, mock-provider Agent loop, OpenAI-compatible tool schema dispatch, persisted run/tool traces, baseline and forecast-comparison backtesting, and supplier Top-3 evaluation.
 
 ## Read Order
 
@@ -28,6 +28,7 @@ The project has completed deterministic backend acceptance work through approval
 - `backend/app/services/agent_provider.py`: provider protocol and mock provider for offline tests.
 - `backend/app/services/agent_tools.py`: model tool schemas and deterministic tool execution.
 - `backend/app/services/agent_loop.py`: bounded Agent tool loop.
+- `backend/tests/test_mysql_integration.py`: opt-in MySQL integration test for approval concurrency, rollback, and Agent persistence.
 - `backend/evaluation/run_forecast_comparison.py`: moving-average vs optional Prophet backtest over identical windows.
 - `backend/app/algorithms/`: forecasting, shortage, recommendation, and metrics.
 - `backend/app/db/`: engine, sessions, initialization, and seed loading.
@@ -58,7 +59,12 @@ The original development outline remains in the repository root and is not copie
 - `python -m alembic upgrade head` with temporary SQLite `DATABASE_URL`: applied Agent run/trace migration through revision `20261010_0004`.
 - `python -m backend.evaluation.run_forecast_comparison`: completed moving-average comparison and reported Prophet as failed when the optional package was unavailable.
 - `python -m backend.app.db.init_demo_data --database-url sqlite+pysqlite:///./tmp_alembic_approval_check.sqlite`: inserted 10 materials, 10 inventory rows, 5400 demand rows, 10 suppliers, 100 supplier-material rows, 100 performance rows, and 0 purchase orders after migrations.
+- `python -m alembic current` with MySQL `DATABASE_URL`: reported `20261010_0004 (head)`.
+- MySQL data count check with current `DATABASE_URL`: materials 10, inventory 10, demand_history 5400, suppliers 10, supplier_materials 100, supplier_performance 100, purchase_orders 0 before integration test writes.
+- `$env:RUN_MYSQL_INTEGRATION='1'; $env:MYSQL_INTEGRATION_REPORT_PATH='reports/generated/mysql_integration.json'; python -m pytest backend/tests/test_mysql_integration.py -q`: passed 1 MySQL integration test covering approval row-lock concurrency, transaction rollback, and Agent run/tool trace/pending draft queryability after reconnect.
+- `python -m pytest backend/tests -q`: passed 45 tests and skipped the opt-in MySQL integration test by default.
+- Real LLM Function Calling smoke attempt wrote `reports/generated/real_llm_function_calling.json`; it reached the real provider path but ended as `provider_error` / `provider_http_error:HTTPStatusError` because no compatible `OPENAI_BASE_URL` was configured in this process. This is not accepted as real Function Calling completion.
 
 ## Current External Blocker
 
-MySQL service `MySQL84` was previously found running, but both no-password `root` and sample `erp_user/change-me` TCP connections were rejected. Recent sessions found no `.env` file and no `DATABASE_URL`/MySQL environment variable. Real MySQL migration, initialization, restart persistence on MySQL, and concurrent approval validation remain blocked pending explicit credentials or a test database user. SQLite tests do not substitute for the MySQL concurrency check. Real external LLM Function Calling also remains blocked pending `OPENAI_API_KEY` and model configuration; only adapter error handling and mock-provider Agent tests are complete. Real Prophet and real LangGraph execution are not accepted because the optional packages are unavailable in this environment.
+MySQL integration is now verified with the current `DATABASE_URL`, including migration head, deterministic seed counts, approval concurrency, rollback, and Agent persistence after reconnect. SQLite tests still do not substitute for this check; rerun the opt-in MySQL test when schema or transaction behavior changes. Real external LLM Function Calling remains unaccepted: credentials/model variables were present, but no compatible `OPENAI_BASE_URL` was configured for the selected OpenAI-compatible model, and the real call returned an HTTP status error. Real Prophet and real LangGraph execution are not accepted because the optional packages are unavailable in this environment.

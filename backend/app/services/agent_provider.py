@@ -1,8 +1,11 @@
 import os
+import json
 from dataclasses import dataclass
 from typing import Any, Protocol
 
 import httpx
+
+from backend.app.services.agent_tools import build_agent_tools
 
 
 @dataclass(frozen=True)
@@ -61,9 +64,10 @@ class OpenAIFunctionCallingProvider:
                     "messages": [
                         {"role": "system", "content": "Use procurement tools only when needed."},
                         {"role": "user", "content": prompt},
-                        {"role": "tool", "content": str(observations[-5:])} if observations else {"role": "system", "content": "No observations yet."},
+                        _observation_message(observations),
                     ],
                     "tool_choice": "auto",
+                    "tools": _openai_tool_schemas(),
                 },
                 timeout=self.timeout_seconds,
             )
@@ -78,8 +82,30 @@ class OpenAIFunctionCallingProvider:
             if not tool_calls:
                 return None
             function = tool_calls[0]["function"]
-            import json
-
             return ToolCall(name=function["name"], arguments=json.loads(function.get("arguments") or "{}"))
         except Exception as exc:
             raise ProviderError("provider_malformed_response") from exc
+
+
+def _observation_message(observations: list[dict[str, Any]]) -> dict[str, str]:
+    if not observations:
+        return {"role": "system", "content": "No observations yet."}
+    return {
+        "role": "system",
+        "content": "Recent tool observations: "
+        + json.dumps(observations[-5:], ensure_ascii=False, default=str),
+    }
+
+
+def _openai_tool_schemas() -> list[dict[str, Any]]:
+    return [
+        {
+            "type": "function",
+            "function": {
+                "name": tool.name,
+                "description": tool.description,
+                "parameters": tool.parameters,
+            },
+        }
+        for tool in build_agent_tools()
+    ]
