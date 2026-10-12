@@ -4,7 +4,10 @@ import os
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from backend.app.config import load_project_env
 from backend.app.models import Base
+
+load_project_env()
 
 config = context.config
 

@@ -9,8 +9,9 @@ from sqlalchemy import Engine
 from sqlalchemy import desc, select
 from sqlalchemy.orm import Session
 
+from backend.app.config import load_project_env, openai_base_url_from_env
 from backend.app.models import AgentRun, DemandHistory, Material, PurchaseOrder, ToolTrace
-from backend.app.db.session import create_session_factory, create_sqlite_engine
+from backend.app.db.session import create_app_engine, create_session_factory
 from backend.app.schemas.procurement import (
     AgentRunIn,
     AgentRunOut,
@@ -50,6 +51,9 @@ from backend.app.services.langgraph_runner import run_langgraph_procurement
 from backend.app.services.recommendations import recommend_for_material
 
 
+load_project_env()
+
+
 def create_app(
     engine: Engine | None = None,
     *,
@@ -58,7 +62,7 @@ def create_app(
     agent_provider_factory: Callable[[], LLMProvider] | None = None,
 ) -> FastAPI:
     app = FastAPI(title="ERP Intelligent Procurement Agent")
-    app.state.engine = engine or create_sqlite_engine()
+    app.state.engine = engine or create_app_engine(os.getenv("DATABASE_URL"))
     app.state.session_factory = create_session_factory(app.state.engine)
     app.state.auth_secret = auth_secret or auth_secret_from_env()
     app.state.allow_header_auth = allow_header_auth
@@ -100,9 +104,13 @@ def create_app(
         model = model_from_env()
         if not model:
             raise HTTPException(status_code=503, detail="llm_model_not_configured")
+        try:
+            base_url = openai_base_url_from_env()
+        except ValueError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
         return OpenAIFunctionCallingProvider(
             model=model,
-            base_url=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+            base_url=base_url,
         )
 
     @app.get("/health")

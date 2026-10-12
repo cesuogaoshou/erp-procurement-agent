@@ -8,6 +8,14 @@ from sqlalchemy.pool import StaticPool
 from backend.app.models.base import Base
 
 
+def create_app_engine(url: str | None = None) -> Engine:
+    if not url:
+        return create_sqlite_engine()
+    if url.startswith("sqlite"):
+        return create_sqlite_engine(url)
+    return create_engine(url, pool_pre_ping=True)
+
+
 def create_sqlite_engine(url: str = "sqlite+pysqlite:///./erp_dev.sqlite") -> Engine:
     connect_args = {"check_same_thread": False}
     kwargs = {"connect_args": connect_args}

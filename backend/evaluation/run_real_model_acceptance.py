@@ -7,6 +7,7 @@ from typing import Any
 
 from sqlalchemy import create_engine, select
 
+from backend.app.config import load_project_env, openai_base_url_from_env
 from backend.app.db.session import create_session_factory
 from backend.app.models import ApprovalRecord, PurchaseOrder
 from backend.app.services.agent_loop import AgentLoop
@@ -23,14 +24,20 @@ def main() -> None:
 
 
 def run_acceptance() -> dict[str, Any]:
+    load_project_env()
     database_url = os.getenv("DATABASE_URL")
     model = model_from_env()
-    base_url = os.getenv("OPENAI_BASE_URL") or "https://api.deepseek.com"
+    try:
+        base_url = openai_base_url_from_env()
+        base_url_configured = True
+    except ValueError:
+        base_url = None
+        base_url_configured = False
     report: dict[str, Any] = {
         "generated_at": datetime.now(UTC).date().isoformat(),
         "database_configured": bool(database_url),
         "api_key_configured": bool(os.getenv("OPENAI_API_KEY")),
-        "base_url_configured": bool(os.getenv("OPENAI_BASE_URL")),
+        "base_url_configured": base_url_configured,
         "model_env_precedence": ["OPENAI_MODEL_USER", "OPENAI_MODEL"],
         "model_configured": bool(model),
         "model_used": model,
@@ -40,6 +47,8 @@ def run_acceptance() -> dict[str, Any]:
         return report | {"status": "failed", "error": "DATABASE_URL_missing"}
     if not model:
         return report | {"status": "failed", "error": "OPENAI_MODEL_missing"}
+    if base_url is None:
+        return report | {"status": "failed", "error": "OPENAI_BASE_URL_missing"}
 
     engine = create_engine(database_url, pool_pre_ping=True)
     try:

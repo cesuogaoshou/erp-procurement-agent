@@ -47,4 +47,4 @@ Goal: prepare report, screenshots, dependency lock, source code, and data packag
 Acceptance:
 - Reproducible delivery package and demo rehearsal complete.
 
-Status: first minimal frontend development is complete and browser-validated for the core demo loop. Next work should focus on report/screenshots/dependency/package preparation, not prediction tuning, unless a new explicit change request reopens forecasting.
+Status: delivery preparation is in progress and now has repeatable demo steps, package checklist, report outline/evidence index, npm audit remediation, and screenshot evidence under `reports/generated/screenshots/`. The real frontend loop was revalidated locally through Agent draft creation, buyer submit, approver approval, and formal order `PO-000002`. Next work should focus on formal Word report writing and final packaging, not prediction tuning, unless a new explicit change request reopens forecasting.

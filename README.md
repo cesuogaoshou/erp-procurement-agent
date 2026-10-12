@@ -49,3 +49,15 @@ python -m pytest backend/tests/test_mysql_integration.py -q
 ```
 
 Model selection uses `OPENAI_MODEL_USER` first, then falls back to `OPENAI_MODEL`. Do not commit real API keys.
+
+## Demo And Delivery
+
+Use `docs/DEMO_GUIDE.md` for repeatable initialization, startup, login, procurement, approval, and query steps.
+
+Demo data reset must target an explicit demo database only. The reset command rejects database names that do not contain `demo`:
+
+```powershell
+python -m backend.app.db.init_demo_data --database-url "sqlite+pysqlite:///./erp_demo.sqlite"
+```
+
+Use `docs/DELIVERY_CHECKLIST.md` for package contents and `docs/REPORT_EVIDENCE_INDEX.md` for the Word report outline, evidence map, and reproduction commands. Generated evidence under `reports/generated/` is ignored by Git but should be copied into the course delivery package after verification.
