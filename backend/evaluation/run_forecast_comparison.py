@@ -67,6 +67,17 @@ def run_forecast_comparison(session, horizon_days: int = 30) -> dict:
         "horizon_days": horizon_days,
         "service_strategy_config": asdict(frozen_forecast_strategy_config()),
         "windows": {"sample_count": len(windows), "items": [window["metadata"] for window in windows]},
+        "evaluation_scope": {
+            "status": "exploratory_fixed_inventory",
+            "rolling_window_training_rule": "Each window trains only on rows before that window's holdout_start.",
+            "tuning_caveat": (
+                "Diagnostics and configuration comparisons have already inspected these rolling windows; "
+                "training that enters the old declared test date range is not by itself future leakage for "
+                "later cutoffs, but the result should not be described as an untouched independent final test."
+            ),
+            "inventory_scope": "Shortage metrics use the static 2026-10-10 inventory snapshot for every historical window.",
+            "claim_boundary": "Report pure Prophet coverage and hybrid full-window coverage separately.",
+        },
         "models": {
             "moving_average_30d": moving_average,
             "prophet": prophet,
@@ -76,9 +87,11 @@ def run_forecast_comparison(session, horizon_days: int = 30) -> dict:
         },
         "notes": [
             "Both models use identical material/cutoff windows.",
+            "For each rolling window, training rows end before that window's holdout rows begin.",
+            "Using older declared test-period rows as training for later rolling cutoffs is chronological backtesting, not automatic future-information leakage.",
             "Prophet long-history and dynamic-seasonality results are reported separately from the hybrid fallback strategy.",
             "The 365-day yearly-seasonality threshold is an engineering strategy for this simulated dataset, not a universal Prophet requirement.",
-            "No target threshold is assumed; results are raw comparison outputs.",
+            "The current comparison is exploratory because these windows were used for diagnostics; it is not an untouched final-test claim.",
         ],
     }
 

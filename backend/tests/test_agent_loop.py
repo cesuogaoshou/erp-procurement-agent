@@ -58,7 +58,7 @@ def test_agent_loop_runs_read_only_tools_before_creating_purchase_draft():
                     "supplier_id": 1,
                     "items": [{"material_id": 1, "quantity": "120"}],
                     "idempotency_key": "agent-draft-001",
-                    "evidence_refs": ["use_latest_forecast", "recommendation:agent-loop"],
+                    "evidence_refs": ["use_latest_forecast", "use_latest_recommendation"],
                 },
             ),
         ]

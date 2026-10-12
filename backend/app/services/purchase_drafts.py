@@ -6,6 +6,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from backend.app.models import PurchaseOrder, PurchaseOrderItem, SupplierMaterial
+from backend.app.services.forecasting import get_demand_forecast
+from backend.app.services.recommendations import recommend_for_material
 
 
 @dataclass(frozen=True)
@@ -53,6 +55,12 @@ def create_purchase_draft(session: Session, request: PurchaseDraftInput) -> Purc
             moq=Decimal(relationship.moq),
             package_multiple=Decimal(relationship.package_multiple),
         )
+        _validate_item_evidence(
+            session=session,
+            request=request,
+            item=item,
+            order_quantity=order_quantity,
+        )
         if order_quantity > relationship.capacity:
             raise ValueError("capacity_below_quantity")
 
@@ -87,6 +95,88 @@ def _round_order_quantity(*, requested: Decimal, moq: Decimal, package_multiple:
     base = max(requested, moq)
     units = (base / package_multiple).to_integral_value(rounding=ROUND_CEILING)
     return units * package_multiple
+
+
+def _validate_item_evidence(
+    *,
+    session: Session,
+    request: PurchaseDraftInput,
+    item: DraftItemInput,
+    order_quantity: Decimal,
+) -> None:
+    forecast = _forecast_evidence_for_item(session, request, item.material_id)
+    if item.quantity > Decimal(str(forecast["shortage_quantity"])):
+        raise ValueError("quantity_exceeds_forecast_shortage")
+    recommendation = _recommendation_evidence_for_item(request, item.material_id)
+    if recommendation is None:
+        raise ValueError("recommendation_evidence_required")
+    rec_material_id, rec_supplier_id, rec_quantity, required_in_days, budget = recommendation
+    if rec_material_id != item.material_id or rec_supplier_id != request.supplier_id:
+        raise ValueError("recommendation_evidence_invalid")
+    if rec_quantity < order_quantity:
+        raise ValueError("recommendation_evidence_invalid")
+    result = recommend_for_material(
+        session=session,
+        material_id=item.material_id,
+        quantity=rec_quantity,
+        required_in_days=required_in_days,
+        budget=budget,
+    )
+    if not any(item.supplier_id == request.supplier_id for item in result.recommendations):
+        raise ValueError("recommendation_evidence_invalid")
+
+
+def _forecast_evidence_for_item(session: Session, request: PurchaseDraftInput, material_id: int) -> dict:
+    payloads = request.evidence_payloads or []
+    for payload in payloads:
+        if int(payload.get("material_id", -1)) == material_id:
+            ref = str(payload.get("evidence_ref", ""))
+            current = _current_forecast_for_ref(session, ref)
+            if current["evidence_ref"] != ref:
+                raise ValueError("forecast_evidence_invalid")
+            return current
+    refs = [ref for ref in request.evidence_refs if ref.startswith(f"forecast:{material_id}:")]
+    if not refs:
+        raise ValueError("forecast_evidence_required")
+    current = _current_forecast_for_ref(session, refs[0])
+    if current["evidence_ref"] != refs[0]:
+        raise ValueError("forecast_evidence_invalid")
+    return current
+
+
+def _current_forecast_for_ref(session: Session, ref: str) -> dict:
+    parts = ref.split(":")
+    if len(parts) < 3 or parts[0] != "forecast":
+        raise ValueError("forecast_evidence_invalid")
+    try:
+        material_id = int(parts[1])
+        horizon_days = int(parts[2])
+    except ValueError as exc:
+        raise ValueError("forecast_evidence_invalid") from exc
+    return get_demand_forecast(session, material_id=material_id, horizon_days=horizon_days)
+
+
+def _recommendation_evidence_for_item(
+    request: PurchaseDraftInput,
+    material_id: int,
+) -> tuple[int, int, Decimal, int, Decimal | None] | None:
+    prefix = f"recommendation:{material_id}:"
+    for ref in request.evidence_refs:
+        if not ref.startswith(prefix):
+            continue
+        parts = ref.split(":")
+        if len(parts) not in {5, 6}:
+            raise ValueError("recommendation_evidence_invalid")
+        try:
+            rec_material_id = int(parts[1])
+            rec_supplier_id = int(parts[2])
+            rec_quantity = Decimal(parts[3])
+            required_in_days = int(parts[4])
+            budget = None if len(parts) == 5 or parts[5] == "none" else Decimal(parts[5])
+        except (ValueError, ArithmeticError) as exc:
+            raise ValueError("recommendation_evidence_invalid") from exc
+        return rec_material_id, rec_supplier_id, rec_quantity, required_in_days, budget
+    return None
 
 
 def _evidence_json(request: PurchaseDraftInput) -> str:

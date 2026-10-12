@@ -24,7 +24,7 @@ def test_frontend_contract_runs_agent_traces_and_approval_loop():
                     "supplier_id": 1,
                     "items": [{"material_id": 1, "quantity": "120"}],
                     "idempotency_key": "frontend-agent-draft",
-                    "evidence_refs": ["use_latest_forecast"],
+                    "evidence_refs": ["use_latest_forecast", "use_latest_recommendation"],
                 },
             ),
         ]
@@ -90,3 +90,76 @@ def test_frontend_contract_exposes_recent_demand_history_for_analysis_chart():
     points = response.json()
     assert len(points) == 14
     assert set(points[0]) == {"date", "quantity"}
+
+
+def test_read_apis_scope_runs_traces_and_orders_by_buyer_owner_and_approver_need():
+    engine = create_sqlite_engine("sqlite+pysqlite:///:memory:")
+    with session_scope(engine) as session:
+        seed_demo_data(session)
+
+    provider = MockLLMProvider(
+        [
+            ToolCall("get_demand_forecast", {"material_id": 1, "horizon_days": 30}),
+            ToolCall(
+                "recommend_suppliers",
+                {"material_id": 1, "quantity": "120", "required_in_days": 20, "budget": "5000.00"},
+            ),
+            ToolCall(
+                "create_purchase_draft",
+                {
+                    "supplier_id": 1,
+                    "items": [{"material_id": 1, "quantity": "120"}],
+                    "idempotency_key": "buyer-owned-agent-draft",
+                    "evidence_refs": ["use_latest_forecast", "use_latest_recommendation"],
+                },
+            ),
+        ]
+    )
+    client = TestClient(
+        create_app(
+            engine,
+            auth_secret="test-secret",
+            allow_header_auth=True,
+            agent_provider_factory=lambda: provider,
+        )
+    )
+
+    created = client.post(
+        "/agent/runs",
+        headers={"X-User-Id": "buyer-1", "X-User-Role": "buyer"},
+        json={"prompt": "buyer 1 creates a draft"},
+    )
+    assert created.status_code == 200
+    run_id = created.json()["run_id"]
+    order_id = created.json()["purchase_order_id"]
+
+    buyer_2_runs = client.get("/agent/runs", headers={"X-User-Id": "buyer-2", "X-User-Role": "buyer"})
+    buyer_2_orders = client.get("/purchase-orders", headers={"X-User-Id": "buyer-2", "X-User-Role": "buyer"})
+    buyer_2_run_detail = client.get(f"/agent/runs/{run_id}", headers={"X-User-Id": "buyer-2", "X-User-Role": "buyer"})
+    buyer_2_traces = client.get(
+        f"/agent/runs/{run_id}/traces",
+        headers={"X-User-Id": "buyer-2", "X-User-Role": "buyer"},
+    )
+
+    assert buyer_2_runs.status_code == 200
+    assert buyer_2_runs.json() == []
+    assert buyer_2_orders.status_code == 200
+    assert buyer_2_orders.json() == []
+    assert buyer_2_run_detail.status_code == 404
+    assert buyer_2_traces.status_code == 404
+
+    pending = client.post(
+        f"/purchase-orders/{order_id}/submit",
+        headers={"X-User-Id": "buyer-1", "X-User-Role": "buyer"},
+    )
+    assert pending.status_code == 200
+
+    approver_orders = client.get("/purchase-orders", headers={"X-User-Id": "approver-1", "X-User-Role": "approver"})
+    approver_traces = client.get(
+        f"/agent/runs/{run_id}/traces",
+        headers={"X-User-Id": "approver-1", "X-User-Role": "approver"},
+    )
+
+    assert [order["id"] for order in approver_orders.json()] == [order_id]
+    assert approver_traces.status_code == 200
+    assert approver_traces.json()[0]["tool_name"] == "get_demand_forecast"

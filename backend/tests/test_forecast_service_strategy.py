@@ -72,12 +72,16 @@ def test_agent_forecast_evidence_is_persisted_to_trace_and_purchase_draft_with_r
             [
                 ToolCall("get_demand_forecast", {"material_id": 9, "horizon_days": 30}),
                 ToolCall(
+                    "recommend_suppliers",
+                    {"material_id": 9, "quantity": "130", "required_in_days": 20, "budget": "5000.00"},
+                ),
+                ToolCall(
                     "create_purchase_draft",
                     {
                         "supplier_id": 1,
                         "items": [{"material_id": 9, "quantity": "121"}],
                         "idempotency_key": "forecast-evidence-package-chain",
-                        "evidence_refs": ["use_latest_forecast"],
+                        "evidence_refs": ["use_latest_forecast", "use_latest_recommendation"],
                     },
                 ),
             ]
@@ -102,7 +106,8 @@ def test_agent_forecast_evidence_is_persisted_to_trace_and_purchase_draft_with_r
     assert result.status == "draft_created"
     assert forecast_output["forecast_evidence"]["config_version"] == "forecast_strategy_v1_20261011"
     assert forecast_output["forecast_evidence"]["model_name"] == "hybrid_dynamic_prophet_or_moving_average_30d"
-    assert persisted_evidence["refs"] == [forecast_output["evidence_ref"]]
+    assert persisted_evidence["refs"][0] == forecast_output["evidence_ref"]
+    assert persisted_evidence["refs"][1].startswith("recommendation:9:1:130:20:")
     assert persisted_evidence["forecast_evidence"][0]["evidence_ref"] == forecast_output["evidence_ref"]
     assert persisted_evidence["forecast_evidence"][0]["model_name"] == "hybrid_dynamic_prophet_or_moving_average_30d"
     assert order_item.quantity == Decimal("130.00")

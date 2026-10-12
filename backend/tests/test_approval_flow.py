@@ -16,17 +16,28 @@ from backend.app.services.approvals import (
     submit_for_approval,
 )
 from backend.app.services.purchase_drafts import DraftItemInput, PurchaseDraftInput, create_purchase_draft
+from backend.app.services.forecasting import get_demand_forecast
+from backend.app.services.recommendations import recommend_for_material
 from backend.app.services.seed import seed_demo_data
 
 
 def _draft(session, key: str = "approval-draft-001") -> PurchaseOrder:
+    forecast = get_demand_forecast(session, material_id=1, horizon_days=30)
+    recommendations = recommend_for_material(
+        session,
+        material_id=1,
+        quantity=Decimal("120"),
+        required_in_days=20,
+        budget=Decimal("5000.00"),
+    )
+    assert any(item.supplier_id == 1 for item in recommendations.recommendations)
     return create_purchase_draft(
         session,
         PurchaseDraftInput(
             supplier_id=1,
             items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
             idempotency_key=key,
-            evidence_refs=["recommendation:approval-test"],
+            evidence_refs=[forecast["evidence_ref"], "recommendation:1:1:120:20:5000.00"],
         ),
     )
 

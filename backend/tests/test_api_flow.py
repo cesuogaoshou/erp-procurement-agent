@@ -33,7 +33,7 @@ def test_api_exposes_inventory_forecast_and_recommendations():
             "supplier_id": 1,
             "items": [{"material_id": material_id, "quantity": "120"}],
             "idempotency_key": "api-draft-key-001",
-            "evidence_refs": ["recommendation:api-flow"],
+            "evidence_refs": [forecast.json()["evidence_ref"], recommendations.json()["evidence_ref"]],
         },
     )
 
@@ -55,6 +55,11 @@ def test_api_approval_uses_auth_headers_not_body_actor_claims():
 
     app = create_app(engine, auth_secret="test-secret", allow_header_auth=True)
     client = TestClient(app)
+    forecast = client.post("/forecasts", json={"material_id": 1, "horizon_days": 30})
+    recommendations = client.post(
+        "/recommendations",
+        json={"material_id": 1, "quantity": "120", "required_in_days": 20, "budget": "5000.00"},
+    )
 
     draft = client.post(
         "/purchase-drafts",
@@ -62,7 +67,7 @@ def test_api_approval_uses_auth_headers_not_body_actor_claims():
             "supplier_id": 1,
             "items": [{"material_id": 1, "quantity": "120"}],
             "idempotency_key": "api-approval-draft-001",
-            "evidence_refs": ["recommendation:api-approval"],
+            "evidence_refs": [forecast.json()["evidence_ref"], recommendations.json()["evidence_ref"]],
         },
     ).json()
     pending = client.post(

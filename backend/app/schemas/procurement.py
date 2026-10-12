@@ -71,6 +71,7 @@ class ExcludedSupplierOut(BaseModel):
 
 
 class RecommendationOut(BaseModel):
+    evidence_ref: str | None = None
     recommendations: list[RecommendationItemOut]
     excluded: list[ExcludedSupplierOut]
 

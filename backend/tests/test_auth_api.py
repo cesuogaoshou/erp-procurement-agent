@@ -16,13 +16,18 @@ def _client() -> TestClient:
 
 
 def _draft(client: TestClient) -> dict:
+    forecast = client.post("/forecasts", json={"material_id": 1, "horizon_days": 30})
+    recommendations = client.post(
+        "/recommendations",
+        json={"material_id": 1, "quantity": "120", "required_in_days": 20, "budget": "5000.00"},
+    )
     return client.post(
         "/purchase-drafts",
         json={
             "supplier_id": 1,
             "items": [{"material_id": 1, "quantity": "120"}],
             "idempotency_key": "auth-api-draft-001",
-            "evidence_refs": ["recommendation:auth-api"],
+            "evidence_refs": [forecast.json()["evidence_ref"], recommendations.json()["evidence_ref"]],
         },
     ).json()
 

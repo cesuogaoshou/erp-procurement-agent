@@ -10,7 +10,7 @@ from sqlalchemy import desc, select
 from sqlalchemy.orm import Session
 
 from backend.app.config import load_project_env, openai_base_url_from_env
-from backend.app.models import AgentRun, DemandHistory, Material, PurchaseOrder, ToolTrace
+from backend.app.models import AgentRun, AuditLog, DemandHistory, Material, PurchaseOrder, ToolTrace
 from backend.app.db.session import create_app_engine, create_session_factory
 from backend.app.schemas.procurement import (
     AgentRunIn,
@@ -166,6 +166,13 @@ def create_app(
             budget=request.budget,
         )
         return {
+            "evidence_ref": _recommendation_ref(
+                material_id=request.material_id,
+                supplier_id=result.recommendations[0].supplier_id if result.recommendations else None,
+                quantity=request.quantity,
+                required_in_days=request.required_in_days,
+                budget=request.budget,
+            ),
             "recommendations": result.recommendations,
             "excluded": result.excluded,
         }
@@ -266,6 +273,12 @@ def create_app(
                     prompt=request.prompt,
                     thread_id=request.thread_id or f"frontend-{auth.user_id}",
                 )
+                _mark_agent_run_owner(
+                    app.state.session_factory,
+                    run_id=result.get("run_id"),
+                    purchase_order_id=result.get("purchase_order_id"),
+                    auth=auth,
+                )
                 return {
                     "run_id": result.get("run_id"),
                     "status": result.get("status", "unknown"),
@@ -276,6 +289,12 @@ def create_app(
                     "langgraph_executed": result.get("langgraph_executed", False),
                 }
             result = AgentLoop(engine=app.state.engine, provider=provider).run(request.prompt)
+            _mark_agent_run_owner(
+                app.state.session_factory,
+                run_id=result.run_id,
+                purchase_order_id=result.purchase_order_id,
+                auth=auth,
+            )
             return {
                 "run_id": result.run_id,
                 "status": result.status,
@@ -291,31 +310,35 @@ def create_app(
 
     @app.get("/agent/runs", response_model=list[AgentRunSummaryOut])
     def list_agent_runs(
-        _auth: AuthContext = Depends(get_auth_context),
+        auth: AuthContext = Depends(get_auth_context),
         session: Session = Depends(get_session),
     ):
-        runs = session.scalars(select(AgentRun).order_by(desc(AgentRun.created_at)).limit(50)).all()
+        runs = [
+            run
+            for run in session.scalars(select(AgentRun).order_by(desc(AgentRun.created_at)).limit(50)).all()
+            if _can_read_agent_run(session, run, auth)
+        ]
         return [_agent_run_summary(run) for run in runs]
 
     @app.get("/agent/runs/{run_id}", response_model=AgentRunSummaryOut)
     def get_agent_run(
         run_id: int,
-        _auth: AuthContext = Depends(get_auth_context),
+        auth: AuthContext = Depends(get_auth_context),
         session: Session = Depends(get_session),
     ):
         run = session.get(AgentRun, run_id)
-        if run is None:
+        if run is None or not _can_read_agent_run(session, run, auth):
             raise HTTPException(status_code=404, detail="agent_run_not_found")
         return _agent_run_summary(run)
 
     @app.get("/agent/runs/{run_id}/traces", response_model=list[ToolTraceOut])
     def get_agent_run_traces(
         run_id: int,
-        _auth: AuthContext = Depends(get_auth_context),
+        auth: AuthContext = Depends(get_auth_context),
         session: Session = Depends(get_session),
     ):
         run = session.get(AgentRun, run_id)
-        if run is None:
+        if run is None or not _can_read_agent_run(session, run, auth):
             raise HTTPException(status_code=404, detail="agent_run_not_found")
         traces = session.scalars(
             select(ToolTrace).where(ToolTrace.run_id == run_id).order_by(ToolTrace.step_index)
@@ -324,10 +347,14 @@ def create_app(
 
     @app.get("/purchase-orders", response_model=list[PurchaseOrderSummaryOut])
     def list_purchase_orders(
-        _auth: AuthContext = Depends(get_auth_context),
+        auth: AuthContext = Depends(get_auth_context),
         session: Session = Depends(get_session),
     ):
-        orders = session.scalars(select(PurchaseOrder).order_by(desc(PurchaseOrder.created_at)).limit(50)).all()
+        orders = [
+            order
+            for order in session.scalars(select(PurchaseOrder).order_by(desc(PurchaseOrder.created_at)).limit(50)).all()
+            if _can_read_purchase_order(session, order, auth)
+        ]
         return [_purchase_order_summary(order) for order in orders]
 
     @app.get("/demand-history/{material_id}", response_model=list[DemandHistoryPointOut])
@@ -405,6 +432,70 @@ def _purchase_order_summary(order: PurchaseOrder) -> dict[str, Any]:
         "created_at": order.created_at.isoformat(),
         "updated_at": order.updated_at.isoformat(),
     }
+
+
+def _mark_agent_run_owner(session_factory, *, run_id: int | None, purchase_order_id: int | None, auth: AuthContext) -> None:
+    if run_id is None:
+        return
+    with session_factory() as session:
+        run = session.get(AgentRun, run_id)
+        if run is None:
+            return
+        state = _loads_json(run.state_json, {})
+        state["created_by_user_id"] = auth.user_id
+        run.state_json = json.dumps(state, ensure_ascii=False, sort_keys=True)
+        if purchase_order_id is not None:
+            session.add(
+                AuditLog(
+                    order_id=purchase_order_id,
+                    actor_user_id=auth.user_id,
+                    actor_role=auth.role,
+                    action="created_draft",
+                    details_json=json.dumps({"run_id": run_id}, ensure_ascii=False, sort_keys=True),
+                )
+            )
+        session.commit()
+
+
+def _can_read_agent_run(session: Session, run: AgentRun, auth: AuthContext) -> bool:
+    owner = _loads_json(run.state_json, {}).get("created_by_user_id")
+    if auth.role == "buyer":
+        return owner == auth.user_id
+    if auth.role == "approver" and run.purchase_order_id is not None:
+        order = session.get(PurchaseOrder, run.purchase_order_id)
+        return order is not None and order.status in {"pending_approval", "approved", "rejected"}
+    return False
+
+
+def _can_read_purchase_order(session: Session, order: PurchaseOrder, auth: AuthContext) -> bool:
+    if auth.role == "approver":
+        return order.status in {"pending_approval", "approved", "rejected"}
+    if auth.role != "buyer":
+        return False
+    creator = session.scalar(
+        select(AuditLog.actor_user_id)
+        .where(
+            AuditLog.order_id == order.id,
+            AuditLog.action == "created_draft",
+        )
+        .order_by(AuditLog.created_at)
+        .limit(1)
+    )
+    return creator == auth.user_id
+
+
+def _recommendation_ref(
+    *,
+    material_id: int,
+    supplier_id: int | None,
+    quantity,
+    required_in_days: int,
+    budget,
+) -> str | None:
+    if supplier_id is None:
+        return None
+    budget_part = "none" if budget is None else str(budget)
+    return f"recommendation:{material_id}:{supplier_id}:{quantity}:{required_in_days}:{budget_part}"
 
 
 def _loads_json(value: str, fallback: Any) -> Any:

@@ -72,7 +72,11 @@ def build_agent_tools() -> list[AgentTool]:
         ),
         AgentTool(
             name="create_purchase_draft",
-            description="Create a backend-validated purchase draft. This does not approve or issue an order.",
+            description=(
+                "Create a backend-validated purchase draft. This does not approve or issue an order. "
+                "Use evidence refs returned by get_demand_forecast and recommend_suppliers; "
+                "use_latest_forecast/use_latest_recommendation are accepted only for the current run."
+            ),
             parameters={
                 "type": "object",
                 "properties": {
@@ -138,12 +142,24 @@ def execute_agent_tool(
             required_in_days=int(arguments["required_in_days"]),
             budget=None if arguments.get("budget") is None else Decimal(str(arguments["budget"])),
         )
-        return {
+        evidence_ref = _recommendation_ref(
+            material_id=int(arguments["material_id"]),
+            supplier_id=result.recommendations[0].supplier_id if result.recommendations else None,
+            quantity=Decimal(str(arguments["quantity"])),
+            required_in_days=int(arguments["required_in_days"]),
+            budget=None if arguments.get("budget") is None else Decimal(str(arguments["budget"])),
+        )
+        output = {
+            "evidence_ref": evidence_ref,
             "recommendations": result.recommendations,
             "excluded": result.excluded,
         }
+        if evidence_registry is not None and evidence_ref is not None:
+            evidence_registry[evidence_ref] = output
+        return output
     if name == "create_purchase_draft":
         resolved_refs, forecast_evidence = _validate_forecast_evidence(arguments, evidence_registry or {})
+        resolved_refs = _resolve_recommendation_evidence_refs(resolved_refs, evidence_registry or {})
         order = create_purchase_draft(
             session,
             PurchaseDraftInput(
@@ -167,7 +183,9 @@ def _validate_forecast_evidence(
 ) -> tuple[list[str], list[dict[str, Any]]]:
     refs = [str(item) for item in arguments.get("evidence_refs", [])]
     if "use_latest_forecast" in refs and evidence_registry:
-        refs = [next(reversed(evidence_registry))]
+        forecast_refs = [ref for ref in evidence_registry if ref.startswith("forecast:")]
+        if forecast_refs:
+            refs = [forecast_refs[-1] if ref == "use_latest_forecast" else ref for ref in refs]
     forecasts = [evidence_registry[ref] for ref in refs if ref in evidence_registry and ref.startswith("forecast:")]
     if not forecasts:
         raise ValueError("forecast_evidence_required")
@@ -181,3 +199,28 @@ def _validate_forecast_evidence(
         if quantity > Decimal(forecast["shortage_quantity"]):
             raise ValueError("quantity_exceeds_forecast_shortage")
     return refs, [forecast["forecast_evidence"] for forecast in forecasts]
+
+
+def _resolve_recommendation_evidence_refs(
+    refs: list[str],
+    evidence_registry: dict[str, dict[str, Any]],
+) -> list[str]:
+    if "use_latest_recommendation" in refs and evidence_registry:
+        recommendation_refs = [ref for ref in evidence_registry if ref.startswith("recommendation:")]
+        if recommendation_refs:
+            refs = [recommendation_refs[-1] if ref == "use_latest_recommendation" else ref for ref in refs]
+    return refs
+
+
+def _recommendation_ref(
+    *,
+    material_id: int,
+    supplier_id: int | None,
+    quantity: Decimal,
+    required_in_days: int,
+    budget: Decimal | None,
+) -> str | None:
+    if supplier_id is None:
+        return None
+    budget_part = "none" if budget is None else str(budget)
+    return f"recommendation:{material_id}:{supplier_id}:{quantity}:{required_in_days}:{budget_part}"

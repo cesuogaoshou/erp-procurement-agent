@@ -35,7 +35,7 @@ def test_langgraph_executes_agent_loop_and_persists_state_across_new_session():
                         "supplier_id": 1,
                         "items": [{"material_id": 1, "quantity": "120"}],
                         "idempotency_key": "langgraph-agent-draft",
-                        "evidence_refs": ["use_latest_forecast", "recommendation:langgraph"],
+                        "evidence_refs": ["use_latest_forecast", "use_latest_recommendation"],
                     },
                 ),
             ]
@@ -67,12 +67,16 @@ def test_langgraph_draft_pending_approval_can_be_queried_and_approved_after_rest
             [
                 ToolCall("get_demand_forecast", {"material_id": 1, "horizon_days": 30}),
                 ToolCall(
+                    "recommend_suppliers",
+                    {"material_id": 1, "quantity": "120", "required_in_days": 20, "budget": "5000.00"},
+                ),
+                ToolCall(
                     "create_purchase_draft",
                     {
                         "supplier_id": 1,
                         "items": [{"material_id": 1, "quantity": "120"}],
                         "idempotency_key": "langgraph-approval-resume",
-                        "evidence_refs": ["use_latest_forecast"],
+                        "evidence_refs": ["use_latest_forecast", "use_latest_recommendation"],
                     },
                 ),
             ]

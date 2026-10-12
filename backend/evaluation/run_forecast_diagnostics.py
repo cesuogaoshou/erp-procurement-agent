@@ -69,6 +69,17 @@ def run_forecast_diagnostics(session, horizon_days: int = 30) -> dict:
         "implementation_checks": _implementation_checks(session, windows, horizon_days),
         "inventory_scope": _inventory_scope(session),
         "split_usage": _split_usage(rows, splits),
+        "leakage_interpretation": {
+            "rolling_window_rule": "Every diagnostic row keeps train_end before holdout_start for that row.",
+            "not_automatic_leakage": (
+                "A later rolling cutoff may train on calendar dates that were part of an older declared test interval; "
+                "that is not future leakage for the later cutoff when the dates are already observed before holdout_start."
+            ),
+            "tuning_limitation": (
+                "Because diagnostics and validation-grid comparisons inspected these windows, they should be reported "
+                "as exploratory evidence rather than a fresh independent final-test result."
+            ),
+        },
         "data_shape": _data_shape_summary(session),
         "service_strategy_config": asdict(frozen_forecast_strategy_config()),
         "selected_prophet_config": _config_to_report(prophet_config),
@@ -76,6 +87,7 @@ def run_forecast_diagnostics(session, horizon_days: int = 30) -> dict:
         "model_diagnostics": _model_diagnostics(rows),
         "notes": [
             "Diagnostics use the already-inspected rolling windows; they are not an untouched final test set.",
+            "Training on observed data before a rolling cutoff is distinct from using holdout outcomes for model tuning.",
             "The frozen demand data and recommendation labels were not regenerated or modified.",
             "Shortage metrics are a fixed-inventory scenario using the same static 2026-10-10 inventory snapshot for all windows.",
         ],
