@@ -38,4 +38,14 @@
 
 ## Current Delivery State
 
-Ready for packaging after final verification commands and local commit. Reports under `reports/generated/` are intentionally ignored by Git, so packaging must copy them explicitly.
+Generated locally on 2026-10-12 by `python scripts/build_course_delivery.py`.
+
+- Delivery folder: `delivery/【待填写姓名】ERP课程作业报告/`.
+- Word report: `delivery/【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告.docx`.
+- Render check: `C:\Users\Leezhaoji\Documents\Codex\tools\render-office-windows.cmd -InputPath "<absolute-docx>"` produced a PDF and 8 page PNGs; LibreOffice/Poppler warnings were non-fatal because the PDF/PNG files were created and inspectable.
+- Package contents: 131 source/evidence files under `源代码和数据集`.
+- Exclusion check: no `.env`, key/certificate files, virtual environments, `node_modules`, caches, Chrome profiles, SQLite/DB snapshots, or nested delivery output were found in the package.
+- Sensitive scan: 0 real suspected secrets; 4 explained placeholder/test/demo constants are listed in `SENSITIVE_SCAN.md`.
+- Remaining manual fields: Word/package name still uses `【待填写姓名】`; the report cover still has `【待填写：姓名 / 学号 / 班级】`.
+
+Reports under `reports/generated/` are intentionally ignored by Git; the delivery script copies the selected generated JSON/CSV/PNG evidence into the ignored local package.

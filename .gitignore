@@ -19,6 +19,7 @@ htmlcov/
 *.db
 data/processed/
 reports/generated/
+delivery/
 node_modules/
 dist/
 build/
