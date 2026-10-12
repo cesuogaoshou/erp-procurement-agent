@@ -38,14 +38,16 @@
 
 ## Current Delivery State
 
-Generated locally on 2026-10-12 by `python scripts/build_course_delivery.py`.
+Generated locally on 2026-10-13 by `python scripts/build_course_delivery.py` after report-formula and inventory-evidence wording updates.
 
 - Delivery folder: `delivery/【待填写姓名】ERP课程作业报告/`.
 - Word report: `delivery/【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告.docx`.
-- Render check: `C:\Users\Leezhaoji\Documents\Codex\tools\render-office-windows.cmd -InputPath "<absolute-docx>"` produced a PDF and 8 page PNGs; LibreOffice/Poppler warnings were non-fatal because the PDF/PNG files were created and inspectable.
-- Package contents: 131 source/evidence files under `源代码和数据集`.
-- Exclusion check: no `.env`, key/certificate files, virtual environments, `node_modules`, caches, Chrome profiles, SQLite/DB snapshots, or nested delivery output were found in the package.
-- Sensitive scan: 0 real suspected secrets; 4 explained placeholder/test/demo constants are listed in `SENSITIVE_SCAN.md`.
+- Report content includes source-aligned formulas for Prophet, dynamic seasonality and fallback, 30-day moving average, available supply, shortage, MOQ/package rounding, four-metric normalization/scoring, MAPE zero handling, and Top-3 hit rate.
+- Inventory evidence wording: real model trace remains `get_demand_forecast -> recommend_suppliers -> create_purchase_draft`; source review confirms `get_demand_forecast` internally reads inventory and returns inventory evidence, so the report does not fabricate a separate historical `get_inventory` call.
+- Render check: `C:\Users\Leezhaoji\Documents\Codex\tools\render-office-windows.cmd -InputPath "<absolute-docx>"` should produce a PDF and page PNGs; LibreOffice/Poppler warnings are non-fatal when the PDF/PNG files are created and inspectable.
+- Package contents: source/evidence files under `源代码和数据集`.
+- Exclusion check: no `.env`, key/certificate files, virtual environments, `node_modules`, caches, Chrome profiles, SQLite/DB snapshots, TypeScript build caches, or nested delivery output should be present in the package.
+- Sensitive scan: expected output is 0 real suspected secrets, with placeholder/test/demo constants listed in `SENSITIVE_SCAN.md` if matched.
 - Remaining manual fields: Word/package name still uses `【待填写姓名】`; the report cover still has `【待填写：姓名 / 学号 / 班级】`.
 
 Reports under `reports/generated/` are intentionally ignored by Git; the delivery script copies the selected generated JSON/CSV/PNG evidence into the ignored local package.

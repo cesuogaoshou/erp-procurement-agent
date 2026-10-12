@@ -24,8 +24,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 try:
     import matplotlib.pyplot as plt
+    from matplotlib import font_manager
 except Exception:  # pragma: no cover - surfaced in CLI failure
     plt = None
+    font_manager = None
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +44,10 @@ def read_json(path: Path) -> Any:
 
 def pct(value: Any) -> str:
     return f"{value}%"
+
+
+def label_width_text(summary: dict[str, Any]) -> str:
+    return f"最少 {summary['min']} 个、最多 {summary['max']} 个、平均 {summary['avg']} 个"
 
 
 def git_text(*args: str) -> str:
@@ -127,6 +133,15 @@ def add_caption(doc: Document, text: str):
     set_font(r, size=9.5, bold=True, color="555555")
 
 
+def add_section_heading(doc: Document, text: str, level: int = 1):
+    p = doc.add_paragraph()
+    p.paragraph_format.space_before = Pt(14 if level == 1 else 10)
+    p.paragraph_format.space_after = Pt(6 if level == 1 else 4)
+    r = p.add_run(text)
+    set_font(r, size=15 if level == 1 else 12.5, bold=True, color="2E74B5" if level == 1 else "1F4D78")
+    return p
+
+
 def add_picture(doc: Document, path: Path, caption: str, width: float = 5.9):
     if path.exists():
         p = doc.add_paragraph()
@@ -147,16 +162,20 @@ def style_doc(doc: Document):
     section.footer_distance = Inches(0.492)
     styles = doc.styles
     normal = styles["Normal"]
-    normal.font.name = "Calibri"
+    normal.font.name = "Microsoft YaHei"
+    normal._element.rPr.rFonts.set(qn("w:ascii"), "Microsoft YaHei")
+    normal._element.rPr.rFonts.set(qn("w:hAnsi"), "Microsoft YaHei")
     normal._element.rPr.rFonts.set(qn("w:eastAsia"), "Microsoft YaHei")
     normal.font.size = Pt(11)
     for name, size, color, before, after in [
-        ("Heading 1", 16, "2E74B5", 16, 8),
+        ("Heading 1", 15, "2E74B5", 16, 8),
         ("Heading 2", 13, "2E74B5", 12, 6),
         ("Heading 3", 12, "1F4D78", 8, 4),
     ]:
         style = styles[name]
-        style.font.name = "Calibri"
+        style.font.name = "Microsoft YaHei"
+        style._element.rPr.rFonts.set(qn("w:ascii"), "Microsoft YaHei")
+        style._element.rPr.rFonts.set(qn("w:hAnsi"), "Microsoft YaHei")
         style._element.rPr.rFonts.set(qn("w:eastAsia"), "Microsoft YaHei")
         style.font.size = Pt(size)
         style.font.color.rgb = RGBColor.from_string(color)
@@ -193,8 +212,8 @@ def extract_evidence() -> dict[str, Any]:
             ("混合服务策略", "160/160", models["hybrid_dynamic_prophet_or_moving_average_30d"]["demand_metrics"]["mape_percent"], models["hybrid_dynamic_prophet_or_moving_average_30d"]["shortage_metrics"]["mape_percent"], "动态 Prophet 或 30日移动平均回退"),
         ],
         "supplier_rows": [
-            ("冻结案例", supplier["frozen"]["case_count"], supplier["frozen"]["price_sort_top3_hit_rate_percent"], supplier["frozen"]["composite_top3_hit_rate_percent"], f"{supplier['frozen']['label_width']['min']} - {supplier['frozen']['label_width']['max']}"),
-            ("挑战案例", supplier["challenge"]["case_count"], supplier["challenge"]["price_sort_top3_hit_rate_percent"], supplier["challenge"]["composite_top3_hit_rate_percent"], f"{supplier['challenge']['label_width']['min']} - {supplier['challenge']['label_width']['max']}"),
+            ("冻结案例", supplier["frozen"]["case_count"], supplier["frozen"]["price_sort_top3_hit_rate_percent"], supplier["frozen"]["composite_top3_hit_rate_percent"], label_width_text(supplier["frozen"]["label_width"])),
+            ("挑战案例", supplier["challenge"]["case_count"], supplier["challenge"]["price_sort_top3_hit_rate_percent"], supplier["challenge"]["composite_top3_hit_rate_percent"], label_width_text(supplier["challenge"]["label_width"])),
         ],
     }
 
@@ -203,6 +222,11 @@ def make_charts(out_dir: Path, ev: dict[str, Any]) -> dict[str, Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     charts = {}
     if plt is not None:
+        font_path = Path("C:/Windows/Fonts/msyh.ttc")
+        if font_manager is not None and font_path.exists():
+            font_manager.fontManager.addfont(str(font_path))
+            plt.rcParams["font.family"] = "Microsoft YaHei"
+        plt.rcParams["axes.unicode_minus"] = False
         labels = [r[0] for r in ev["forecast_rows"]]
         demand = [float(r[2]) for r in ev["forecast_rows"]]
         shortage = [float(r[3]) for r in ev["forecast_rows"]]
@@ -334,11 +358,11 @@ def build_report(package_dir: Path, ev: dict[str, Any], charts: dict[str, Path])
     subtitle.alignment = WD_ALIGN_PARAGRAPH.CENTER
     set_font(subtitle.add_run("课程选题 3.2：AI Agent 驱动的采购订单自动生成与供应商推荐算法研究"), size=12, color="555555")
     add_para(doc, PLACEHOLDER, bold=True, color="9B1C1C")
-    add_para(doc, f"生成时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}；代码基线：{git_text('rev-parse', '--short', 'HEAD')}；参考基线：bc45878。")
-    add_para(doc, "说明：姓名、学号、班级无法从项目资料确认，以上保留醒目占位。报告中的实验数值均由当前文件系统中的原始 JSON/CSV/PNG 证据读取，不使用聊天摘要。", bold=True)
+    add_para(doc, f"生成时间：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}；代码版本：{git_text('rev-parse', '--short', 'HEAD')}；参考基线：38f3d00。")
+    add_para(doc, "姓名、学号、班级无法从项目资料确认，以上保留醒目占位。", bold=True)
     doc.add_page_break()
 
-    doc.add_heading("1. 项目背景与采购业务需求", level=1)
+    add_section_heading(doc, "1. 项目背景与采购业务需求", level=1)
     add_para(doc, "本项目面向课程 3.2，构建一个 ERP 智能采购决策系统。核心业务是采购员用自然语言提出“分析未来30天物料缺口，推荐供应商并生成采购草稿”，系统完成库存查询、需求预测、缺口计算、供应商比较、草稿生成和人工审批。")
     add_para(doc, "项目边界保持在课程要求内：不扩展为完整 ERP，不接入真实供应商、支付或邮件，不建设 RAG/MCP/多 Agent 平台。LLM 的责任被限制为意图理解和工具编排，所有 SQL、金额、评分、业务校验、审批、事务和幂等都由后端服务完成。")
     add_bullets(doc, [
@@ -347,19 +371,19 @@ def build_report(package_dir: Path, ev: dict[str, Any], charts: dict[str, Path])
         "系统：保存 Agent run、工具 trace、采购订单、审批记录和审计日志。",
     ])
 
-    doc.add_heading("2. 模拟数据定义与预处理", level=1)
+    add_section_heading(doc, "2. 模拟数据定义与预处理", level=1)
     meta = ev["metadata"]
     add_para(doc, f"数据集为 `{meta['dataset']}`，固定随机种子 {meta['seed']}，基准日期 {meta['base_date']}，包含 {meta['materials']} 种物料、{meta['suppliers']} 家供应商和 {meta['history_days']} 天逐日需求历史。需求模式为趋势、周季节、年度波动、噪声和间歇性尖峰的组合。")
     add_table(doc, ["CSV/证据", "用途", "预处理说明"], [
         ["materials.csv / suppliers.csv", "物料与供应商主数据", "编码、名称、启用状态等基础字段"],
         ["inventory_snapshots.csv", "库存快照", f"静态快照日期 {meta['inventory_snapshot_date']}；报告中按固定库存情景解释"],
-        ["demand_history.csv", "需求预测与回测", "按物料和日期聚合，滚动窗口训练与30天持出"],
+        ["demand_history.csv", "需求预测与回测", "按物料和日期聚合，滚动窗口训练与30天留出"],
         ["supplier_materials.csv", "报价、交期、MOQ、容量", "推荐前进行关系、容量、预算、交期过滤"],
         ["supplier_performance.csv", "价格、交付、质检、投诉", "归一化后进入四指标综合评分"],
     ], widths=[1.9, 1.7, 2.7])
     add_para(doc, "预处理过程避免把未来信息交给决策输入。需要特别说明的是，当前数据没有历史库存流水，因此缺口回测不是历史库存快照回放，而是在同一个 2026-10-10 静态库存快照下进行的固定库存情景比较。")
 
-    doc.add_heading("3. 系统架构、数据库及实现步骤", level=1)
+    add_section_heading(doc, "3. 系统架构、数据库及实现步骤", level=1)
     add_picture(doc, charts["architecture"], "图1 系统架构与数据流：LLM 只编排工具，后端拥有业务边界。", 6.2)
     add_para(doc, "后端采用 FastAPI、Pydantic、SQLAlchemy、Alembic 和 pytest；目标集成数据库为 MySQL，单元测试可使用 SQLite。前端采用 Vue 3、TypeScript、Element Plus 和 ECharts，提供智能采购、数据分析、采购审批、执行记录四个页面。")
     add_table(doc, ["步骤", "实现内容", "关键证据"], [
@@ -370,24 +394,36 @@ def build_report(package_dir: Path, ev: dict[str, Any], charts: dict[str, Path])
         ["5", "生成评测与前端演示证据", "reports/generated、frontend/src/App.vue"],
     ], widths=[0.6, 2.4, 3.2])
 
-    doc.add_heading("4. Prophet 与混合预测策略", level=1)
+    add_section_heading(doc, "4. 算法原理与关键公式", level=1)
+    add_para(doc, "本节公式均按当前源码口径整理，只解释已经实现的业务逻辑。")
+    add_para(doc, "Prophet：项目使用 Python Prophet 的加性时间序列模型思想，预测值可写为 yhat(t) = g(t) + s(t) + e(t)。其中 g(t) 表示带变点的趋势项，s(t) 表示季节项，本项目实际启用 weekly_seasonality，并在训练样本不少于 365 天时启用 yearly_seasonality；daily_seasonality=False，未加入节假日项或外部回归变量；e(t) 表示未被趋势和季节解释的观测误差。项目参数为 changepoint_prior_scale=0.05、seasonality_prior_scale=10.0。Prophet 不可用、训练样本少于 90 天或拟合失败时，服务降级为 30 日移动平均。")
+    add_para(doc, "动态季节性配置：`prophet_dynamic_weekly_then_yearly` 在 len(history) < 365 时关闭年度季节性，仅保留周季节性；len(history) >= 365 时启用周季节性和年度季节性。365 天是本项目为了避免短历史硬拟合年度周期而设置的工程保护线，不是 Prophet 的通用硬性要求。")
+    add_para(doc, "30 日移动平均基线：取当前训练历史最后 min(30, n) 天需求，计算 daily_avg = sum(q_i) / m，再得到 forecast_demand = round_half_up(daily_avg * horizon_days, 0.01)。当前预测服务在短历史/Prophet 失败时也使用该计算。")
+    add_para(doc, "库存与缺口：available_supply = on_hand - reserved + inbound_confirmed；当前阶段 inbound_confirmed 默认为 0。shortage = max(0, forecast_demand + safety_stock - available_supply)。真实工具序列里模型没有单独调用 `get_inventory`，但 `get_demand_forecast` 内部会读取库存快照并在输出中返回 inventory、available_supply 和 inventory_version，再用于缺口与证据 ref。")
+    add_para(doc, "MOQ 与包装倍数：采购草稿先检查请求数量 requested > 0，再按 base = max(requested, moq)，order_quantity = ceil(base / package_multiple) * package_multiple 向上取整；package_multiple 必须大于 0。取整后的数量仍需通过供应商容量和推荐证据校验。")
+    add_para(doc, "供应商评分：先过滤启用状态、供货关系、MOQ、交期、容量和预算。价格、投诉为成本型归一化 score = (max - value) / (max - min)；交付、质量为收益型归一化 score = (value - min) / (max - min)。若某指标极差为 0，则该指标所有候选得分置为 1。综合分 score = 0.35*price + 0.30*delivery + 0.25*quality + 0.10*complaint，排序按综合分降序、单价升序、supplier_id 升序。")
+    add_para(doc, "评估指标：MAPE = mean(|actual - predicted| / |actual|) * 100%，只在 actual > 0 的样本上计算，同时报告 positive_actual_count、zero_actual_count 和 mape_coverage_percent；没有正实际值时 MAPE 记为不可用，不加 epsilon。Top-3 命中率 = 至少一个可接受供应商标签进入推荐前三的案例数 / 有效案例数 * 100%。")
+    add_para(doc, "参考文献：Taylor S. J. and Letham B., Forecasting at Scale；Prophet 官方文档 https://facebook.github.io/prophet/、API 文档 https://facebook.github.io/prophet/api/prophet.html、Trend Changepoints 与 Uncertainty Intervals 文档。")
+
+    add_section_heading(doc, "5. Prophet 与混合预测策略", level=1)
     add_para(doc, "预测目标是未来30天累计需求及由此计算的物料缺口。当前服务策略冻结为 `forecast_strategy_v1_20261011`：以动态 Prophet 为主，短历史或 Prophet 失败时回退到 30 日移动平均。报告中的预测实验属于探索性、固定库存情景；不宣称独立、未触碰的最终测试集达标。")
-    add_table(doc, ["模型/策略", "窗口覆盖", "需求MAPE", "缺口MAPE", "说明"], ev["forecast_rows"], widths=[1.3, 1.0, 0.9, 0.9, 2.2])
+    add_table(doc, ["模型/策略", "窗口覆盖", "需求MAPE(%)", "缺口MAPE(%)", "说明"], ev["forecast_rows"], widths=[1.3, 1.0, 0.9, 0.9, 2.2])
     add_picture(doc, charts["forecast"], "图2 预测实验指标对比：纯 Prophet 成功窗口与混合全样本结果分开报告。", 5.8)
     diag = ev["diagnostics"]
-    add_para(doc, f"诊断检查覆盖 {diag['implementation_checks']['window_count']} 个窗口和 {diag['implementation_checks']['demand_rows_checked']} 行需求数据，未发现日期排序、持出长度、日连续性、负预测截断或缺口公式复用问题。诊断同时记录：测试区间已被检查，且 30 天步长只剩 {diag['split_usage']['unused_tail_days_for_30d_stride']['start']} 至 {diag['split_usage']['unused_tail_days_for_30d_stride']['end']} 的尾部不足以形成新的30天持出窗口。")
+    add_para(doc, f"诊断检查覆盖 {diag['implementation_checks']['window_count']} 个窗口和 {diag['implementation_checks']['demand_rows_checked']} 行需求数据，未发现日期排序、留出长度、日连续性、负预测截断或缺口公式复用问题。诊断同时记录：测试区间已被检查，且 30 天步长只剩 {diag['split_usage']['unused_tail_days_for_30d_stride']['start']} 至 {diag['split_usage']['unused_tail_days_for_30d_stride']['end']} 的尾部不足以形成新的30天留出窗口。")
     add_picture(doc, ROOT / "reports/generated/forecast_diagnostics/curves/material_1_cutoff_2026-06-27.png", "图3 Prophet 代表性预测曲线（当前版本诊断输出）。", 5.8)
 
-    doc.add_heading("5. 四指标供应商推荐及自主贡献", level=1)
+    add_section_heading(doc, "6. 四指标供应商推荐及自主贡献", level=1)
     add_para(doc, "供应商推荐先进行硬约束过滤，再按四指标综合评分排序。四指标为历史价格、准时交付率、质量合格率和投诉表现，默认权重为价格0.35、交付0.30、质量0.25、投诉0.10。价格和投诉是成本型指标，交付和质量是收益型指标。")
-    add_table(doc, ["案例集", "案例数", "价格排序Top-3", "四指标Top-3", "标签宽度"], ev["supplier_rows"], widths=[1.3, 0.8, 1.2, 1.2, 1.0])
+    add_table(doc, ["案例集", "案例数", "价格排序Top-3(%)", "四指标Top-3(%)", "标签宽度"], ev["supplier_rows"], widths=[1.3, 0.8, 1.2, 1.2, 1.0])
     add_picture(doc, charts["supplier"], "图4 供应商推荐 Top-3 命中率：Top-3 指至少一个可接受供应商进入前三。", 5.5)
-    add_para(doc, f"Top-3 的定义来自当前 `supplier_eval.json`：{ev['supplier']['frozen']['top3_definition']}。标签来源为模拟场景阈值规则，冻结案例标签宽度 {ev['supplier']['frozen']['label_width']}，挑战案例标签宽度 {ev['supplier']['challenge']['label_width']}。这些标签不是被评测的同一加权公式，也不是企业真实人工标签，因此报告只说明其模拟来源和宽度。")
+    add_para(doc, f"Top-3 的定义来自当前 `supplier_eval.json`：{ev['supplier']['frozen']['top3_definition']}。标签来源为模拟场景阈值规则，冻结案例标签宽度为{label_width_text(ev['supplier']['frozen']['label_width'])}，挑战案例标签宽度为{label_width_text(ev['supplier']['challenge']['label_width'])}。这些标签不是被评测的同一加权公式，也不是企业真实人工标签，因此报告只说明其模拟来源和宽度。")
     add_para(doc, "自主贡献主要体现在自建 ERP 采购模拟数据、场景阈值标签、约束过滤加四指标综合评分、MOQ/包装倍数采购草稿校验，以及将真实 Function Calling 与后端审批安全边界结合。")
 
-    doc.add_heading("6. Function Calling 与审批闭环", level=1)
+    add_section_heading(doc, "7. Function Calling 与审批闭环", level=1)
     real = ev["real"]
     add_para(doc, f"当前真实模型验收报告状态为 `{real['status']}`，模型为 `{real['model_used']}`，`base_url_configured=true`，并记录了非密钥配置来源。happy path 首次运行产生采购草稿 order_id={real['happy_path']['first']['purchase_order_id']}，工具序列为 {', '.join(real['happy_path']['first']['tool_calls'])}。")
+    add_para(doc, "库存证据核对结论：该真实模型 trace 的外层工具序列没有 `get_inventory`。源码显示 `get_demand_forecast` 内部调用库存服务读取当前库存快照，输出字段包含 `inventory`，预测证据 ref 也包含库存版本；因此报告只能表述为“预测工具内部完成库存读取并据此计算缺口”，不能补写为模型显式调用了 `get_inventory`。")
     add_table(doc, ["环节", "证据字段", "当前结果"], [
         ["草稿创建", "happy_path.first.status", real["happy_path"]["first"]["status"]],
         ["重复请求", "happy_path.duplicate_reused_order", real["happy_path"]["duplicate_reused_order"]],
@@ -399,15 +435,15 @@ def build_report(package_dir: Path, ev: dict[str, Any], charts: dict[str, Path])
     mysql = ev["mysql"]
     add_para(doc, f"MySQL 集成证据显示，并发审批中一个请求通过、另一个返回 `{mysql['core']['approval_concurrency']['outcomes'][1]['error']}`；重复审批只保留 {mysql['duplicate_approval']['approval_records']} 条审批记录；回滚场景保持订单为 `{mysql['core']['rollback']['status']}`。")
 
-    doc.add_heading("7. 实验截图与结果分析", level=1)
+    add_section_heading(doc, "8. 实验截图与结果分析", level=1)
     add_picture(doc, ROOT / "reports/generated/screenshots/01-buyer-agent-home.png", "图5 采购员智能采购页：自然语言触发真实后端 Agent 流程。", 5.9)
     add_picture(doc, ROOT / "reports/generated/screenshots/02-analysis-page.png", "图6 数据分析页：展示预测、库存和模型策略信息。", 5.9)
     add_picture(doc, ROOT / "reports/generated/screenshots/03-approval-approved-order.png", "图7 审批页：人工审批后显示正式订单。", 5.9)
     add_para(doc, "结果表明，后端服务可以在课程演示范围内完成从自然语言采购意图到草稿、审批、正式订单的闭环；预测达到课程数值参考需要按混合策略和固定库存情景解释；供应商推荐在模拟标签口径下达到 Top-3 指标，但该指标是“任一可接受供应商进入前三”，不是单一最佳供应商精确命中。")
 
-    doc.add_heading("8. 局限与改进方向", level=1)
+    add_section_heading(doc, "9. 局限与改进方向", level=1)
     add_bullets(doc, [
-        "预测实验不是未触碰的独立最终测试；诊断过程已经检查过部分持出区间。",
+        "预测实验不是未触碰的独立最终测试；诊断过程已经检查过部分留出区间。",
         "缺口回测使用静态库存快照，无法替代真实历史库存流水回放。",
         "供应商标签来自模拟阈值规则，不代表真实企业人工或履约标签。",
         "当前权限为课程演示级最小对象读访问，不是生产级多租户 ERP 权限体系。",
@@ -415,7 +451,7 @@ def build_report(package_dir: Path, ev: dict[str, Any], charts: dict[str, Path])
         "后续可补历史库存流水、冻结新 holdout、增加 MRR/NDCG 等更严格推荐指标，并对前端做代码分割。",
     ])
 
-    doc.add_heading("9. 复现命令与交付说明", level=1)
+    add_section_heading(doc, "10. 复现命令与交付说明", level=1)
     add_table(doc, ["目的", "命令"], [
         ["后端测试", "python -m pytest backend/tests -q"],
         ["基线评测", "python -m backend.evaluation.run_baseline"],
@@ -435,7 +471,7 @@ EXCLUDE_DIRS = {
     "node_modules", "dist", "build", "delivery", "chrome-profile", "chrome-profile-2",
     "chrome-profile-3", "chrome-profile-inspect",
 }
-EXCLUDE_SUFFIXES = {".pyc", ".sqlite", ".db", ".pem", ".key", ".p12", ".crt"}
+EXCLUDE_SUFFIXES = {".pyc", ".sqlite", ".db", ".pem", ".key", ".p12", ".crt", ".tsbuildinfo"}
 EXCLUDE_FILES = {".env"}
 
 
@@ -511,6 +547,8 @@ def scan_sensitive(package_dir: Path) -> tuple[list[str], list[str], int]:
 
 def write_package_docs(package_dir: Path, copied: list[str], findings: list[str], benign: list[str], scanned: int, report_path: Path):
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    status_snapshot = git_text("status", "--short")
+    status_text = "<empty output>" if status_snapshot == "" else status_snapshot
     manifest = package_dir / "PACKAGE_MANIFEST.md"
     manifest.write_text(
         "\n".join([
@@ -519,7 +557,7 @@ def write_package_docs(package_dir: Path, copied: list[str], findings: list[str]
             f"- 生成时间：{generated_at}",
             f"- 代码版本：{git_text('rev-parse', 'HEAD')}",
             f"- Git分支：{git_text('branch', '--show-current')}",
-            f"- Git状态：{git_text('status', '--short') or 'clean'}",
+            f"- Git状态快照（git status --short）：{status_text}",
             f"- Word报告：{report_path.name}",
             f"- 源代码和数据集目录：{SOURCE_DIR_NAME}",
             f"- 文件数量：{len(copied)}",

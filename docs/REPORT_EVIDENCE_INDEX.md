@@ -6,7 +6,7 @@
 2. Requirements and scope boundaries.
 3. System architecture and data flow.
 4. Simulated ERP procurement dataset and CSV schema.
-5. Inventory, shortage, and supplier recommendation algorithms.
+5. Inventory, shortage, forecast, and supplier recommendation algorithms with formulas.
 6. LLM Agent orchestration and backend-owned tool execution.
 7. Human approval workflow, permissions, idempotency, and audit trail.
 8. Forecasting experiments and frozen service strategy.
@@ -44,6 +44,8 @@
 - Dynamic Prophet covers 140/160 windows.
 - The frozen service strategy is hybrid dynamic-Prophet-or-moving-average and falls back to moving average for 20/160 windows. Do not package the hybrid result as pure Prophet.
 - Prophet coverage, dynamic-seasonality exploration, and hybrid fallback are evidence for engineering tradeoffs, not separate test-pass claims.
+- The real-model happy-path tool sequence is `get_demand_forecast -> recommend_suppliers -> create_purchase_draft`. Do not rewrite historical trace as a separate `get_inventory` call. Source review shows `get_demand_forecast` internally reads inventory through `get_inventory_snapshot`, returns `inventory`, and uses `available_supply` plus safety stock to calculate shortage.
+- Algorithm formulas in the Word report must match current source: Prophet additive trend/seasonality/error explanation with dynamic yearly-seasonality guard; 30-day moving average; available supply and shortage; MOQ/package multiple ceiling; cost/benefit min-max normalization with zero-range score 1; weighted supplier score; MAPE excluding zero actuals; Top-3 any-acceptable-label hit rate.
 - LangGraph execution is accepted for graph invocation; restart recovery is SQL persistence, not a cross-process LangGraph checkpoint backend.
 
 ## Reproduction Commands
@@ -67,9 +69,9 @@ $env:MYSQL_INTEGRATION_REPORT_PATH = "reports/generated/mysql_integration.json"
 python -m pytest backend/tests/test_mysql_integration.py -q
 ```
 
-## Missing Before Formal Word Writing
+## Remaining Manual Inputs
 
 - Final instructor-required Word template, if any.
-- Final selected screenshots with captions and figure numbers.
 - Any course-specific grading rubric wording that must be quoted or mirrored.
 - Confirmation whether to include a demo database snapshot or only CSV plus initialization commands.
+- Personal fields: name, student ID, and class. Keep placeholders until the user supplies exact values.
