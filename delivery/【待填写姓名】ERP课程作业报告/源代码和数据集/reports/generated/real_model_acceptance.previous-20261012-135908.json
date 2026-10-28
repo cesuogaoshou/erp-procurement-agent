@@ -1,0 +1,93 @@
+{
+  "generated_at": "2026-10-11",
+  "database_configured": true,
+  "api_key_configured": true,
+  "base_url_configured": false,
+  "model_env_precedence": [
+    "OPENAI_MODEL_USER",
+    "OPENAI_MODEL"
+  ],
+  "model_configured": true,
+  "model_used": "deepseek-v4-flash",
+  "base_url_label": "openai_compatible",
+  "happy_path": {
+    "first": {
+      "status": "draft_created",
+      "tool_calls": [
+        "get_inventory",
+        "get_demand_forecast",
+        "recommend_suppliers",
+        "get_inventory",
+        "get_inventory",
+        "get_demand_forecast",
+        "create_purchase_draft"
+      ],
+      "run_id": 33,
+      "purchase_order_id": 34,
+      "error": null,
+      "real_function_calling": true
+    },
+    "duplicate": {
+      "status": "draft_created",
+      "tool_calls": [
+        "get_demand_forecast",
+        "recommend_suppliers",
+        "get_demand_forecast",
+        "create_purchase_draft"
+      ],
+      "run_id": 34,
+      "purchase_order_id": 34,
+      "error": null,
+      "real_function_calling": true
+    },
+    "duplicate_reused_order": true
+  },
+  "approval_loop": {
+    "model_approval_attempt": {
+      "status": "completed",
+      "tool_calls": [],
+      "run_id": 35,
+      "purchase_order_id": null,
+      "error": null,
+      "real_function_calling": true
+    },
+    "status_after_model_attempt": "pending_approval",
+    "human_approval_status": "approved",
+    "formal_order_number": "PO-000034",
+    "duplicate_approval_reused_order": true,
+    "approval_record_count": 1
+  },
+  "boundary_cases": {
+    "material_ambiguity": {
+      "status": "material_ambiguous",
+      "tool_calls": [
+        "resolve_material"
+      ],
+      "run_id": 36,
+      "purchase_order_id": null,
+      "error": null,
+      "real_function_calling": true
+    },
+    "no_shortage": {
+      "status": "no_shortage",
+      "tool_calls": [
+        "get_demand_forecast"
+      ],
+      "run_id": 37,
+      "purchase_order_id": null,
+      "error": null,
+      "real_function_calling": true
+    },
+    "no_qualified_supplier": {
+      "status": "no_qualified_suppliers",
+      "tool_calls": [
+        "recommend_suppliers"
+      ],
+      "run_id": 38,
+      "purchase_order_id": null,
+      "error": null,
+      "real_function_calling": true
+    }
+  },
+  "status": "ok"
+}

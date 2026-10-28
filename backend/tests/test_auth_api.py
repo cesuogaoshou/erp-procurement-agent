@@ -23,6 +23,7 @@ def _draft(client: TestClient) -> dict:
     )
     return client.post(
         "/purchase-drafts",
+        headers={"Authorization": f"Bearer {_login(client, 'buyer', 'buyer-pass')}"},
         json={
             "supplier_id": 1,
             "items": [{"material_id": 1, "quantity": "120"}],

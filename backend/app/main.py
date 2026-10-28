@@ -178,8 +178,21 @@ def create_app(
         }
 
     @app.post("/purchase-drafts", response_model=PurchaseDraftOut)
-    def purchase_drafts(request: PurchaseDraftIn, session: Session = Depends(get_session)):
+    def purchase_drafts(
+        request: PurchaseDraftIn,
+        session: Session = Depends(get_session),
+        auth: AuthContext = Depends(get_auth_context),
+    ):
+        if auth.role != "buyer":
+            raise HTTPException(status_code=403, detail="buyer_role_required")
         try:
+            existing = session.scalar(
+                select(PurchaseOrder).where(PurchaseOrder.idempotency_key == request.idempotency_key)
+            )
+            if existing is not None:
+                if not _can_read_purchase_order(session, existing, auth):
+                    raise HTTPException(status_code=403, detail="order_owner_required")
+                return existing
             order = create_purchase_draft(
                 session,
                 PurchaseDraftInput(
@@ -191,6 +204,22 @@ def create_app(
                     idempotency_key=request.idempotency_key,
                     evidence_refs=request.evidence_refs,
                 ),
+            )
+            # The service can reuse a key committed after the initial lookup.
+            creator = _purchase_order_creator(session, order.id)
+            if creator is not None:
+                if creator != auth.user_id:
+                    session.rollback()
+                    raise HTTPException(status_code=403, detail="order_owner_required")
+                return order
+            session.add(
+                AuditLog(
+                    order_id=order.id,
+                    actor_user_id=auth.user_id,
+                    actor_role=auth.role,
+                    action="created_draft",
+                    details_json=json.dumps({"source": "purchase-drafts"}, sort_keys=True),
+                )
             )
             session.commit()
             return order
@@ -205,6 +234,11 @@ def create_app(
         auth: AuthContext = Depends(get_auth_context),
     ):
         try:
+            if auth.role != "buyer":
+                raise ApprovalPermissionError("buyer_role_required")
+            existing = session.get(PurchaseOrder, order_id)
+            if existing is not None and not _can_read_purchase_order(session, existing, auth):
+                raise ApprovalPermissionError("order_owner_required")
             order = submit_for_approval(session, order_id, auth)
             session.commit()
             return order
@@ -441,10 +475,16 @@ def _mark_agent_run_owner(session_factory, *, run_id: int | None, purchase_order
         run = session.get(AgentRun, run_id)
         if run is None:
             return
+        creator = None
+        if purchase_order_id is not None:
+            session.scalar(select(PurchaseOrder).where(PurchaseOrder.id == purchase_order_id).with_for_update())
+            creator = _purchase_order_creator(session, purchase_order_id)
+            if creator is not None and creator != auth.user_id:
+                raise HTTPException(status_code=403, detail="order_owner_required")
         state = _loads_json(run.state_json, {})
         state["created_by_user_id"] = auth.user_id
         run.state_json = json.dumps(state, ensure_ascii=False, sort_keys=True)
-        if purchase_order_id is not None:
+        if purchase_order_id is not None and creator is None:
             session.add(
                 AuditLog(
                     order_id=purchase_order_id,
@@ -472,16 +512,19 @@ def _can_read_purchase_order(session: Session, order: PurchaseOrder, auth: AuthC
         return order.status in {"pending_approval", "approved", "rejected"}
     if auth.role != "buyer":
         return False
-    creator = session.scalar(
+    return _purchase_order_creator(session, order.id) == auth.user_id
+
+
+def _purchase_order_creator(session: Session, order_id: int) -> str | None:
+    return session.scalar(
         select(AuditLog.actor_user_id)
         .where(
-            AuditLog.order_id == order.id,
+            AuditLog.order_id == order_id,
             AuditLog.action == "created_draft",
         )
-        .order_by(AuditLog.created_at)
+        .order_by(AuditLog.created_at, AuditLog.id)
         .limit(1)
     )
-    return creator == auth.user_id
 
 
 def _recommendation_ref(

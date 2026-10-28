@@ -1,0 +1,15 @@
+{
+  "database_name": "erp_procurement",
+  "isolated": false,
+  "create_schema_error_type": "OperationalError",
+  "mode": "append_only_no_reset",
+  "counts_before": {
+    "materials": 10,
+    "inventory": 10,
+    "demand_history": 5400,
+    "suppliers": 10,
+    "supplier_materials": 100,
+    "purchase_orders": 42
+  },
+  "alembic_revision": "20261011_0006"
+}

@@ -1,0 +1,40 @@
+{
+  "run_id": 64,
+  "trace_count": 4,
+  "checks": {
+    "buyer_login": true,
+    "chinese_agent_draft": true,
+    "inventory_analysis": true,
+    "buyer_approval_denied_403": true,
+    "approver_approval": true,
+    "restart_then_reject": true,
+    "execution_records_trace": true
+  },
+  "orders": [
+    {
+      "id": 49,
+      "status": "rejected",
+      "version": 3,
+      "formal_order_number": null,
+      "total_amount": "972.00"
+    },
+    {
+      "id": 44,
+      "status": "approved",
+      "version": 3,
+      "formal_order_number": "PO-000044",
+      "total_amount": "972.00"
+    }
+  ],
+  "screenshots": [
+    "01-agent-draft.jpg",
+    "02-analysis.jpg",
+    "03-buyer-approval-denied.jpg",
+    "04-approved-order.jpg",
+    "05-rejected-after-restart.jpg",
+    "06-execution-records.jpg"
+  ],
+  "database_orders_after": 49,
+  "persisted_run_state": "{\"created_by_user_id\": \"buyer-1\", \"node\": \"draft_created\", \"purchase_order_id\": 44}",
+  "runtime_evidence_note": "UI used running backend real-provider configuration; LangGraph requested by frontend API. No browser response flags were separately captured."
+}

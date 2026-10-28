@@ -1,0 +1,1315 @@
+{
+  "orders": [
+    {
+      "id": 55,
+      "status": "approved",
+      "version": 3,
+      "formal_order_number": "PO-000055",
+      "total_amount": "972.00",
+      "idempotency_key": "remediation-ui-approve-20261028",
+      "evidence": {
+        "refs": [
+          "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "recommendation:1:1:120:20:5000",
+          "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "recommendation:1:1:120:20:5000"
+        ],
+        "forecast_evidence": [
+          {
+            "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+            "material_id": 1,
+            "horizon_days": 30,
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "strategy_type": "hybrid_prophet_or_baseline",
+            "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+            "config_version": "forecast_strategy_v1_20261011",
+            "training_range": {
+              "sample_count": 540,
+              "start_date": "2025-04-18",
+              "end_date": "2026-10-09"
+            },
+            "forecast_range": {
+              "start_date": "2026-10-10",
+              "end_date": "2026-11-08"
+            },
+            "fallback_reason": null,
+            "config": {
+              "config_version": "forecast_strategy_v1_20261011",
+              "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+              "strategy_type": "hybrid_prophet_or_baseline",
+              "fallback_model_name": "moving_average_30d",
+              "prophet": {
+                "name": "prophet_dynamic_weekly_then_yearly",
+                "min_train_days": 90,
+                "train_window_days": null,
+                "daily_seasonality": false,
+                "weekly_seasonality": true,
+                "yearly_seasonality": true,
+                "yearly_min_train_days": 365,
+                "short_history_mode": "weekly_only",
+                "changepoint_prior_scale": 0.05,
+                "seasonality_prior_scale": 10.0
+              }
+            },
+            "forecast_demand": "443.11",
+            "shortage_quantity": "406.11",
+            "inventory_version": 1
+          },
+          {
+            "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+            "material_id": 1,
+            "horizon_days": 30,
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "strategy_type": "hybrid_prophet_or_baseline",
+            "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+            "config_version": "forecast_strategy_v1_20261011",
+            "training_range": {
+              "sample_count": 540,
+              "start_date": "2025-04-18",
+              "end_date": "2026-10-09"
+            },
+            "forecast_range": {
+              "start_date": "2026-10-10",
+              "end_date": "2026-11-08"
+            },
+            "fallback_reason": null,
+            "config": {
+              "config_version": "forecast_strategy_v1_20261011",
+              "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+              "strategy_type": "hybrid_prophet_or_baseline",
+              "fallback_model_name": "moving_average_30d",
+              "prophet": {
+                "name": "prophet_dynamic_weekly_then_yearly",
+                "min_train_days": 90,
+                "train_window_days": null,
+                "daily_seasonality": false,
+                "weekly_seasonality": true,
+                "yearly_seasonality": true,
+                "yearly_min_train_days": 365,
+                "short_history_mode": "weekly_only",
+                "changepoint_prior_scale": 0.05,
+                "seasonality_prior_scale": 10.0
+              }
+            },
+            "forecast_demand": "443.11",
+            "shortage_quantity": "406.11",
+            "inventory_version": 1
+          }
+        ]
+      },
+      "items": [
+        {
+          "material_id": 1,
+          "quantity": "120.00"
+        }
+      ],
+      "audits": [
+        {
+          "id": 98,
+          "action": "created_draft",
+          "actor": "buyer-1"
+        },
+        {
+          "id": 99,
+          "action": "submitted_for_approval",
+          "actor": "buyer-1"
+        },
+        {
+          "id": 102,
+          "action": "approved",
+          "actor": "approver-1"
+        }
+      ],
+      "approvals": [
+        {
+          "id": 45,
+          "decision": "approved",
+          "reason": null
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "status": "rejected",
+      "version": 3,
+      "formal_order_number": null,
+      "total_amount": "972.00",
+      "idempotency_key": "remediation-ui-reject-20261028",
+      "evidence": {
+        "refs": [
+          "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "recommendation:1:1:120:20:5000"
+        ],
+        "forecast_evidence": [
+          {
+            "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+            "material_id": 1,
+            "horizon_days": 30,
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "strategy_type": "hybrid_prophet_or_baseline",
+            "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+            "config_version": "forecast_strategy_v1_20261011",
+            "training_range": {
+              "sample_count": 540,
+              "start_date": "2025-04-18",
+              "end_date": "2026-10-09"
+            },
+            "forecast_range": {
+              "start_date": "2026-10-10",
+              "end_date": "2026-11-08"
+            },
+            "fallback_reason": null,
+            "config": {
+              "config_version": "forecast_strategy_v1_20261011",
+              "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+              "strategy_type": "hybrid_prophet_or_baseline",
+              "fallback_model_name": "moving_average_30d",
+              "prophet": {
+                "name": "prophet_dynamic_weekly_then_yearly",
+                "min_train_days": 90,
+                "train_window_days": null,
+                "daily_seasonality": false,
+                "weekly_seasonality": true,
+                "yearly_seasonality": true,
+                "yearly_min_train_days": 365,
+                "short_history_mode": "weekly_only",
+                "changepoint_prior_scale": 0.05,
+                "seasonality_prior_scale": 10.0
+              }
+            },
+            "forecast_demand": "443.11",
+            "shortage_quantity": "406.11",
+            "inventory_version": 1
+          }
+        ]
+      },
+      "items": [
+        {
+          "material_id": 1,
+          "quantity": "120.00"
+        }
+      ],
+      "audits": [
+        {
+          "id": 100,
+          "action": "created_draft",
+          "actor": "buyer-1"
+        },
+        {
+          "id": 101,
+          "action": "submitted_for_approval",
+          "actor": "buyer-1"
+        },
+        {
+          "id": 103,
+          "action": "rejected",
+          "actor": "approver-1"
+        }
+      ],
+      "approvals": [
+        {
+          "id": 46,
+          "decision": "rejected",
+          "reason": "整改复验：重启恢复后人工驳回，采购需求需重新确认。"
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "id": 66,
+      "status": "draft_created",
+      "order_id": 55,
+      "prompt": "复验批准流程。Use material_id 1 directly and forecast next 30 days. Recommend a supplier for 120 units required in 20 days with budget 5000. Create exactly one purchase draft with idempotency_key remediation-ui-approve-20261028 using use_latest_forecast and use_latest_recommendation.",
+      "state": {
+        "created_by_user_id": "buyer-1",
+        "node": "draft_created",
+        "purchase_order_id": 55
+      }
+    },
+    {
+      "id": 67,
+      "status": "draft_created",
+      "order_id": 56,
+      "prompt": "复验驳回和重启恢复。Use material_id 1 directly and forecast next 30 days. Recommend a supplier for 120 units required in 20 days with budget 5000. Create exactly one purchase draft with idempotency_key remediation-ui-reject-20261028 using use_latest_forecast and use_latest_recommendation.",
+      "state": {
+        "created_by_user_id": "buyer-1",
+        "node": "draft_created",
+        "purchase_order_id": 56
+      }
+    }
+  ],
+  "traces": [
+    {
+      "id": 137,
+      "run_id": 66,
+      "tool": "get_demand_forecast",
+      "status": "ok",
+      "arguments": {
+        "horizon_days": 30,
+        "material_id": 1
+      },
+      "output": {
+        "config": {
+          "config_version": "forecast_strategy_v1_20261011",
+          "fallback_model_name": "moving_average_30d",
+          "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+          "prophet": {
+            "changepoint_prior_scale": 0.05,
+            "daily_seasonality": false,
+            "min_train_days": 90,
+            "name": "prophet_dynamic_weekly_then_yearly",
+            "seasonality_prior_scale": 10.0,
+            "short_history_mode": "weekly_only",
+            "train_window_days": null,
+            "weekly_seasonality": true,
+            "yearly_min_train_days": 365,
+            "yearly_seasonality": true
+          },
+          "strategy_type": "hybrid_prophet_or_baseline"
+        },
+        "config_version": "forecast_strategy_v1_20261011",
+        "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+        "fallback_model_name": "moving_average_30d",
+        "fallback_reason": null,
+        "forecast_demand": "443.11",
+        "forecast_evidence": {
+          "config": {
+            "config_version": "forecast_strategy_v1_20261011",
+            "fallback_model_name": "moving_average_30d",
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "prophet": {
+              "changepoint_prior_scale": 0.05,
+              "daily_seasonality": false,
+              "min_train_days": 90,
+              "name": "prophet_dynamic_weekly_then_yearly",
+              "seasonality_prior_scale": 10.0,
+              "short_history_mode": "weekly_only",
+              "train_window_days": null,
+              "weekly_seasonality": true,
+              "yearly_min_train_days": 365,
+              "yearly_seasonality": true
+            },
+            "strategy_type": "hybrid_prophet_or_baseline"
+          },
+          "config_version": "forecast_strategy_v1_20261011",
+          "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "fallback_reason": null,
+          "forecast_demand": "443.11",
+          "forecast_range": {
+            "end_date": "2026-11-08",
+            "start_date": "2026-10-10"
+          },
+          "horizon_days": 30,
+          "inventory_version": 1,
+          "material_id": 1,
+          "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+          "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+          "shortage_quantity": "406.11",
+          "strategy_type": "hybrid_prophet_or_baseline",
+          "training_range": {
+            "end_date": "2026-10-09",
+            "sample_count": 540,
+            "start_date": "2025-04-18"
+          }
+        },
+        "forecast_range": {
+          "end_date": "2026-11-08",
+          "start_date": "2026-10-10"
+        },
+        "horizon_days": 30,
+        "inventory": {
+          "available_supply": "117.00",
+          "material_id": 1,
+          "on_hand": "134.00",
+          "reserved": "17.00",
+          "version": 1
+        },
+        "material_id": 1,
+        "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+        "notes": [
+          "Phase 1 simplification: confirmed inbound supply is not included.",
+          "Forecast strategy is frozen for course delivery; do not retune without creating a new experiment.",
+          "Hybrid strategy is not a pure Prophet metric.",
+          "The 365-day yearly-seasonality guard is a project engineering strategy, not a Prophet universal requirement."
+        ],
+        "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+        "shortage_quantity": "406.11",
+        "strategy_type": "hybrid_prophet_or_baseline",
+        "tool_name": "get_demand_forecast",
+        "training_range": {
+          "end_date": "2026-10-09",
+          "sample_count": 540,
+          "start_date": "2025-04-18"
+        }
+      }
+    },
+    {
+      "id": 138,
+      "run_id": 66,
+      "tool": "get_demand_forecast",
+      "status": "ok",
+      "arguments": {
+        "horizon_days": 30,
+        "material_id": 1
+      },
+      "output": {
+        "config": {
+          "config_version": "forecast_strategy_v1_20261011",
+          "fallback_model_name": "moving_average_30d",
+          "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+          "prophet": {
+            "changepoint_prior_scale": 0.05,
+            "daily_seasonality": false,
+            "min_train_days": 90,
+            "name": "prophet_dynamic_weekly_then_yearly",
+            "seasonality_prior_scale": 10.0,
+            "short_history_mode": "weekly_only",
+            "train_window_days": null,
+            "weekly_seasonality": true,
+            "yearly_min_train_days": 365,
+            "yearly_seasonality": true
+          },
+          "strategy_type": "hybrid_prophet_or_baseline"
+        },
+        "config_version": "forecast_strategy_v1_20261011",
+        "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+        "fallback_model_name": "moving_average_30d",
+        "fallback_reason": null,
+        "forecast_demand": "443.11",
+        "forecast_evidence": {
+          "config": {
+            "config_version": "forecast_strategy_v1_20261011",
+            "fallback_model_name": "moving_average_30d",
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "prophet": {
+              "changepoint_prior_scale": 0.05,
+              "daily_seasonality": false,
+              "min_train_days": 90,
+              "name": "prophet_dynamic_weekly_then_yearly",
+              "seasonality_prior_scale": 10.0,
+              "short_history_mode": "weekly_only",
+              "train_window_days": null,
+              "weekly_seasonality": true,
+              "yearly_min_train_days": 365,
+              "yearly_seasonality": true
+            },
+            "strategy_type": "hybrid_prophet_or_baseline"
+          },
+          "config_version": "forecast_strategy_v1_20261011",
+          "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "fallback_reason": null,
+          "forecast_demand": "443.11",
+          "forecast_range": {
+            "end_date": "2026-11-08",
+            "start_date": "2026-10-10"
+          },
+          "horizon_days": 30,
+          "inventory_version": 1,
+          "material_id": 1,
+          "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+          "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+          "shortage_quantity": "406.11",
+          "strategy_type": "hybrid_prophet_or_baseline",
+          "training_range": {
+            "end_date": "2026-10-09",
+            "sample_count": 540,
+            "start_date": "2025-04-18"
+          }
+        },
+        "forecast_range": {
+          "end_date": "2026-11-08",
+          "start_date": "2026-10-10"
+        },
+        "horizon_days": 30,
+        "inventory": {
+          "available_supply": "117.00",
+          "material_id": 1,
+          "on_hand": "134.00",
+          "reserved": "17.00",
+          "version": 1
+        },
+        "material_id": 1,
+        "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+        "notes": [
+          "Phase 1 simplification: confirmed inbound supply is not included.",
+          "Forecast strategy is frozen for course delivery; do not retune without creating a new experiment.",
+          "Hybrid strategy is not a pure Prophet metric.",
+          "The 365-day yearly-seasonality guard is a project engineering strategy, not a Prophet universal requirement."
+        ],
+        "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+        "shortage_quantity": "406.11",
+        "strategy_type": "hybrid_prophet_or_baseline",
+        "tool_name": "get_demand_forecast",
+        "training_range": {
+          "end_date": "2026-10-09",
+          "sample_count": 540,
+          "start_date": "2025-04-18"
+        }
+      }
+    },
+    {
+      "id": 139,
+      "run_id": 66,
+      "tool": "recommend_suppliers",
+      "status": "ok",
+      "arguments": {
+        "budget": "5000",
+        "material_id": 1,
+        "quantity": "120",
+        "required_in_days": 20
+      },
+      "output": {
+        "evidence_ref": "recommendation:1:1:120:20:5000",
+        "excluded": [
+          "ExcludedSupplier(supplier_id=6, supplier_name='恒信工业', reasons=['lead_time_exceeds_required'])",
+          "ExcludedSupplier(supplier_id=7, supplier_name='启明电子', reasons=['lead_time_exceeds_required'])",
+          "ExcludedSupplier(supplier_id=8, supplier_name='海川零件', reasons=['lead_time_exceeds_required'])",
+          "ExcludedSupplier(supplier_id=9, supplier_name='云岭材料', reasons=['lead_time_exceeds_required'])",
+          "ExcludedSupplier(supplier_id=10, supplier_name='停用供应商', reasons=['supplier_inactive', 'lead_time_exceeds_required'])"
+        ],
+        "recommendations": [
+          "SupplierRecommendation(supplier_id=1, supplier_name='华东精工', unit_price=Decimal('8.10'), total_amount=Decimal('972.00'), score=Decimal('0.8673'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('8.10'), 'normalized': Decimal('1')}, 'delivery': {'raw': Decimal('0.9000'), 'normalized': Decimal('1')}, 'quality': {'raw': Decimal('0.9320'), 'normalized': Decimal('0.4693877551020408163265306122')}, 'complaint': {'raw': Decimal('0.0000'), 'normalized': Decimal('1')}}})",
+          "SupplierRecommendation(supplier_id=2, supplier_name='北辰制造', unit_price=Decimal('8.90'), total_amount=Decimal('1068.00'), score=Decimal('0.7475'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('8.90'), 'normalized': Decimal('0.75')}, 'delivery': {'raw': Decimal('0.8667'), 'normalized': Decimal('0.8751406074240719910011248594')}, 'quality': {'raw': Decimal('0.9330'), 'normalized': Decimal('0.4897959183673469387755102041')}, 'complaint': {'raw': Decimal('0.0000'), 'normalized': Decimal('1')}}})",
+          "SupplierRecommendation(supplier_id=4, supplier_name='远航物资', unit_price=Decimal('10.50'), total_amount=Decimal('1260.00'), score=Decimal('0.4833'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('10.50'), 'normalized': Decimal('0.25')}, 'delivery': {'raw': Decimal('0.7333'), 'normalized': Decimal('0.3749531308586426696662917135')}, 'quality': {'raw': Decimal('0.9580'), 'normalized': Decimal('1')}, 'complaint': {'raw': Decimal('0.0667'), 'normalized': Decimal('0.333')}}})"
+        ]
+      }
+    },
+    {
+      "id": 140,
+      "run_id": 66,
+      "tool": "create_purchase_draft",
+      "status": "ok",
+      "arguments": {
+        "evidence_refs": [
+          "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "recommendation:1:1:120:20:5000",
+          "use_latest_forecast",
+          "use_latest_recommendation"
+        ],
+        "idempotency_key": "remediation-ui-approve-20261028",
+        "items": [
+          {
+            "material_id": 1,
+            "quantity": "120"
+          }
+        ],
+        "supplier_id": 1
+      },
+      "output": {
+        "id": 55,
+        "idempotency_key": "remediation-ui-approve-20261028",
+        "status": "draft",
+        "supplier_id": 1,
+        "total_amount": "972.00"
+      }
+    },
+    {
+      "id": 141,
+      "run_id": 67,
+      "tool": "get_demand_forecast",
+      "status": "ok",
+      "arguments": {
+        "horizon_days": 30,
+        "material_id": 1
+      },
+      "output": {
+        "config": {
+          "config_version": "forecast_strategy_v1_20261011",
+          "fallback_model_name": "moving_average_30d",
+          "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+          "prophet": {
+            "changepoint_prior_scale": 0.05,
+            "daily_seasonality": false,
+            "min_train_days": 90,
+            "name": "prophet_dynamic_weekly_then_yearly",
+            "seasonality_prior_scale": 10.0,
+            "short_history_mode": "weekly_only",
+            "train_window_days": null,
+            "weekly_seasonality": true,
+            "yearly_min_train_days": 365,
+            "yearly_seasonality": true
+          },
+          "strategy_type": "hybrid_prophet_or_baseline"
+        },
+        "config_version": "forecast_strategy_v1_20261011",
+        "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+        "fallback_model_name": "moving_average_30d",
+        "fallback_reason": null,
+        "forecast_demand": "443.11",
+        "forecast_evidence": {
+          "config": {
+            "config_version": "forecast_strategy_v1_20261011",
+            "fallback_model_name": "moving_average_30d",
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "prophet": {
+              "changepoint_prior_scale": 0.05,
+              "daily_seasonality": false,
+              "min_train_days": 90,
+              "name": "prophet_dynamic_weekly_then_yearly",
+              "seasonality_prior_scale": 10.0,
+              "short_history_mode": "weekly_only",
+              "train_window_days": null,
+              "weekly_seasonality": true,
+              "yearly_min_train_days": 365,
+              "yearly_seasonality": true
+            },
+            "strategy_type": "hybrid_prophet_or_baseline"
+          },
+          "config_version": "forecast_strategy_v1_20261011",
+          "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "fallback_reason": null,
+          "forecast_demand": "443.11",
+          "forecast_range": {
+            "end_date": "2026-11-08",
+            "start_date": "2026-10-10"
+          },
+          "horizon_days": 30,
+          "inventory_version": 1,
+          "material_id": 1,
+          "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+          "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+          "shortage_quantity": "406.11",
+          "strategy_type": "hybrid_prophet_or_baseline",
+          "training_range": {
+            "end_date": "2026-10-09",
+            "sample_count": 540,
+            "start_date": "2025-04-18"
+          }
+        },
+        "forecast_range": {
+          "end_date": "2026-11-08",
+          "start_date": "2026-10-10"
+        },
+        "horizon_days": 30,
+        "inventory": {
+          "available_supply": "117.00",
+          "material_id": 1,
+          "on_hand": "134.00",
+          "reserved": "17.00",
+          "version": 1
+        },
+        "material_id": 1,
+        "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+        "notes": [
+          "Phase 1 simplification: confirmed inbound supply is not included.",
+          "Forecast strategy is frozen for course delivery; do not retune without creating a new experiment.",
+          "Hybrid strategy is not a pure Prophet metric.",
+          "The 365-day yearly-seasonality guard is a project engineering strategy, not a Prophet universal requirement."
+        ],
+        "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+        "shortage_quantity": "406.11",
+        "strategy_type": "hybrid_prophet_or_baseline",
+        "tool_name": "get_demand_forecast",
+        "training_range": {
+          "end_date": "2026-10-09",
+          "sample_count": 540,
+          "start_date": "2025-04-18"
+        }
+      }
+    },
+    {
+      "id": 142,
+      "run_id": 67,
+      "tool": "recommend_suppliers",
+      "status": "ok",
+      "arguments": {
+        "budget": "5000",
+        "material_id": 1,
+        "quantity": "120",
+        "required_in_days": 20
+      },
+      "output": {
+        "evidence_ref": "recommendation:1:1:120:20:5000",
+        "excluded": [
+          "ExcludedSupplier(supplier_id=6, supplier_name='恒信工业', reasons=['lead_time_exceeds_required'])",
+          "ExcludedSupplier(supplier_id=7, supplier_name='启明电子', reasons=['lead_time_exceeds_required'])",
+          "ExcludedSupplier(supplier_id=8, supplier_name='海川零件', reasons=['lead_time_exceeds_required'])",
+          "ExcludedSupplier(supplier_id=9, supplier_name='云岭材料', reasons=['lead_time_exceeds_required'])",
+          "ExcludedSupplier(supplier_id=10, supplier_name='停用供应商', reasons=['supplier_inactive', 'lead_time_exceeds_required'])"
+        ],
+        "recommendations": [
+          "SupplierRecommendation(supplier_id=1, supplier_name='华东精工', unit_price=Decimal('8.10'), total_amount=Decimal('972.00'), score=Decimal('0.8673'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('8.10'), 'normalized': Decimal('1')}, 'delivery': {'raw': Decimal('0.9000'), 'normalized': Decimal('1')}, 'quality': {'raw': Decimal('0.9320'), 'normalized': Decimal('0.4693877551020408163265306122')}, 'complaint': {'raw': Decimal('0.0000'), 'normalized': Decimal('1')}}})",
+          "SupplierRecommendation(supplier_id=2, supplier_name='北辰制造', unit_price=Decimal('8.90'), total_amount=Decimal('1068.00'), score=Decimal('0.7475'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('8.90'), 'normalized': Decimal('0.75')}, 'delivery': {'raw': Decimal('0.8667'), 'normalized': Decimal('0.8751406074240719910011248594')}, 'quality': {'raw': Decimal('0.9330'), 'normalized': Decimal('0.4897959183673469387755102041')}, 'complaint': {'raw': Decimal('0.0000'), 'normalized': Decimal('1')}}})",
+          "SupplierRecommendation(supplier_id=4, supplier_name='远航物资', unit_price=Decimal('10.50'), total_amount=Decimal('1260.00'), score=Decimal('0.4833'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('10.50'), 'normalized': Decimal('0.25')}, 'delivery': {'raw': Decimal('0.7333'), 'normalized': Decimal('0.3749531308586426696662917135')}, 'quality': {'raw': Decimal('0.9580'), 'normalized': Decimal('1')}, 'complaint': {'raw': Decimal('0.0667'), 'normalized': Decimal('0.333')}}})"
+        ]
+      }
+    },
+    {
+      "id": 143,
+      "run_id": 67,
+      "tool": "create_purchase_draft",
+      "status": "ok",
+      "arguments": {
+        "evidence_refs": [
+          "use_latest_forecast",
+          "use_latest_recommendation"
+        ],
+        "idempotency_key": "remediation-ui-reject-20261028",
+        "items": [
+          {
+            "material_id": 1,
+            "quantity": "120"
+          }
+        ],
+        "supplier_id": 1
+      },
+      "output": {
+        "id": 56,
+        "idempotency_key": "remediation-ui-reject-20261028",
+        "status": "draft",
+        "supplier_id": 1,
+        "total_amount": "972.00"
+      }
+    }
+  ],
+  "buyer_visible_orders": [
+    {
+      "id": 56,
+      "supplier_id": 1,
+      "supplier_name": "华东精工",
+      "status": "rejected",
+      "total_amount": "972.00",
+      "idempotency_key": "remediation-ui-reject-20261028",
+      "version": 3,
+      "formal_order_number": null,
+      "evidence_refs": {
+        "refs": [
+          "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "recommendation:1:1:120:20:5000"
+        ],
+        "forecast_evidence": [
+          {
+            "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+            "material_id": 1,
+            "horizon_days": 30,
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "strategy_type": "hybrid_prophet_or_baseline",
+            "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+            "config_version": "forecast_strategy_v1_20261011",
+            "training_range": {
+              "sample_count": 540,
+              "start_date": "2025-04-18",
+              "end_date": "2026-10-09"
+            },
+            "forecast_range": {
+              "start_date": "2026-10-10",
+              "end_date": "2026-11-08"
+            },
+            "fallback_reason": null,
+            "config": {
+              "config_version": "forecast_strategy_v1_20261011",
+              "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+              "strategy_type": "hybrid_prophet_or_baseline",
+              "fallback_model_name": "moving_average_30d",
+              "prophet": {
+                "name": "prophet_dynamic_weekly_then_yearly",
+                "min_train_days": 90,
+                "train_window_days": null,
+                "daily_seasonality": false,
+                "weekly_seasonality": true,
+                "yearly_seasonality": true,
+                "yearly_min_train_days": 365,
+                "short_history_mode": "weekly_only",
+                "changepoint_prior_scale": 0.05,
+                "seasonality_prior_scale": 10.0
+              }
+            },
+            "forecast_demand": "443.11",
+            "shortage_quantity": "406.11",
+            "inventory_version": 1
+          }
+        ]
+      },
+      "items": [
+        {
+          "material_id": 1,
+          "quantity": "120.00",
+          "unit_price": "8.10",
+          "line_amount": "972.00"
+        }
+      ],
+      "created_at": "2026-10-28T07:01:17",
+      "updated_at": "2026-10-28T07:06:43"
+    },
+    {
+      "id": 55,
+      "supplier_id": 1,
+      "supplier_name": "华东精工",
+      "status": "approved",
+      "total_amount": "972.00",
+      "idempotency_key": "remediation-ui-approve-20261028",
+      "version": 3,
+      "formal_order_number": "PO-000055",
+      "evidence_refs": {
+        "refs": [
+          "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "recommendation:1:1:120:20:5000",
+          "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "recommendation:1:1:120:20:5000"
+        ],
+        "forecast_evidence": [
+          {
+            "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+            "material_id": 1,
+            "horizon_days": 30,
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "strategy_type": "hybrid_prophet_or_baseline",
+            "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+            "config_version": "forecast_strategy_v1_20261011",
+            "training_range": {
+              "sample_count": 540,
+              "start_date": "2025-04-18",
+              "end_date": "2026-10-09"
+            },
+            "forecast_range": {
+              "start_date": "2026-10-10",
+              "end_date": "2026-11-08"
+            },
+            "fallback_reason": null,
+            "config": {
+              "config_version": "forecast_strategy_v1_20261011",
+              "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+              "strategy_type": "hybrid_prophet_or_baseline",
+              "fallback_model_name": "moving_average_30d",
+              "prophet": {
+                "name": "prophet_dynamic_weekly_then_yearly",
+                "min_train_days": 90,
+                "train_window_days": null,
+                "daily_seasonality": false,
+                "weekly_seasonality": true,
+                "yearly_seasonality": true,
+                "yearly_min_train_days": 365,
+                "short_history_mode": "weekly_only",
+                "changepoint_prior_scale": 0.05,
+                "seasonality_prior_scale": 10.0
+              }
+            },
+            "forecast_demand": "443.11",
+            "shortage_quantity": "406.11",
+            "inventory_version": 1
+          },
+          {
+            "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+            "material_id": 1,
+            "horizon_days": 30,
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "strategy_type": "hybrid_prophet_or_baseline",
+            "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+            "config_version": "forecast_strategy_v1_20261011",
+            "training_range": {
+              "sample_count": 540,
+              "start_date": "2025-04-18",
+              "end_date": "2026-10-09"
+            },
+            "forecast_range": {
+              "start_date": "2026-10-10",
+              "end_date": "2026-11-08"
+            },
+            "fallback_reason": null,
+            "config": {
+              "config_version": "forecast_strategy_v1_20261011",
+              "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+              "strategy_type": "hybrid_prophet_or_baseline",
+              "fallback_model_name": "moving_average_30d",
+              "prophet": {
+                "name": "prophet_dynamic_weekly_then_yearly",
+                "min_train_days": 90,
+                "train_window_days": null,
+                "daily_seasonality": false,
+                "weekly_seasonality": true,
+                "yearly_seasonality": true,
+                "yearly_min_train_days": 365,
+                "short_history_mode": "weekly_only",
+                "changepoint_prior_scale": 0.05,
+                "seasonality_prior_scale": 10.0
+              }
+            },
+            "forecast_demand": "443.11",
+            "shortage_quantity": "406.11",
+            "inventory_version": 1
+          }
+        ]
+      },
+      "items": [
+        {
+          "material_id": 1,
+          "quantity": "120.00",
+          "unit_price": "8.10",
+          "line_amount": "972.00"
+        }
+      ],
+      "created_at": "2026-10-28T06:59:11",
+      "updated_at": "2026-10-28T07:04:12"
+    }
+  ],
+  "buyer_visible_runs": [
+    {
+      "id": 67,
+      "status": "draft_created",
+      "prompt": "复验驳回和重启恢复。Use material_id 1 directly and forecast next 30 days. Recommend a supplier for 120 units required in 20 days with budget 5000. Create exactly one purchase draft with idempotency_key remediation-ui-reject-20261028 using use_latest_forecast and use_latest_recommendation.",
+      "error": null,
+      "purchase_order_id": 56,
+      "created_at": "2026-10-28T07:01:03",
+      "updated_at": "2026-10-28T07:01:17"
+    },
+    {
+      "id": 66,
+      "status": "draft_created",
+      "prompt": "复验批准流程。Use material_id 1 directly and forecast next 30 days. Recommend a supplier for 120 units required in 20 days with budget 5000. Create exactly one purchase draft with idempotency_key remediation-ui-approve-20261028 using use_latest_forecast and use_latest_recommendation.",
+      "error": null,
+      "purchase_order_id": 55,
+      "created_at": "2026-10-28T06:58:41",
+      "updated_at": "2026-10-28T06:59:11"
+    }
+  ],
+  "api_traces": {
+    "66": [
+      {
+        "id": 137,
+        "run_id": 66,
+        "step_index": 1,
+        "tool_name": "get_demand_forecast",
+        "arguments": {
+          "horizon_days": 30,
+          "material_id": 1
+        },
+        "output": {
+          "config": {
+            "config_version": "forecast_strategy_v1_20261011",
+            "fallback_model_name": "moving_average_30d",
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "prophet": {
+              "changepoint_prior_scale": 0.05,
+              "daily_seasonality": false,
+              "min_train_days": 90,
+              "name": "prophet_dynamic_weekly_then_yearly",
+              "seasonality_prior_scale": 10.0,
+              "short_history_mode": "weekly_only",
+              "train_window_days": null,
+              "weekly_seasonality": true,
+              "yearly_min_train_days": 365,
+              "yearly_seasonality": true
+            },
+            "strategy_type": "hybrid_prophet_or_baseline"
+          },
+          "config_version": "forecast_strategy_v1_20261011",
+          "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "fallback_model_name": "moving_average_30d",
+          "fallback_reason": null,
+          "forecast_demand": "443.11",
+          "forecast_evidence": {
+            "config": {
+              "config_version": "forecast_strategy_v1_20261011",
+              "fallback_model_name": "moving_average_30d",
+              "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+              "prophet": {
+                "changepoint_prior_scale": 0.05,
+                "daily_seasonality": false,
+                "min_train_days": 90,
+                "name": "prophet_dynamic_weekly_then_yearly",
+                "seasonality_prior_scale": 10.0,
+                "short_history_mode": "weekly_only",
+                "train_window_days": null,
+                "weekly_seasonality": true,
+                "yearly_min_train_days": 365,
+                "yearly_seasonality": true
+              },
+              "strategy_type": "hybrid_prophet_or_baseline"
+            },
+            "config_version": "forecast_strategy_v1_20261011",
+            "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+            "fallback_reason": null,
+            "forecast_demand": "443.11",
+            "forecast_range": {
+              "end_date": "2026-11-08",
+              "start_date": "2026-10-10"
+            },
+            "horizon_days": 30,
+            "inventory_version": 1,
+            "material_id": 1,
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+            "shortage_quantity": "406.11",
+            "strategy_type": "hybrid_prophet_or_baseline",
+            "training_range": {
+              "end_date": "2026-10-09",
+              "sample_count": 540,
+              "start_date": "2025-04-18"
+            }
+          },
+          "forecast_range": {
+            "end_date": "2026-11-08",
+            "start_date": "2026-10-10"
+          },
+          "horizon_days": 30,
+          "inventory": {
+            "available_supply": "117.00",
+            "material_id": 1,
+            "on_hand": "134.00",
+            "reserved": "17.00",
+            "version": 1
+          },
+          "material_id": 1,
+          "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+          "notes": [
+            "Phase 1 simplification: confirmed inbound supply is not included.",
+            "Forecast strategy is frozen for course delivery; do not retune without creating a new experiment.",
+            "Hybrid strategy is not a pure Prophet metric.",
+            "The 365-day yearly-seasonality guard is a project engineering strategy, not a Prophet universal requirement."
+          ],
+          "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+          "shortage_quantity": "406.11",
+          "strategy_type": "hybrid_prophet_or_baseline",
+          "tool_name": "get_demand_forecast",
+          "training_range": {
+            "end_date": "2026-10-09",
+            "sample_count": 540,
+            "start_date": "2025-04-18"
+          }
+        },
+        "status": "ok",
+        "error": null,
+        "created_at": "2026-10-28T06:59:11"
+      },
+      {
+        "id": 138,
+        "run_id": 66,
+        "step_index": 2,
+        "tool_name": "get_demand_forecast",
+        "arguments": {
+          "horizon_days": 30,
+          "material_id": 1
+        },
+        "output": {
+          "config": {
+            "config_version": "forecast_strategy_v1_20261011",
+            "fallback_model_name": "moving_average_30d",
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "prophet": {
+              "changepoint_prior_scale": 0.05,
+              "daily_seasonality": false,
+              "min_train_days": 90,
+              "name": "prophet_dynamic_weekly_then_yearly",
+              "seasonality_prior_scale": 10.0,
+              "short_history_mode": "weekly_only",
+              "train_window_days": null,
+              "weekly_seasonality": true,
+              "yearly_min_train_days": 365,
+              "yearly_seasonality": true
+            },
+            "strategy_type": "hybrid_prophet_or_baseline"
+          },
+          "config_version": "forecast_strategy_v1_20261011",
+          "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "fallback_model_name": "moving_average_30d",
+          "fallback_reason": null,
+          "forecast_demand": "443.11",
+          "forecast_evidence": {
+            "config": {
+              "config_version": "forecast_strategy_v1_20261011",
+              "fallback_model_name": "moving_average_30d",
+              "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+              "prophet": {
+                "changepoint_prior_scale": 0.05,
+                "daily_seasonality": false,
+                "min_train_days": 90,
+                "name": "prophet_dynamic_weekly_then_yearly",
+                "seasonality_prior_scale": 10.0,
+                "short_history_mode": "weekly_only",
+                "train_window_days": null,
+                "weekly_seasonality": true,
+                "yearly_min_train_days": 365,
+                "yearly_seasonality": true
+              },
+              "strategy_type": "hybrid_prophet_or_baseline"
+            },
+            "config_version": "forecast_strategy_v1_20261011",
+            "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+            "fallback_reason": null,
+            "forecast_demand": "443.11",
+            "forecast_range": {
+              "end_date": "2026-11-08",
+              "start_date": "2026-10-10"
+            },
+            "horizon_days": 30,
+            "inventory_version": 1,
+            "material_id": 1,
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+            "shortage_quantity": "406.11",
+            "strategy_type": "hybrid_prophet_or_baseline",
+            "training_range": {
+              "end_date": "2026-10-09",
+              "sample_count": 540,
+              "start_date": "2025-04-18"
+            }
+          },
+          "forecast_range": {
+            "end_date": "2026-11-08",
+            "start_date": "2026-10-10"
+          },
+          "horizon_days": 30,
+          "inventory": {
+            "available_supply": "117.00",
+            "material_id": 1,
+            "on_hand": "134.00",
+            "reserved": "17.00",
+            "version": 1
+          },
+          "material_id": 1,
+          "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+          "notes": [
+            "Phase 1 simplification: confirmed inbound supply is not included.",
+            "Forecast strategy is frozen for course delivery; do not retune without creating a new experiment.",
+            "Hybrid strategy is not a pure Prophet metric.",
+            "The 365-day yearly-seasonality guard is a project engineering strategy, not a Prophet universal requirement."
+          ],
+          "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+          "shortage_quantity": "406.11",
+          "strategy_type": "hybrid_prophet_or_baseline",
+          "tool_name": "get_demand_forecast",
+          "training_range": {
+            "end_date": "2026-10-09",
+            "sample_count": 540,
+            "start_date": "2025-04-18"
+          }
+        },
+        "status": "ok",
+        "error": null,
+        "created_at": "2026-10-28T06:59:11"
+      },
+      {
+        "id": 139,
+        "run_id": 66,
+        "step_index": 3,
+        "tool_name": "recommend_suppliers",
+        "arguments": {
+          "budget": "5000",
+          "material_id": 1,
+          "quantity": "120",
+          "required_in_days": 20
+        },
+        "output": {
+          "evidence_ref": "recommendation:1:1:120:20:5000",
+          "excluded": [
+            "ExcludedSupplier(supplier_id=6, supplier_name='恒信工业', reasons=['lead_time_exceeds_required'])",
+            "ExcludedSupplier(supplier_id=7, supplier_name='启明电子', reasons=['lead_time_exceeds_required'])",
+            "ExcludedSupplier(supplier_id=8, supplier_name='海川零件', reasons=['lead_time_exceeds_required'])",
+            "ExcludedSupplier(supplier_id=9, supplier_name='云岭材料', reasons=['lead_time_exceeds_required'])",
+            "ExcludedSupplier(supplier_id=10, supplier_name='停用供应商', reasons=['supplier_inactive', 'lead_time_exceeds_required'])"
+          ],
+          "recommendations": [
+            "SupplierRecommendation(supplier_id=1, supplier_name='华东精工', unit_price=Decimal('8.10'), total_amount=Decimal('972.00'), score=Decimal('0.8673'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('8.10'), 'normalized': Decimal('1')}, 'delivery': {'raw': Decimal('0.9000'), 'normalized': Decimal('1')}, 'quality': {'raw': Decimal('0.9320'), 'normalized': Decimal('0.4693877551020408163265306122')}, 'complaint': {'raw': Decimal('0.0000'), 'normalized': Decimal('1')}}})",
+            "SupplierRecommendation(supplier_id=2, supplier_name='北辰制造', unit_price=Decimal('8.90'), total_amount=Decimal('1068.00'), score=Decimal('0.7475'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('8.90'), 'normalized': Decimal('0.75')}, 'delivery': {'raw': Decimal('0.8667'), 'normalized': Decimal('0.8751406074240719910011248594')}, 'quality': {'raw': Decimal('0.9330'), 'normalized': Decimal('0.4897959183673469387755102041')}, 'complaint': {'raw': Decimal('0.0000'), 'normalized': Decimal('1')}}})",
+            "SupplierRecommendation(supplier_id=4, supplier_name='远航物资', unit_price=Decimal('10.50'), total_amount=Decimal('1260.00'), score=Decimal('0.4833'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('10.50'), 'normalized': Decimal('0.25')}, 'delivery': {'raw': Decimal('0.7333'), 'normalized': Decimal('0.3749531308586426696662917135')}, 'quality': {'raw': Decimal('0.9580'), 'normalized': Decimal('1')}, 'complaint': {'raw': Decimal('0.0667'), 'normalized': Decimal('0.333')}}})"
+          ]
+        },
+        "status": "ok",
+        "error": null,
+        "created_at": "2026-10-28T06:59:11"
+      },
+      {
+        "id": 140,
+        "run_id": 66,
+        "step_index": 4,
+        "tool_name": "create_purchase_draft",
+        "arguments": {
+          "evidence_refs": [
+            "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+            "recommendation:1:1:120:20:5000",
+            "use_latest_forecast",
+            "use_latest_recommendation"
+          ],
+          "idempotency_key": "remediation-ui-approve-20261028",
+          "items": [
+            {
+              "material_id": 1,
+              "quantity": "120"
+            }
+          ],
+          "supplier_id": 1
+        },
+        "output": {
+          "id": 55,
+          "idempotency_key": "remediation-ui-approve-20261028",
+          "status": "draft",
+          "supplier_id": 1,
+          "total_amount": "972.00"
+        },
+        "status": "ok",
+        "error": null,
+        "created_at": "2026-10-28T06:59:11"
+      }
+    ],
+    "67": [
+      {
+        "id": 141,
+        "run_id": 67,
+        "step_index": 1,
+        "tool_name": "get_demand_forecast",
+        "arguments": {
+          "horizon_days": 30,
+          "material_id": 1
+        },
+        "output": {
+          "config": {
+            "config_version": "forecast_strategy_v1_20261011",
+            "fallback_model_name": "moving_average_30d",
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "prophet": {
+              "changepoint_prior_scale": 0.05,
+              "daily_seasonality": false,
+              "min_train_days": 90,
+              "name": "prophet_dynamic_weekly_then_yearly",
+              "seasonality_prior_scale": 10.0,
+              "short_history_mode": "weekly_only",
+              "train_window_days": null,
+              "weekly_seasonality": true,
+              "yearly_min_train_days": 365,
+              "yearly_seasonality": true
+            },
+            "strategy_type": "hybrid_prophet_or_baseline"
+          },
+          "config_version": "forecast_strategy_v1_20261011",
+          "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+          "fallback_model_name": "moving_average_30d",
+          "fallback_reason": null,
+          "forecast_demand": "443.11",
+          "forecast_evidence": {
+            "config": {
+              "config_version": "forecast_strategy_v1_20261011",
+              "fallback_model_name": "moving_average_30d",
+              "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+              "prophet": {
+                "changepoint_prior_scale": 0.05,
+                "daily_seasonality": false,
+                "min_train_days": 90,
+                "name": "prophet_dynamic_weekly_then_yearly",
+                "seasonality_prior_scale": 10.0,
+                "short_history_mode": "weekly_only",
+                "train_window_days": null,
+                "weekly_seasonality": true,
+                "yearly_min_train_days": 365,
+                "yearly_seasonality": true
+              },
+              "strategy_type": "hybrid_prophet_or_baseline"
+            },
+            "config_version": "forecast_strategy_v1_20261011",
+            "evidence_ref": "forecast:1:30:inventory-v1:forecast_strategy_v1_20261011:prophet_dynamic_weekly_then_yearly:train-end-2026-10-09",
+            "fallback_reason": null,
+            "forecast_demand": "443.11",
+            "forecast_range": {
+              "end_date": "2026-11-08",
+              "start_date": "2026-10-10"
+            },
+            "horizon_days": 30,
+            "inventory_version": 1,
+            "material_id": 1,
+            "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+            "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+            "shortage_quantity": "406.11",
+            "strategy_type": "hybrid_prophet_or_baseline",
+            "training_range": {
+              "end_date": "2026-10-09",
+              "sample_count": 540,
+              "start_date": "2025-04-18"
+            }
+          },
+          "forecast_range": {
+            "end_date": "2026-11-08",
+            "start_date": "2026-10-10"
+          },
+          "horizon_days": 30,
+          "inventory": {
+            "available_supply": "117.00",
+            "material_id": 1,
+            "on_hand": "134.00",
+            "reserved": "17.00",
+            "version": 1
+          },
+          "material_id": 1,
+          "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+          "notes": [
+            "Phase 1 simplification: confirmed inbound supply is not included.",
+            "Forecast strategy is frozen for course delivery; do not retune without creating a new experiment.",
+            "Hybrid strategy is not a pure Prophet metric.",
+            "The 365-day yearly-seasonality guard is a project engineering strategy, not a Prophet universal requirement."
+          ],
+          "selected_model_name": "prophet_dynamic_weekly_then_yearly",
+          "shortage_quantity": "406.11",
+          "strategy_type": "hybrid_prophet_or_baseline",
+          "tool_name": "get_demand_forecast",
+          "training_range": {
+            "end_date": "2026-10-09",
+            "sample_count": 540,
+            "start_date": "2025-04-18"
+          }
+        },
+        "status": "ok",
+        "error": null,
+        "created_at": "2026-10-28T07:01:17"
+      },
+      {
+        "id": 142,
+        "run_id": 67,
+        "step_index": 2,
+        "tool_name": "recommend_suppliers",
+        "arguments": {
+          "budget": "5000",
+          "material_id": 1,
+          "quantity": "120",
+          "required_in_days": 20
+        },
+        "output": {
+          "evidence_ref": "recommendation:1:1:120:20:5000",
+          "excluded": [
+            "ExcludedSupplier(supplier_id=6, supplier_name='恒信工业', reasons=['lead_time_exceeds_required'])",
+            "ExcludedSupplier(supplier_id=7, supplier_name='启明电子', reasons=['lead_time_exceeds_required'])",
+            "ExcludedSupplier(supplier_id=8, supplier_name='海川零件', reasons=['lead_time_exceeds_required'])",
+            "ExcludedSupplier(supplier_id=9, supplier_name='云岭材料', reasons=['lead_time_exceeds_required'])",
+            "ExcludedSupplier(supplier_id=10, supplier_name='停用供应商', reasons=['supplier_inactive', 'lead_time_exceeds_required'])"
+          ],
+          "recommendations": [
+            "SupplierRecommendation(supplier_id=1, supplier_name='华东精工', unit_price=Decimal('8.10'), total_amount=Decimal('972.00'), score=Decimal('0.8673'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('8.10'), 'normalized': Decimal('1')}, 'delivery': {'raw': Decimal('0.9000'), 'normalized': Decimal('1')}, 'quality': {'raw': Decimal('0.9320'), 'normalized': Decimal('0.4693877551020408163265306122')}, 'complaint': {'raw': Decimal('0.0000'), 'normalized': Decimal('1')}}})",
+            "SupplierRecommendation(supplier_id=2, supplier_name='北辰制造', unit_price=Decimal('8.90'), total_amount=Decimal('1068.00'), score=Decimal('0.7475'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('8.90'), 'normalized': Decimal('0.75')}, 'delivery': {'raw': Decimal('0.8667'), 'normalized': Decimal('0.8751406074240719910011248594')}, 'quality': {'raw': Decimal('0.9330'), 'normalized': Decimal('0.4897959183673469387755102041')}, 'complaint': {'raw': Decimal('0.0000'), 'normalized': Decimal('1')}}})",
+            "SupplierRecommendation(supplier_id=4, supplier_name='远航物资', unit_price=Decimal('10.50'), total_amount=Decimal('1260.00'), score=Decimal('0.4833'), evidence={'weights': {'price': Decimal('0.35'), 'delivery': Decimal('0.30'), 'quality': Decimal('0.25'), 'complaint': Decimal('0.10')}, 'score_components': {'price': {'raw': Decimal('10.50'), 'normalized': Decimal('0.25')}, 'delivery': {'raw': Decimal('0.7333'), 'normalized': Decimal('0.3749531308586426696662917135')}, 'quality': {'raw': Decimal('0.9580'), 'normalized': Decimal('1')}, 'complaint': {'raw': Decimal('0.0667'), 'normalized': Decimal('0.333')}}})"
+          ]
+        },
+        "status": "ok",
+        "error": null,
+        "created_at": "2026-10-28T07:01:17"
+      },
+      {
+        "id": 143,
+        "run_id": 67,
+        "step_index": 3,
+        "tool_name": "create_purchase_draft",
+        "arguments": {
+          "evidence_refs": [
+            "use_latest_forecast",
+            "use_latest_recommendation"
+          ],
+          "idempotency_key": "remediation-ui-reject-20261028",
+          "items": [
+            {
+              "material_id": 1,
+              "quantity": "120"
+            }
+          ],
+          "supplier_id": 1
+        },
+        "output": {
+          "id": 56,
+          "idempotency_key": "remediation-ui-reject-20261028",
+          "status": "draft",
+          "supplier_id": 1,
+          "total_amount": "972.00"
+        },
+        "status": "ok",
+        "error": null,
+        "created_at": "2026-10-28T07:01:17"
+      }
+    ]
+  }
+}

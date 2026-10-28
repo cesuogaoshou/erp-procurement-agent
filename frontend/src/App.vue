@@ -150,9 +150,9 @@
               <el-table-column prop="formal_order_number" label="正式单号" width="150" />
               <el-table-column label="操作" width="280">
                 <template #default="{ row }">
-                  <el-button size="small" :disabled="row.status !== 'draft' || actionBusy" @click="submitOrder(row)">提交</el-button>
-                  <el-button size="small" type="success" :disabled="row.status !== 'pending_approval' || actionBusy" @click="approveOrder(row)">批准</el-button>
-                  <el-button size="small" type="danger" :disabled="row.status !== 'pending_approval' || actionBusy" @click="rejectOrder(row)">驳回</el-button>
+                  <el-button size="small" :disabled="session?.role !== 'buyer' || row.status !== 'draft' || actionBusy" @click="submitOrder(row)">提交</el-button>
+                  <el-button size="small" type="success" :disabled="session?.role !== 'approver' || row.status !== 'pending_approval' || actionBusy" @click="approveOrder(row)">批准</el-button>
+                  <el-button size="small" type="danger" :disabled="session?.role !== 'approver' || row.status !== 'pending_approval' || actionBusy" @click="rejectOrder(row)">驳回</el-button>
                 </template>
               </el-table-column>
             </el-table>

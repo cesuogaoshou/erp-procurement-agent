@@ -1,0 +1,891 @@
+{
+  "generated_at": "2026-10-12",
+  "dataset": "simulated_demo_seed_20261010",
+  "horizon_days": 30,
+  "baseline_reference": "reports/generated/forecast_diagnostics/baseline_20261011",
+  "row_output": "reports\\generated\\forecast_diagnostics\\forecast_window_diagnostics.csv",
+  "curve_outputs": [
+    "reports\\generated\\forecast_diagnostics\\curves\\material_1_cutoff_2025-06-02.png",
+    "reports\\generated\\forecast_diagnostics\\curves\\material_1_cutoff_2025-08-31.png",
+    "reports\\generated\\forecast_diagnostics\\curves\\material_1_cutoff_2026-06-27.png"
+  ],
+  "implementation_checks": {
+    "window_count": 160,
+    "issues": [],
+    "demand_rows_checked": 5400,
+    "checks": [
+      "train dates sorted before holdout",
+      "holdout length equals horizon",
+      "train and holdout daily continuity",
+      "negative Prophet predictions clipped before 30-day sum",
+      "shortage formula reused from backend calculate_shortage"
+    ]
+  },
+  "inventory_scope": {
+    "experiment_type": "fixed_inventory_scenario",
+    "snapshot_date": "2026-10-10",
+    "inventory_row_count": 10,
+    "can_reconstruct_historical_inventory": false,
+    "reason": "The available seed/export data contains one static inventory row per material and no dated historical inventory movement table. Therefore the shortage evaluation is not a true historical inventory backtest."
+  },
+  "split_usage": {
+    "declared_splits": {
+      "train": {
+        "start_date": "2025-04-18",
+        "end_date": "2026-06-11"
+      },
+      "validation": {
+        "start_date": "2026-06-12",
+        "end_date": "2026-08-10"
+      },
+      "test": {
+        "start_date": "2026-08-11",
+        "end_date": "2026-10-09"
+      }
+    },
+    "window_overlap_counts": {
+      "overlaps_test_holdout": 10,
+      "overlaps_validation_holdout": 10,
+      "test_holdout_with_test_training": 10,
+      "train_holdout": 120,
+      "validation_holdout": 10
+    },
+    "unused_tail_days_for_30d_stride": {
+      "start": "2026-09-25",
+      "end": "2026-10-09",
+      "note": "The 30-day stride cannot form another complete 30-day holdout before data ends."
+    }
+  },
+  "leakage_interpretation": {
+    "rolling_window_rule": "Every diagnostic row keeps train_end before holdout_start for that row.",
+    "not_automatic_leakage": "A later rolling cutoff may train on calendar dates that were part of an older declared test interval; that is not future leakage for the later cutoff when the dates are already observed before holdout_start.",
+    "tuning_limitation": "Because diagnostics and validation-grid comparisons inspected these windows, they should be reported as exploratory evidence rather than a fresh independent final-test result."
+  },
+  "data_shape": {
+    "1": {
+      "row_count": 540,
+      "start_date": "2025-04-18",
+      "end_date": "2026-10-09",
+      "min_daily": "7.00",
+      "max_daily": "21.00",
+      "first_30d_sum": "321.00",
+      "last_30d_sum": "449.00",
+      "last_vs_first_30d_delta": "128.00"
+    },
+    "2": {
+      "row_count": 540,
+      "start_date": "2025-04-18",
+      "end_date": "2026-10-09",
+      "min_daily": "8.00",
+      "max_daily": "23.00",
+      "first_30d_sum": "368.00",
+      "last_30d_sum": "467.00",
+      "last_vs_first_30d_delta": "99.00"
+    },
+    "3": {
+      "row_count": 540,
+      "start_date": "2025-04-18",
+      "end_date": "2026-10-09",
+      "min_daily": "9.00",
+      "max_daily": "23.00",
+      "first_30d_sum": "384.00",
+      "last_30d_sum": "506.00",
+      "last_vs_first_30d_delta": "122.00"
+    },
+    "4": {
+      "row_count": 540,
+      "start_date": "2025-04-18",
+      "end_date": "2026-10-09",
+      "min_daily": "10.00",
+      "max_daily": "25.00",
+      "first_30d_sum": "414.00",
+      "last_30d_sum": "530.00",
+      "last_vs_first_30d_delta": "116.00"
+    },
+    "5": {
+      "row_count": 540,
+      "start_date": "2025-04-18",
+      "end_date": "2026-10-09",
+      "min_daily": "11.00",
+      "max_daily": "25.00",
+      "first_30d_sum": "457.00",
+      "last_30d_sum": "556.00",
+      "last_vs_first_30d_delta": "99.00"
+    },
+    "6": {
+      "row_count": 540,
+      "start_date": "2025-04-18",
+      "end_date": "2026-10-09",
+      "min_daily": "12.00",
+      "max_daily": "40.00",
+      "first_30d_sum": "522.00",
+      "last_30d_sum": "624.00",
+      "last_vs_first_30d_delta": "102.00"
+    },
+    "7": {
+      "row_count": 540,
+      "start_date": "2025-04-18",
+      "end_date": "2026-10-09",
+      "min_daily": "13.00",
+      "max_daily": "28.00",
+      "first_30d_sum": "493.00",
+      "last_30d_sum": "612.00",
+      "last_vs_first_30d_delta": "119.00"
+    },
+    "8": {
+      "row_count": 540,
+      "start_date": "2025-04-18",
+      "end_date": "2026-10-09",
+      "min_daily": "14.00",
+      "max_daily": "29.00",
+      "first_30d_sum": "519.00",
+      "last_30d_sum": "644.00",
+      "last_vs_first_30d_delta": "125.00"
+    },
+    "9": {
+      "row_count": 540,
+      "start_date": "2025-04-18",
+      "end_date": "2026-10-09",
+      "min_daily": "15.00",
+      "max_daily": "43.00",
+      "first_30d_sum": "625.00",
+      "last_30d_sum": "710.00",
+      "last_vs_first_30d_delta": "85.00"
+    },
+    "10": {
+      "row_count": 540,
+      "start_date": "2025-04-18",
+      "end_date": "2026-10-09",
+      "min_daily": "16.00",
+      "max_daily": "41.00",
+      "first_30d_sum": "649.00",
+      "last_30d_sum": "760.00",
+      "last_vs_first_30d_delta": "111.00"
+    }
+  },
+  "service_strategy_config": {
+    "config_version": "forecast_strategy_v1_20261011",
+    "model_name": "hybrid_dynamic_prophet_or_moving_average_30d",
+    "strategy_type": "hybrid_prophet_or_baseline",
+    "fallback_model_name": "moving_average_30d",
+    "prophet": {
+      "name": "prophet_dynamic_weekly_then_yearly",
+      "min_train_days": 90,
+      "train_window_days": null,
+      "daily_seasonality": false,
+      "weekly_seasonality": true,
+      "yearly_seasonality": true,
+      "yearly_min_train_days": 365,
+      "short_history_mode": "weekly_only",
+      "changepoint_prior_scale": 0.05,
+      "seasonality_prior_scale": 10.0
+    }
+  },
+  "selected_prophet_config": {
+    "name": "prophet_dynamic_weekly_then_yearly",
+    "min_train_days": 90,
+    "train_window_days": null,
+    "daily_seasonality": false,
+    "weekly_seasonality": true,
+    "yearly_seasonality": true,
+    "yearly_min_train_days": 365,
+    "short_history_mode": "weekly_only",
+    "changepoint_prior_scale": 0.05,
+    "seasonality_prior_scale": 10.0
+  },
+  "validation_grid": [
+    {
+      "config": {
+        "name": "weekly_yearly_min365",
+        "min_train_days": 365,
+        "train_window_days": null,
+        "daily_seasonality": false,
+        "weekly_seasonality": true,
+        "yearly_seasonality": true,
+        "yearly_min_train_days": 365,
+        "short_history_mode": "weekly_only",
+        "changepoint_prior_scale": 0.05,
+        "seasonality_prior_scale": 10.0
+      },
+      "runtime_ms": 4665,
+      "failures": [],
+      "demand_metrics": {
+        "sample_count": 10,
+        "positive_actual_count": 10,
+        "zero_actual_count": 0,
+        "mape_coverage_percent": "100.00",
+        "mape_percent": "2.07",
+        "mae": "13.82",
+        "wape_percent": "2.13"
+      }
+    },
+    {
+      "config": {
+        "name": "prophet_dynamic_weekly_then_yearly",
+        "min_train_days": 90,
+        "train_window_days": null,
+        "daily_seasonality": false,
+        "weekly_seasonality": true,
+        "yearly_seasonality": true,
+        "yearly_min_train_days": 365,
+        "short_history_mode": "weekly_only",
+        "changepoint_prior_scale": 0.05,
+        "seasonality_prior_scale": 10.0
+      },
+      "runtime_ms": 4634,
+      "failures": [],
+      "demand_metrics": {
+        "sample_count": 10,
+        "positive_actual_count": 10,
+        "zero_actual_count": 0,
+        "mape_coverage_percent": "100.00",
+        "mape_percent": "2.07",
+        "mae": "13.82",
+        "wape_percent": "2.13"
+      }
+    },
+    {
+      "config": {
+        "name": "weekly_only_min90",
+        "min_train_days": 90,
+        "train_window_days": null,
+        "daily_seasonality": false,
+        "weekly_seasonality": true,
+        "yearly_seasonality": false,
+        "yearly_min_train_days": 365,
+        "short_history_mode": "weekly_only",
+        "changepoint_prior_scale": 0.05,
+        "seasonality_prior_scale": 10.0
+      },
+      "runtime_ms": 4091,
+      "failures": [],
+      "demand_metrics": {
+        "sample_count": 10,
+        "positive_actual_count": 10,
+        "zero_actual_count": 0,
+        "mape_coverage_percent": "100.00",
+        "mape_percent": "12.69",
+        "mae": "82.10",
+        "wape_percent": "12.63"
+      }
+    },
+    {
+      "config": {
+        "name": "trend_only_min180",
+        "min_train_days": 180,
+        "train_window_days": null,
+        "daily_seasonality": false,
+        "weekly_seasonality": false,
+        "yearly_seasonality": false,
+        "yearly_min_train_days": 365,
+        "short_history_mode": "weekly_only",
+        "changepoint_prior_scale": 0.05,
+        "seasonality_prior_scale": 10.0
+      },
+      "runtime_ms": 4095,
+      "failures": [],
+      "demand_metrics": {
+        "sample_count": 10,
+        "positive_actual_count": 10,
+        "zero_actual_count": 0,
+        "mape_coverage_percent": "100.00",
+        "mape_percent": "14.89",
+        "mae": "95.28",
+        "wape_percent": "14.66"
+      }
+    },
+    {
+      "config": {
+        "name": "weekly_only_recent180",
+        "min_train_days": 180,
+        "train_window_days": 180,
+        "daily_seasonality": false,
+        "weekly_seasonality": true,
+        "yearly_seasonality": false,
+        "yearly_min_train_days": 365,
+        "short_history_mode": "weekly_only",
+        "changepoint_prior_scale": 0.05,
+        "seasonality_prior_scale": 10.0
+      },
+      "runtime_ms": 3959,
+      "failures": [],
+      "demand_metrics": {
+        "sample_count": 10,
+        "positive_actual_count": 10,
+        "zero_actual_count": 0,
+        "mape_coverage_percent": "100.00",
+        "mape_percent": "11.75",
+        "mae": "75.97",
+        "wape_percent": "11.69"
+      }
+    }
+  ],
+  "model_diagnostics": {
+    "moving_average": {
+      "demand_metrics": {
+        "sample_count": 160,
+        "positive_actual_count": 160,
+        "zero_actual_count": 0,
+        "mape_coverage_percent": "100.00",
+        "mape_percent": "5.18",
+        "mae": "28.37",
+        "wape_percent": "5.18"
+      },
+      "shortage_metrics": {
+        "sample_count": 160,
+        "positive_actual_count": 160,
+        "zero_actual_count": 0,
+        "mape_coverage_percent": "100.00",
+        "mape_percent": "5.75",
+        "mae": "28.37",
+        "wape_percent": "5.59"
+      },
+      "zero_shortage_coverage": {
+        "status": "not_applicable",
+        "actual_zero_count": 0,
+        "predicted_zero_count": 0,
+        "coverage_percent": null
+      }
+    },
+    "prophet_successful_windows": {
+      "demand_metrics": {
+        "sample_count": 140,
+        "positive_actual_count": 140,
+        "zero_actual_count": 0,
+        "mape_coverage_percent": "100.00",
+        "mape_percent": "4.75",
+        "mae": "24.39",
+        "wape_percent": "4.43"
+      },
+      "shortage_metrics": {
+        "sample_count": 140,
+        "positive_actual_count": 140,
+        "zero_actual_count": 0,
+        "mape_coverage_percent": "100.00",
+        "mape_percent": "5.34",
+        "mae": "24.39",
+        "wape_percent": "4.77"
+      },
+      "zero_shortage_coverage": {
+        "status": "not_applicable",
+        "actual_zero_count": 0,
+        "predicted_zero_count": 0,
+        "coverage_percent": null
+      }
+    },
+    "prophet_failure_count": 20,
+    "prophet_failure_reasons": {
+      "insufficient_history": 20
+    },
+    "by_cutoff": [
+      {
+        "group": "2025-06-02",
+        "sample_count": 10,
+        "avg_train_sample_count": "45.00",
+        "moving_average_demand_mape_percent": "2.72",
+        "prophet_ok_count": 0,
+        "prophet_demand_mape_percent": null
+      },
+      {
+        "group": "2025-07-02",
+        "sample_count": 10,
+        "avg_train_sample_count": "75.00",
+        "moving_average_demand_mape_percent": "12.26",
+        "prophet_ok_count": 0,
+        "prophet_demand_mape_percent": null
+      },
+      {
+        "group": "2025-08-01",
+        "sample_count": 10,
+        "avg_train_sample_count": "105.00",
+        "moving_average_demand_mape_percent": "1.84",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "5.72"
+      },
+      {
+        "group": "2025-08-31",
+        "sample_count": 10,
+        "avg_train_sample_count": "135.00",
+        "moving_average_demand_mape_percent": "10.95",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "17.86"
+      },
+      {
+        "group": "2025-09-30",
+        "sample_count": 10,
+        "avg_train_sample_count": "165.00",
+        "moving_average_demand_mape_percent": "2.45",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "4.55"
+      },
+      {
+        "group": "2025-10-30",
+        "sample_count": 10,
+        "avg_train_sample_count": "195.00",
+        "moving_average_demand_mape_percent": "1.85",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "3.56"
+      },
+      {
+        "group": "2025-11-29",
+        "sample_count": 10,
+        "avg_train_sample_count": "225.00",
+        "moving_average_demand_mape_percent": "5.41",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "6.77"
+      },
+      {
+        "group": "2025-12-29",
+        "sample_count": 10,
+        "avg_train_sample_count": "255.00",
+        "moving_average_demand_mape_percent": "2.72",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "5.75"
+      },
+      {
+        "group": "2026-01-28",
+        "sample_count": 10,
+        "avg_train_sample_count": "285.00",
+        "moving_average_demand_mape_percent": "1.94",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "2.26"
+      },
+      {
+        "group": "2026-02-27",
+        "sample_count": 10,
+        "avg_train_sample_count": "315.00",
+        "moving_average_demand_mape_percent": "2.74",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "3.36"
+      },
+      {
+        "group": "2026-03-29",
+        "sample_count": 10,
+        "avg_train_sample_count": "345.00",
+        "moving_average_demand_mape_percent": "3.22",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "1.44"
+      },
+      {
+        "group": "2026-04-28",
+        "sample_count": 10,
+        "avg_train_sample_count": "375.00",
+        "moving_average_demand_mape_percent": "2.72",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "6.00"
+      },
+      {
+        "group": "2026-05-28",
+        "sample_count": 10,
+        "avg_train_sample_count": "405.00",
+        "moving_average_demand_mape_percent": "2.00",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "2.96"
+      },
+      {
+        "group": "2026-06-27",
+        "sample_count": 10,
+        "avg_train_sample_count": "435.00",
+        "moving_average_demand_mape_percent": "14.27",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "2.07"
+      },
+      {
+        "group": "2026-07-27",
+        "sample_count": 10,
+        "avg_train_sample_count": "465.00",
+        "moving_average_demand_mape_percent": "2.63",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "2.32"
+      },
+      {
+        "group": "2026-08-26",
+        "sample_count": 10,
+        "avg_train_sample_count": "495.00",
+        "moving_average_demand_mape_percent": "13.13",
+        "prophet_ok_count": 10,
+        "prophet_demand_mape_percent": "1.83"
+      }
+    ],
+    "by_material": [
+      {
+        "group": "1",
+        "sample_count": 16,
+        "avg_train_sample_count": "270.00",
+        "moving_average_demand_mape_percent": "6.92",
+        "prophet_ok_count": 14,
+        "prophet_demand_mape_percent": "5.80"
+      },
+      {
+        "group": "2",
+        "sample_count": 16,
+        "avg_train_sample_count": "270.00",
+        "moving_average_demand_mape_percent": "6.14",
+        "prophet_ok_count": 14,
+        "prophet_demand_mape_percent": "7.55"
+      },
+      {
+        "group": "3",
+        "sample_count": 16,
+        "avg_train_sample_count": "270.00",
+        "moving_average_demand_mape_percent": "5.80",
+        "prophet_ok_count": 14,
+        "prophet_demand_mape_percent": "5.29"
+      },
+      {
+        "group": "4",
+        "sample_count": 16,
+        "avg_train_sample_count": "270.00",
+        "moving_average_demand_mape_percent": "5.37",
+        "prophet_ok_count": 14,
+        "prophet_demand_mape_percent": "5.39"
+      },
+      {
+        "group": "5",
+        "sample_count": 16,
+        "avg_train_sample_count": "270.00",
+        "moving_average_demand_mape_percent": "4.81",
+        "prophet_ok_count": 14,
+        "prophet_demand_mape_percent": "3.89"
+      },
+      {
+        "group": "6",
+        "sample_count": 16,
+        "avg_train_sample_count": "270.00",
+        "moving_average_demand_mape_percent": "5.63",
+        "prophet_ok_count": 14,
+        "prophet_demand_mape_percent": "4.10"
+      },
+      {
+        "group": "7",
+        "sample_count": 16,
+        "avg_train_sample_count": "270.00",
+        "moving_average_demand_mape_percent": "4.76",
+        "prophet_ok_count": 14,
+        "prophet_demand_mape_percent": "4.26"
+      },
+      {
+        "group": "8",
+        "sample_count": 16,
+        "avg_train_sample_count": "270.00",
+        "moving_average_demand_mape_percent": "4.20",
+        "prophet_ok_count": 14,
+        "prophet_demand_mape_percent": "3.69"
+      },
+      {
+        "group": "9",
+        "sample_count": 16,
+        "avg_train_sample_count": "270.00",
+        "moving_average_demand_mape_percent": "4.37",
+        "prophet_ok_count": 14,
+        "prophet_demand_mape_percent": "3.62"
+      },
+      {
+        "group": "10",
+        "sample_count": 16,
+        "avg_train_sample_count": "270.00",
+        "moving_average_demand_mape_percent": "3.81",
+        "prophet_ok_count": 14,
+        "prophet_demand_mape_percent": "3.87"
+      }
+    ],
+    "worst_prophet_windows": [
+      {
+        "material_id": 1,
+        "cutoff_date": "2025-08-31",
+        "train_start": "2025-04-18",
+        "train_end": "2025-08-30",
+        "holdout_start": "2025-08-31",
+        "holdout_end": "2025-09-29",
+        "split_overlap": "train_holdout",
+        "train_sample_count": 135,
+        "holdout_sample_count": 30,
+        "available_supply": "117.00",
+        "safety_stock": "80.00",
+        "actual_demand": "356.00",
+        "moving_average_demand": "423.00",
+        "moving_average_demand_error": "67.00",
+        "moving_average_demand_ape_percent": "18.82",
+        "actual_shortage": "319.00",
+        "moving_average_shortage": "386.00",
+        "moving_average_shortage_error": "67.00",
+        "moving_average_shortage_ape_percent": "21.00",
+        "prophet_status": "ok",
+        "prophet_demand": "461.56",
+        "prophet_demand_error": "105.56",
+        "prophet_demand_ape_percent": "29.65",
+        "prophet_shortage": "424.56",
+        "prophet_shortage_error": "105.56",
+        "prophet_shortage_ape_percent": "33.09",
+        "prophet_error": ""
+      },
+      {
+        "material_id": 3,
+        "cutoff_date": "2025-08-31",
+        "train_start": "2025-04-18",
+        "train_end": "2025-08-30",
+        "holdout_start": "2025-08-31",
+        "holdout_end": "2025-09-29",
+        "split_overlap": "train_holdout",
+        "train_sample_count": 135,
+        "holdout_sample_count": 30,
+        "available_supply": "62.00",
+        "safety_stock": "30.00",
+        "actual_demand": "408.00",
+        "moving_average_demand": "473.00",
+        "moving_average_demand_error": "65.00",
+        "moving_average_demand_ape_percent": "15.93",
+        "actual_shortage": "376.00",
+        "moving_average_shortage": "441.00",
+        "moving_average_shortage_error": "65.00",
+        "moving_average_shortage_ape_percent": "17.29",
+        "prophet_status": "ok",
+        "prophet_demand": "512.80",
+        "prophet_demand_error": "104.80",
+        "prophet_demand_ape_percent": "25.69",
+        "prophet_shortage": "480.80",
+        "prophet_shortage_error": "104.80",
+        "prophet_shortage_ape_percent": "27.87",
+        "prophet_error": ""
+      },
+      {
+        "material_id": 2,
+        "cutoff_date": "2025-08-31",
+        "train_start": "2025-04-18",
+        "train_end": "2025-08-30",
+        "holdout_start": "2025-08-31",
+        "holdout_end": "2025-09-29",
+        "split_overlap": "train_holdout",
+        "train_sample_count": 135,
+        "holdout_sample_count": 30,
+        "available_supply": "139.00",
+        "safety_stock": "45.00",
+        "actual_demand": "385.00",
+        "moving_average_demand": "441.00",
+        "moving_average_demand_error": "56.00",
+        "moving_average_demand_ape_percent": "14.55",
+        "actual_shortage": "291.00",
+        "moving_average_shortage": "347.00",
+        "moving_average_shortage_error": "56.00",
+        "moving_average_shortage_ape_percent": "19.24",
+        "prophet_status": "ok",
+        "prophet_demand": "476.62",
+        "prophet_demand_error": "91.62",
+        "prophet_demand_ape_percent": "23.80",
+        "prophet_shortage": "382.62",
+        "prophet_shortage_error": "91.62",
+        "prophet_shortage_ape_percent": "31.48",
+        "prophet_error": ""
+      },
+      {
+        "material_id": 7,
+        "cutoff_date": "2025-08-31",
+        "train_start": "2025-04-18",
+        "train_end": "2025-08-30",
+        "holdout_start": "2025-08-31",
+        "holdout_end": "2025-09-29",
+        "split_overlap": "train_holdout",
+        "train_sample_count": 135,
+        "holdout_sample_count": 30,
+        "available_supply": "155.00",
+        "safety_stock": "40.00",
+        "actual_demand": "536.00",
+        "moving_average_demand": "596.00",
+        "moving_average_demand_error": "60.00",
+        "moving_average_demand_ape_percent": "11.19",
+        "actual_shortage": "421.00",
+        "moving_average_shortage": "481.00",
+        "moving_average_shortage_error": "60.00",
+        "moving_average_shortage_ape_percent": "14.25",
+        "prophet_status": "ok",
+        "prophet_demand": "633.89",
+        "prophet_demand_error": "97.89",
+        "prophet_demand_ape_percent": "18.26",
+        "prophet_shortage": "518.89",
+        "prophet_shortage_error": "97.89",
+        "prophet_shortage_ape_percent": "23.25",
+        "prophet_error": ""
+      },
+      {
+        "material_id": 4,
+        "cutoff_date": "2025-08-31",
+        "train_start": "2025-04-18",
+        "train_end": "2025-08-30",
+        "holdout_start": "2025-08-31",
+        "holdout_end": "2025-09-29",
+        "split_overlap": "train_holdout",
+        "train_sample_count": 135,
+        "holdout_sample_count": 30,
+        "available_supply": "102.00",
+        "safety_stock": "25.00",
+        "actual_demand": "448.00",
+        "moving_average_demand": "497.00",
+        "moving_average_demand_error": "49.00",
+        "moving_average_demand_ape_percent": "10.94",
+        "actual_shortage": "371.00",
+        "moving_average_shortage": "420.00",
+        "moving_average_shortage_error": "49.00",
+        "moving_average_shortage_ape_percent": "13.21",
+        "prophet_status": "ok",
+        "prophet_demand": "527.73",
+        "prophet_demand_error": "79.73",
+        "prophet_demand_ape_percent": "17.80",
+        "prophet_shortage": "450.73",
+        "prophet_shortage_error": "79.73",
+        "prophet_shortage_ape_percent": "21.49",
+        "prophet_error": ""
+      },
+      {
+        "material_id": 2,
+        "cutoff_date": "2026-04-28",
+        "train_start": "2025-04-18",
+        "train_end": "2026-04-27",
+        "holdout_start": "2026-04-28",
+        "holdout_end": "2026-05-27",
+        "split_overlap": "train_holdout",
+        "train_sample_count": 375,
+        "holdout_sample_count": 30,
+        "available_supply": "139.00",
+        "safety_stock": "45.00",
+        "actual_demand": "438.00",
+        "moving_average_demand": "412.00",
+        "moving_average_demand_error": "26.00",
+        "moving_average_demand_ape_percent": "5.94",
+        "actual_shortage": "344.00",
+        "moving_average_shortage": "318.00",
+        "moving_average_shortage_error": "26.00",
+        "moving_average_shortage_ape_percent": "7.56",
+        "prophet_status": "ok",
+        "prophet_demand": "370.31",
+        "prophet_demand_error": "67.69",
+        "prophet_demand_ape_percent": "15.45",
+        "prophet_shortage": "276.31",
+        "prophet_shortage_error": "67.69",
+        "prophet_shortage_ape_percent": "19.68",
+        "prophet_error": ""
+      },
+      {
+        "material_id": 8,
+        "cutoff_date": "2025-08-31",
+        "train_start": "2025-04-18",
+        "train_end": "2025-08-30",
+        "holdout_start": "2025-08-31",
+        "holdout_end": "2025-09-29",
+        "split_overlap": "train_holdout",
+        "train_sample_count": 135,
+        "holdout_sample_count": 30,
+        "available_supply": "89.00",
+        "safety_stock": "55.00",
+        "actual_demand": "569.00",
+        "moving_average_demand": "618.00",
+        "moving_average_demand_error": "49.00",
+        "moving_average_demand_ape_percent": "8.61",
+        "actual_shortage": "535.00",
+        "moving_average_shortage": "584.00",
+        "moving_average_shortage_error": "49.00",
+        "moving_average_shortage_ape_percent": "9.16",
+        "prophet_status": "ok",
+        "prophet_demand": "654.80",
+        "prophet_demand_error": "85.80",
+        "prophet_demand_ape_percent": "15.08",
+        "prophet_shortage": "620.80",
+        "prophet_shortage_error": "85.80",
+        "prophet_shortage_ape_percent": "16.04",
+        "prophet_error": ""
+      },
+      {
+        "material_id": 1,
+        "cutoff_date": "2025-12-29",
+        "train_start": "2025-04-18",
+        "train_end": "2025-12-28",
+        "holdout_start": "2025-12-29",
+        "holdout_end": "2026-01-27",
+        "split_overlap": "train_holdout",
+        "train_sample_count": 255,
+        "holdout_sample_count": 30,
+        "available_supply": "117.00",
+        "safety_stock": "80.00",
+        "actual_demand": "396.00",
+        "moving_average_demand": "364.00",
+        "moving_average_demand_error": "32.00",
+        "moving_average_demand_ape_percent": "8.08",
+        "actual_shortage": "359.00",
+        "moving_average_shortage": "327.00",
+        "moving_average_shortage_error": "32.00",
+        "moving_average_shortage_ape_percent": "8.91",
+        "prophet_status": "ok",
+        "prophet_demand": "337.49",
+        "prophet_demand_error": "58.51",
+        "prophet_demand_ape_percent": "14.78",
+        "prophet_shortage": "300.49",
+        "prophet_shortage_error": "58.51",
+        "prophet_shortage_ape_percent": "16.30",
+        "prophet_error": ""
+      },
+      {
+        "material_id": 5,
+        "cutoff_date": "2025-08-01",
+        "train_start": "2025-04-18",
+        "train_end": "2025-07-31",
+        "holdout_start": "2025-08-01",
+        "holdout_end": "2025-08-30",
+        "split_overlap": "train_holdout",
+        "train_sample_count": 105,
+        "holdout_sample_count": 30,
+        "available_supply": "121.00",
+        "safety_stock": "35.00",
+        "actual_demand": "512.00",
+        "moving_average_demand": "537.00",
+        "moving_average_demand_error": "25.00",
+        "moving_average_demand_ape_percent": "4.88",
+        "actual_shortage": "426.00",
+        "moving_average_shortage": "451.00",
+        "moving_average_shortage_error": "25.00",
+        "moving_average_shortage_ape_percent": "5.87",
+        "prophet_status": "ok",
+        "prophet_demand": "583.48",
+        "prophet_demand_error": "71.48",
+        "prophet_demand_ape_percent": "13.96",
+        "prophet_shortage": "497.48",
+        "prophet_shortage_error": "71.48",
+        "prophet_shortage_ape_percent": "16.78",
+        "prophet_error": ""
+      },
+      {
+        "material_id": 10,
+        "cutoff_date": "2025-08-31",
+        "train_start": "2025-04-18",
+        "train_end": "2025-08-30",
+        "holdout_start": "2025-08-31",
+        "holdout_end": "2025-09-29",
+        "split_overlap": "train_holdout",
+        "train_sample_count": 135,
+        "holdout_sample_count": 30,
+        "available_supply": "136.00",
+        "safety_stock": "200.00",
+        "actual_demand": "652.00",
+        "moving_average_demand": "719.00",
+        "moving_average_demand_error": "67.00",
+        "moving_average_demand_ape_percent": "10.28",
+        "actual_shortage": "716.00",
+        "moving_average_shortage": "783.00",
+        "moving_average_shortage_error": "67.00",
+        "moving_average_shortage_ape_percent": "9.36",
+        "prophet_status": "ok",
+        "prophet_demand": "742.93",
+        "prophet_demand_error": "90.93",
+        "prophet_demand_ape_percent": "13.95",
+        "prophet_shortage": "806.93",
+        "prophet_shortage_error": "90.93",
+        "prophet_shortage_ape_percent": "12.70",
+        "prophet_error": ""
+      }
+    ]
+  },
+  "notes": [
+    "Diagnostics use the already-inspected rolling windows; they are not an untouched final test set.",
+    "Training on observed data before a rolling cutoff is distinct from using holdout outcomes for model tuning.",
+    "The frozen demand data and recommendation labels were not regenerated or modified.",
+    "Shortage metrics are a fixed-inventory scenario using the same static 2026-10-10 inventory snapshot for all windows."
+  ]
+}

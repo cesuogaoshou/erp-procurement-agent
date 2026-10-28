@@ -1,5 +1,7 @@
 # Course Acceptance Review
 
+> Latest remediation acceptance (2026-10-28): see `REMEDIATION_ACCEPTANCE_20261028.md`. P1 draft auth/creator ownership and P2 stale MySQL evidence are fixed and revalidated: 82 backend tests passed/3 default skipped, all 3 opt-in MySQL tests passed, frontend build passed, browser approved PO-000055 and rejected #56 after backend restart with identical persisted runs/traces/orders before continuing. The earlier partial-pass discovery is preserved in `LOCAL_ACCEPTANCE_20261028.md`. This closes the requested engineering blockers; forecasting scope limitations, personal report fields and an unchanged delivery package remain. Older statements below, including missing-report status and historical test counts, must be interpreted at their recorded dates.
+
 Review date: 2026-10-12  
 Reference baseline: `39b749f chore: prepare delivery reproducibility`  
 Scope: acceptance review only. No business behavior, model parameters, frozen labels, or source algorithms were changed.

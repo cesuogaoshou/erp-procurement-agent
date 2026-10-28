@@ -1,5 +1,9 @@
 # Roadmap
 
+## Latest Acceptance Override: 2026-10-28
+
+Requested draft-security/MySQL remediation and page acceptance are **passed**; see `docs/REMEDIATION_ACCEPTANCE_20261028.md`. Phase 3 permission remediation is closed: authenticated buyer creation, transactional creator audit, owner-only submission/replay, and Agent replay audit deduplication are covered by regressions. Fresh backend suite: 82 passed/3 opt-in skipped; MySQL suite: 3 passed, including exactly one concurrent approval, one duplicate approval record, explicit wrong-version conflict, rollback to pending, and reconnect query. Browser approved PO-000055 and rejected #56 after backend restart; two runs and seven traces survived unchanged. The earlier failure report remains in `docs/LOCAL_ACCEPTANCE_20261028.md`. Personal report fields and package refresh remain outside this slice, and frozen forecasting limitations still apply.
+
 ## Phase 1: 2026-10-10 to 2026-10-14
 
 Goal: complete deterministic backend and algorithm foundation without LLM dependency.

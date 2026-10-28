@@ -1,0 +1,2827 @@
+{
+  "run_name": "supplier_recommendation_eval",
+  "data_version": "demo_seed_20261010",
+  "seed": 20261010,
+  "reproduce_command": "python -m backend.evaluation.run_supplier_eval",
+  "outputs": {
+    "frozen_cases": "data/raw/recommendation_cases.csv",
+    "challenge_cases": "data/raw/recommendation_challenge_cases.csv",
+    "result": "reports/generated/supplier_eval.json"
+  },
+  "frozen": {
+    "dataset_name": "supplier_recommendation_frozen",
+    "dataset_version": "frozen_v1",
+    "case_count": 60,
+    "label_source": "scenario_thresholds_v1",
+    "label_definition": {
+      "source": "scenario_thresholds_v1",
+      "generation_method": "scenario threshold rules over simulated supplier attributes and performance rows",
+      "independence_boundary": "Labels do not call the tested weighted composite score, but they are not human or real-world labels."
+    },
+    "parameters": {
+      "top_k": 3,
+      "case_count": 60
+    },
+    "top3_definition": "hit when at least one acceptable supplier label appears in the first 3 returned suppliers",
+    "label_width": {
+      "min": 1,
+      "max": 5,
+      "avg": "2.37"
+    },
+    "candidate_count": {
+      "min": 8,
+      "max": 10,
+      "avg": "9.10"
+    },
+    "price_sort_top3_hit_rate_percent": "93.33",
+    "composite_top3_hit_rate_percent": "100.00",
+    "reproduce_command": "python -m backend.evaluation.run_supplier_eval",
+    "output_paths": {
+      "frozen_cases": "data/raw/recommendation_cases.csv",
+      "challenge_cases": "data/raw/recommendation_challenge_cases.csv",
+      "result": "reports/generated/supplier_eval.json"
+    },
+    "details": [
+      {
+        "case_id": "CASE-001",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-002",
+        "labels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "acceptable_label_count": 5,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-003",
+        "labels": [
+          4
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": false,
+        "composite_hit": true,
+        "hit_delta": "composite_only",
+        "failure_reason": "price_sort_missed_acceptable_label"
+      },
+      {
+        "case_id": "CASE-004",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-005",
+        "labels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "acceptable_label_count": 5,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-006",
+        "labels": [
+          4
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": false,
+        "composite_hit": true,
+        "hit_delta": "composite_only",
+        "failure_reason": "price_sort_missed_acceptable_label"
+      },
+      {
+        "case_id": "CASE-007",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-008",
+        "labels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "acceptable_label_count": 5,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-009",
+        "labels": [
+          4
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": false,
+        "composite_hit": true,
+        "hit_delta": "composite_only",
+        "failure_reason": "price_sort_missed_acceptable_label"
+      },
+      {
+        "case_id": "CASE-010",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-011",
+        "labels": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "acceptable_label_count": 4,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-012",
+        "labels": [
+          4
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": false,
+        "composite_hit": true,
+        "hit_delta": "composite_only",
+        "failure_reason": "price_sort_missed_acceptable_label"
+      },
+      {
+        "case_id": "CASE-013",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-014",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-015",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-016",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-017",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-018",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-019",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-020",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-021",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-022",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-023",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-024",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-025",
+        "labels": [
+          2
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-026",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-027",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-028",
+        "labels": [
+          2
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-029",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-030",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-031",
+        "labels": [
+          2
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-032",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-033",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-034",
+        "labels": [
+          2
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-035",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-036",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-037",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-038",
+        "labels": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "acceptable_label_count": 4,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-039",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-040",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-041",
+        "labels": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "acceptable_label_count": 4,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-042",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-043",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-044",
+        "labels": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "acceptable_label_count": 4,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-045",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-046",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-047",
+        "labels": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "acceptable_label_count": 4,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-048",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-049",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-050",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-051",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-052",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-053",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-054",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-055",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-056",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-057",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-058",
+        "labels": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "acceptable_label_count": 4,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          5
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-059",
+        "labels": [
+          2
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CASE-060",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      }
+    ],
+    "notes": [
+      "Labels are generated by scenario threshold rules over simulated supplier outcomes.",
+      "Labels do not use the tested weighted composite scoring formula.",
+      "Top-3 hit rate is an any-acceptable-label metric, not exact best-supplier ranking."
+    ]
+  },
+  "challenge": {
+    "dataset_name": "supplier_recommendation_challenge",
+    "dataset_version": "challenge_v1",
+    "case_count": 60,
+    "label_source": "challenge_thresholds_v1",
+    "label_definition": {
+      "source": "challenge_thresholds_v1",
+      "generation_method": "scenario threshold rules over simulated supplier attributes and performance rows",
+      "independence_boundary": "Labels do not call the tested weighted composite score, but they are not human or real-world labels."
+    },
+    "parameters": {
+      "top_k": 3,
+      "case_count": 60
+    },
+    "top3_definition": "hit when at least one acceptable supplier label appears in the first 3 returned suppliers",
+    "label_width": {
+      "min": 1,
+      "max": 3,
+      "avg": "1.97"
+    },
+    "candidate_count": {
+      "min": 8,
+      "max": 10,
+      "avg": "9.32"
+    },
+    "price_sort_top3_hit_rate_percent": "95.00",
+    "composite_top3_hit_rate_percent": "100.00",
+    "reproduce_command": "python -m backend.evaluation.run_supplier_eval",
+    "output_paths": {
+      "frozen_cases": "data/raw/recommendation_cases.csv",
+      "challenge_cases": "data/raw/recommendation_challenge_cases.csv",
+      "result": "reports/generated/supplier_eval.json"
+    },
+    "details": [
+      {
+        "case_id": "CHAL-001",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-002",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-003",
+        "labels": [
+          4
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": false,
+        "composite_hit": true,
+        "hit_delta": "composite_only",
+        "failure_reason": "price_sort_missed_acceptable_label"
+      },
+      {
+        "case_id": "CHAL-004",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-005",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-006",
+        "labels": [
+          4
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": false,
+        "composite_hit": true,
+        "hit_delta": "composite_only",
+        "failure_reason": "price_sort_missed_acceptable_label"
+      },
+      {
+        "case_id": "CHAL-007",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-008",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-009",
+        "labels": [
+          4
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": false,
+        "composite_hit": true,
+        "hit_delta": "composite_only",
+        "failure_reason": "price_sort_missed_acceptable_label"
+      },
+      {
+        "case_id": "CHAL-010",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-011",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-012",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-013",
+        "labels": [
+          1,
+          3
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-014",
+        "labels": [
+          1,
+          3,
+          4
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-015",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-016",
+        "labels": [
+          1,
+          3
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-017",
+        "labels": [
+          1,
+          3,
+          4
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-018",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-019",
+        "labels": [
+          1,
+          3
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-020",
+        "labels": [
+          1,
+          3,
+          4
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-021",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-022",
+        "labels": [
+          1,
+          3
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-023",
+        "labels": [
+          1,
+          3
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          3,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-024",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-025",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-026",
+        "labels": [
+          1,
+          3
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-027",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-028",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-029",
+        "labels": [
+          1,
+          3
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-030",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-031",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-032",
+        "labels": [
+          1,
+          3
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-033",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-034",
+        "labels": [
+          1,
+          2,
+          3
+        ],
+        "acceptable_label_count": 3,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-035",
+        "labels": [
+          1,
+          3
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-036",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-037",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-038",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-039",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-040",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-041",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-042",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-043",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-044",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 8,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          4
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-045",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-046",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-047",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-048",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-049",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-050",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-051",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-052",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-053",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-054",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-055",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-056",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-057",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-058",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-059",
+        "labels": [
+          1
+        ],
+        "acceptable_label_count": 1,
+        "candidate_count": 9,
+        "price_top3": [
+          1,
+          2,
+          3
+        ],
+        "composite_top3": [
+          1,
+          2,
+          3
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      },
+      {
+        "case_id": "CHAL-060",
+        "labels": [
+          1,
+          2
+        ],
+        "acceptable_label_count": 2,
+        "candidate_count": 10,
+        "price_top3": [
+          1,
+          2
+        ],
+        "composite_top3": [
+          1,
+          2
+        ],
+        "price_hit": true,
+        "composite_hit": true,
+        "hit_delta": "same",
+        "failure_reason": null
+      }
+    ],
+    "notes": [
+      "Labels are generated by scenario threshold rules over simulated supplier outcomes.",
+      "Labels do not use the tested weighted composite scoring formula.",
+      "Top-3 hit rate is an any-acceptable-label metric, not exact best-supplier ranking."
+    ]
+  }
+}

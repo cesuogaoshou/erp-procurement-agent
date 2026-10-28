@@ -29,6 +29,9 @@ def test_api_exposes_inventory_forecast_and_recommendations():
     )
     draft = client.post(
         "/purchase-drafts",
+        headers={"Authorization": "Bearer " + client.post(
+            "/auth/login", json={"username": "buyer", "password": "buyer-pass"}
+        ).json()["access_token"]},
         json={
             "supplier_id": 1,
             "items": [{"material_id": material_id, "quantity": "120"}],
@@ -63,6 +66,7 @@ def test_api_approval_uses_auth_headers_not_body_actor_claims():
 
     draft = client.post(
         "/purchase-drafts",
+        headers={"X-User-Id": "buyer-1", "X-User-Role": "buyer"},
         json={
             "supplier_id": 1,
             "items": [{"material_id": 1, "quantity": "120"}],

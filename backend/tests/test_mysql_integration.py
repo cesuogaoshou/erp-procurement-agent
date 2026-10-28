@@ -4,6 +4,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from decimal import Decimal
 from pathlib import Path
+from threading import Barrier
 
 import pytest
 from sqlalchemy import create_engine, select
@@ -15,10 +16,13 @@ from backend.app.services.agent_provider import MockLLMProvider, ToolCall
 from backend.app.services.approvals import (
     AuthContext,
     ApprovalActionInput,
+    ApprovalConflict,
     approve_order,
     submit_for_approval,
 )
 from backend.app.services.purchase_drafts import DraftItemInput, PurchaseDraftInput, create_purchase_draft
+from backend.app.services.forecasting import get_demand_forecast
+from backend.app.services.recommendations import recommend_for_material
 
 
 pytestmark = pytest.mark.skipif(
@@ -45,29 +49,44 @@ def mysql_engine():
         engine.dispose()
 
 
+def _draft_with_current_evidence(session, key: str):
+    quantity = Decimal("120")
+    budget = Decimal("5000.00")
+    forecast = get_demand_forecast(session, material_id=1, horizon_days=30)
+    recommendations = recommend_for_material(
+        session, material_id=1, quantity=quantity, required_in_days=20, budget=budget,
+    )
+    assert Decimal(str(forecast["shortage_quantity"])) >= quantity
+    assert any(item.supplier_id == 1 for item in recommendations.recommendations)
+    return create_purchase_draft(
+        session,
+        PurchaseDraftInput(
+            supplier_id=1,
+            items=[DraftItemInput(material_id=1, quantity=quantity)],
+            idempotency_key=key,
+            evidence_refs=[forecast["evidence_ref"], f"recommendation:1:1:{quantity}:20:{budget}"],
+        ),
+    )
+
+
 def test_mysql_approval_concurrency_rollback_and_agent_persistence(mysql_engine):
     run_key = str(int(time.time() * 1000))
     report: dict[str, object] = {"run_key": run_key}
     factory = create_session_factory(mysql_engine)
 
     with factory() as session:
-        order = create_purchase_draft(
-            session,
-            PurchaseDraftInput(
-                supplier_id=1,
-                items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
-                idempotency_key=f"mysql-concurrency-{run_key}",
-                evidence_refs=["recommendation:mysql-integration"],
-            ),
-        )
+        order = _draft_with_current_evidence(session, f"mysql-concurrency-{run_key}")
         pending = submit_for_approval(session, order.id, AuthContext(user_id="buyer-1", role="buyer"))
         order_id = pending.id
         expected_version = pending.version
         session.commit()
 
+    approval_barrier = Barrier(2)
+
     def approve_once(actor_suffix: str) -> dict[str, str]:
         local_factory = create_session_factory(mysql_engine)
         with local_factory() as session:
+            approval_barrier.wait(timeout=10)
             try:
                 approved = approve_order(
                     session,
@@ -80,7 +99,7 @@ def test_mysql_approval_concurrency_rollback_and_agent_persistence(mysql_engine)
                 )
                 session.commit()
                 return {"status": "approved", "order_status": approved.status}
-            except Exception as exc:
+            except ApprovalConflict as exc:
                 session.rollback()
                 return {"status": "conflict", "error": str(exc)}
 
@@ -93,6 +112,7 @@ def test_mysql_approval_concurrency_rollback_and_agent_persistence(mysql_engine)
         audits = list(session.scalars(select(AuditLog).where(AuditLog.order_id == order_id)))
 
     assert sorted(outcome["status"] for outcome in outcomes) == ["approved", "conflict"]
+    assert [outcome["error"] for outcome in outcomes if outcome["status"] == "conflict"] == ["order_not_pending_approval"]
     assert stored.status == "approved"
     assert stored.formal_order_number == f"PO-{order_id:06d}"
     assert len(approvals) == 1
@@ -105,15 +125,7 @@ def test_mysql_approval_concurrency_rollback_and_agent_persistence(mysql_engine)
     }
 
     with factory() as session:
-        rollback_order = create_purchase_draft(
-            session,
-            PurchaseDraftInput(
-                supplier_id=1,
-                items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
-                idempotency_key=f"mysql-rollback-{run_key}",
-                evidence_refs=["recommendation:mysql-integration"],
-            ),
-        )
+        rollback_order = _draft_with_current_evidence(session, f"mysql-rollback-{run_key}")
         rollback_pending = submit_for_approval(session, rollback_order.id, AuthContext(user_id="buyer-1", role="buyer"))
         rollback_order_id = rollback_pending.id
         rollback_version = rollback_pending.version
@@ -140,11 +152,14 @@ def test_mysql_approval_concurrency_rollback_and_agent_persistence(mysql_engine)
 
     assert rollback_stored.status == "pending_approval"
     assert rollback_stored.version == rollback_version
+    assert rollback_stored.formal_order_number is None
     assert rollback_records == []
     assert [audit.action for audit in rollback_audits] == ["submitted_for_approval"]
     report["rollback"] = {
         "order_id": rollback_order_id,
         "status": rollback_stored.status,
+        "version": rollback_stored.version,
+        "formal_order_number": rollback_stored.formal_order_number,
         "approval_records": len(rollback_records),
         "audit_actions": [audit.action for audit in rollback_audits],
     }
@@ -164,7 +179,7 @@ def test_mysql_approval_concurrency_rollback_and_agent_persistence(mysql_engine)
                         "supplier_id": 1,
                         "items": [{"material_id": 1, "quantity": "120"}],
                         "idempotency_key": f"mysql-agent-draft-{run_key}",
-                        "evidence_refs": ["use_latest_forecast", "recommendation:mysql-integration"],
+                        "evidence_refs": ["use_latest_forecast", "use_latest_recommendation"],
                     },
                 ),
             ]
@@ -215,15 +230,7 @@ def test_mysql_duplicate_approval_idempotency_uses_existing_record(mysql_engine)
     factory = create_session_factory(mysql_engine)
 
     with factory() as session:
-        order = create_purchase_draft(
-            session,
-            PurchaseDraftInput(
-                supplier_id=1,
-                items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
-                idempotency_key=f"mysql-duplicate-approval-{run_key}",
-                evidence_refs=["recommendation:mysql-duplicate"],
-            ),
-        )
+        order = _draft_with_current_evidence(session, f"mysql-duplicate-approval-{run_key}")
         pending = submit_for_approval(session, order.id, AuthContext(user_id="buyer-1", role="buyer"))
         order_id = pending.id
         expected_version = pending.version
@@ -260,15 +267,7 @@ def test_mysql_two_session_stale_approval_conflicts_after_first_commit(mysql_eng
     factory = create_session_factory(mysql_engine)
 
     with factory() as setup:
-        order = create_purchase_draft(
-            setup,
-            PurchaseDraftInput(
-                supplier_id=1,
-                items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
-                idempotency_key=f"mysql-two-session-{run_key}",
-                evidence_refs=["recommendation:mysql-two-session"],
-            ),
-        )
+        order = _draft_with_current_evidence(setup, f"mysql-two-session-{run_key}")
         pending = submit_for_approval(setup, order.id, AuthContext(user_id="buyer-1", role="buyer"))
         order_id = pending.id
         expected_version = pending.version
@@ -277,6 +276,15 @@ def test_mysql_two_session_stale_approval_conflicts_after_first_commit(mysql_eng
     session_a = factory()
     session_b = factory()
     try:
+        with pytest.raises(ApprovalConflict, match="^order_version_conflict$"):
+            approve_order(
+                session_b, order_id, AuthContext(user_id="approver-b", role="approver"),
+                ApprovalActionInput(
+                    expected_order_version=expected_version - 1,
+                    idempotency_key=f"mysql-wrong-version-{run_key}",
+                ),
+            )
+        session_b.rollback()
         first = approve_order(
             session_a,
             order_id,
@@ -298,7 +306,7 @@ def test_mysql_two_session_stale_approval_conflicts_after_first_commit(mysql_eng
                     idempotency_key=f"mysql-two-session-b-{run_key}",
                 ),
             )
-        except Exception as exc:
+        except ApprovalConflict as exc:
             session_b.rollback()
             conflict = str(exc)
         else:
@@ -322,6 +330,7 @@ def test_mysql_two_session_stale_approval_conflicts_after_first_commit(mysql_eng
             "order_id": order_id,
             "first_status": first.status,
             "second_error": conflict,
+            "wrong_version_error": "order_version_conflict",
             "stored_status": stored.status,
             "approval_records": len(approvals),
         },

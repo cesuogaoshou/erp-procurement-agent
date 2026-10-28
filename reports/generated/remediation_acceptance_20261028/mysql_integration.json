@@ -1,0 +1,61 @@
+{
+  "core": {
+    "run_key": "1793170393487",
+    "approval_concurrency": {
+      "order_id": 50,
+      "outcomes": [
+        {
+          "status": "approved",
+          "order_status": "approved"
+        },
+        {
+          "status": "conflict",
+          "error": "order_not_pending_approval"
+        }
+      ],
+      "approval_records": 1,
+      "audit_actions": [
+        "submitted_for_approval",
+        "approved"
+      ]
+    },
+    "rollback": {
+      "order_id": 51,
+      "status": "pending_approval",
+      "version": 2,
+      "formal_order_number": null,
+      "approval_records": 0,
+      "audit_actions": [
+        "submitted_for_approval"
+      ]
+    },
+    "agent_persistence": {
+      "run_id": 65,
+      "purchase_order_id": 52,
+      "run_status": "draft_created",
+      "trace_tools": [
+        "get_demand_forecast",
+        "recommend_suppliers",
+        "create_purchase_draft"
+      ],
+      "order_status_after_reconnect": "pending_approval"
+    }
+  },
+  "duplicate_approval": {
+    "order_id": 53,
+    "status": "approved",
+    "approval_records": 1,
+    "audit_actions": [
+      "submitted_for_approval",
+      "approved"
+    ]
+  },
+  "two_session_stale_approval": {
+    "order_id": 54,
+    "first_status": "approved",
+    "second_error": "order_not_pending_approval",
+    "wrong_version_error": "order_version_conflict",
+    "stored_status": "approved",
+    "approval_records": 1
+  }
+}

@@ -1,0 +1,149 @@
+FFF                                                                      [100%]
+================================== FAILURES ===================================
+_______ test_mysql_approval_concurrency_rollback_and_agent_persistence ________
+
+mysql_engine = Engine(mysql+pymysql://erp_user:***@127.0.0.1:3306/erp_procurement)
+
+    def test_mysql_approval_concurrency_rollback_and_agent_persistence(mysql_engine):
+        run_key = str(int(time.time() * 1000))
+        report: dict[str, object] = {"run_key": run_key}
+        factory = create_session_factory(mysql_engine)
+    
+        with factory() as session:
+>           order = create_purchase_draft(
+                session,
+                PurchaseDraftInput(
+                    supplier_id=1,
+                    items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
+                    idempotency_key=f"mysql-concurrency-{run_key}",
+                    evidence_refs=["recommendation:mysql-integration"],
+                ),
+            )
+
+backend\tests\test_mysql_integration.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\app\services\purchase_drafts.py:58: in create_purchase_draft
+    _validate_item_evidence(
+backend\app\services\purchase_drafts.py:107: in _validate_item_evidence
+    forecast = _forecast_evidence_for_item(session, request, item.material_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = <sqlalchemy.orm.session.Session object at 0x000002CA9A4E0590>
+request = PurchaseDraftInput(supplier_id=1, items=[DraftItemInput(material_id=1, quantity=Decimal('120'))], idempotency_key='mysql-concurrency-1793167225178', evidence_refs=['recommendation:mysql-integration'], evidence_payloads=None)
+material_id = 1
+
+    def _forecast_evidence_for_item(session: Session, request: PurchaseDraftInput, material_id: int) -> dict:
+        payloads = request.evidence_payloads or []
+        for payload in payloads:
+            if int(payload.get("material_id", -1)) == material_id:
+                ref = str(payload.get("evidence_ref", ""))
+                current = _current_forecast_for_ref(session, ref)
+                if current["evidence_ref"] != ref:
+                    raise ValueError("forecast_evidence_invalid")
+                return current
+        refs = [ref for ref in request.evidence_refs if ref.startswith(f"forecast:{material_id}:")]
+        if not refs:
+>           raise ValueError("forecast_evidence_required")
+E           ValueError: forecast_evidence_required
+
+backend\app\services\purchase_drafts.py:140: ValueError
+_______ test_mysql_duplicate_approval_idempotency_uses_existing_record ________
+
+mysql_engine = Engine(mysql+pymysql://erp_user:***@127.0.0.1:3306/erp_procurement)
+
+    def test_mysql_duplicate_approval_idempotency_uses_existing_record(mysql_engine):
+        run_key = str(int(time.time() * 1000))
+        factory = create_session_factory(mysql_engine)
+    
+        with factory() as session:
+>           order = create_purchase_draft(
+                session,
+                PurchaseDraftInput(
+                    supplier_id=1,
+                    items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
+                    idempotency_key=f"mysql-duplicate-approval-{run_key}",
+                    evidence_refs=["recommendation:mysql-duplicate"],
+                ),
+            )
+
+backend\tests\test_mysql_integration.py:218: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\app\services\purchase_drafts.py:58: in create_purchase_draft
+    _validate_item_evidence(
+backend\app\services\purchase_drafts.py:107: in _validate_item_evidence
+    forecast = _forecast_evidence_for_item(session, request, item.material_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = <sqlalchemy.orm.session.Session object at 0x000002CA99571160>
+request = PurchaseDraftInput(supplier_id=1, items=[DraftItemInput(material_id=1, quantity=Decimal('120'))], idempotency_key='mysql-duplicate-approval-1793167225388', evidence_refs=['recommendation:mysql-duplicate'], evidence_payloads=None)
+material_id = 1
+
+    def _forecast_evidence_for_item(session: Session, request: PurchaseDraftInput, material_id: int) -> dict:
+        payloads = request.evidence_payloads or []
+        for payload in payloads:
+            if int(payload.get("material_id", -1)) == material_id:
+                ref = str(payload.get("evidence_ref", ""))
+                current = _current_forecast_for_ref(session, ref)
+                if current["evidence_ref"] != ref:
+                    raise ValueError("forecast_evidence_invalid")
+                return current
+        refs = [ref for ref in request.evidence_refs if ref.startswith(f"forecast:{material_id}:")]
+        if not refs:
+>           raise ValueError("forecast_evidence_required")
+E           ValueError: forecast_evidence_required
+
+backend\app\services\purchase_drafts.py:140: ValueError
+_____ test_mysql_two_session_stale_approval_conflicts_after_first_commit ______
+
+mysql_engine = Engine(mysql+pymysql://erp_user:***@127.0.0.1:3306/erp_procurement)
+
+    def test_mysql_two_session_stale_approval_conflicts_after_first_commit(mysql_engine):
+        run_key = str(int(time.time() * 1000))
+        factory = create_session_factory(mysql_engine)
+    
+        with factory() as setup:
+>           order = create_purchase_draft(
+                setup,
+                PurchaseDraftInput(
+                    supplier_id=1,
+                    items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
+                    idempotency_key=f"mysql-two-session-{run_key}",
+                    evidence_refs=["recommendation:mysql-two-session"],
+                ),
+            )
+
+backend\tests\test_mysql_integration.py:263: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+backend\app\services\purchase_drafts.py:58: in create_purchase_draft
+    _validate_item_evidence(
+backend\app\services\purchase_drafts.py:107: in _validate_item_evidence
+    forecast = _forecast_evidence_for_item(session, request, item.material_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = <sqlalchemy.orm.session.Session object at 0x000002CA9A437A10>
+request = PurchaseDraftInput(supplier_id=1, items=[DraftItemInput(material_id=1, quantity=Decimal('120'))], idempotency_key='mysql-two-session-1793167225425', evidence_refs=['recommendation:mysql-two-session'], evidence_payloads=None)
+material_id = 1
+
+    def _forecast_evidence_for_item(session: Session, request: PurchaseDraftInput, material_id: int) -> dict:
+        payloads = request.evidence_payloads or []
+        for payload in payloads:
+            if int(payload.get("material_id", -1)) == material_id:
+                ref = str(payload.get("evidence_ref", ""))
+                current = _current_forecast_for_ref(session, ref)
+                if current["evidence_ref"] != ref:
+                    raise ValueError("forecast_evidence_invalid")
+                return current
+        refs = [ref for ref in request.evidence_refs if ref.startswith(f"forecast:{material_id}:")]
+        if not refs:
+>           raise ValueError("forecast_evidence_required")
+E           ValueError: forecast_evidence_required
+
+backend\app\services\purchase_drafts.py:140: ValueError
+=========================== short test summary info ===========================
+FAILED backend/tests/test_mysql_integration.py::test_mysql_approval_concurrency_rollback_and_agent_persistence
+FAILED backend/tests/test_mysql_integration.py::test_mysql_duplicate_approval_idempotency_uses_existing_record
+FAILED backend/tests/test_mysql_integration.py::test_mysql_two_session_stale_approval_conflicts_after_first_commit
+3 failed in 0.77s

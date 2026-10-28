@@ -53,7 +53,7 @@ Returns eligible supplier recommendations and excluded candidates with reasons.
 
 ### `POST /purchase-drafts`
 
-Creates a persisted purchase draft after server-side evidence and supplier/material constraint validation. This does not place a real order and does not call external supplier systems.
+Requires a valid bearer token with the `buyer` role (401 without valid authentication, 403 for another role). Creates a persisted purchase draft after server-side evidence and supplier/material constraint validation. The order and its `created_draft` creator audit commit in one transaction. This does not place a real order and does not call external supplier systems.
 
 Request:
 
@@ -62,11 +62,11 @@ Request:
   "supplier_id": 1,
   "items": [{"material_id": 1, "quantity": "120"}],
   "idempotency_key": "demo-draft-001",
-  "evidence_refs": ["recommendation:demo"]
+  "evidence_refs": ["<evidence_ref returned by POST /forecasts>", "<evidence_ref returned by POST /recommendations>"]
 }
 ```
 
-Returns a draft purchase order with backend-calculated order quantity, unit price, line amount, and total amount. The backend rounds requested quantity up to satisfy supplier MOQ and `package_multiple`; repeating the same `idempotency_key` returns the existing draft.
+Replace the reference placeholders with current service responses; placeholder strings are rejected. Returns a draft purchase order with backend-calculated order quantity, unit price, line amount, and total amount. The backend rounds requested quantity up to satisfy supplier MOQ and `package_multiple`; repeating the same `idempotency_key` returns the existing order only to its creator, with no new order or creation audit. A different buyer receives 403 `order_owner_required`. Buyers can query their own orders through `GET /purchase-orders`. The Agent HTTP path also refuses to reassign an existing creator or duplicate the creation audit on replay.
 
 ### Approval Authentication
 
@@ -76,7 +76,7 @@ Approval endpoints use `Authorization: Bearer <token>` by default. The token is 
 
 ### `POST /purchase-orders/{id}/submit`
 
-Buyer-only transition from `draft` to `pending_approval`.
+Creator-only buyer transition from `draft` to `pending_approval`. A different buyer receives 403 `order_owner_required`, including when the order is already pending. The creator can repeat submission without adding a submission audit.
 
 ### `POST /purchase-orders/{id}/approve`
 

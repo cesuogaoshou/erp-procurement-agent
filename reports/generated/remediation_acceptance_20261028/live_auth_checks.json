@@ -1,0 +1,29 @@
+{
+  "checks": {
+    "anonymous_create": {
+      "status_code": 401,
+      "detail": "authentication_required"
+    },
+    "forged_headers_create": {
+      "status_code": 401,
+      "detail": "authentication_required"
+    },
+    "buyer_replay": {
+      "status_code": 200,
+      "order_id": 55
+    },
+    "approver_replay": {
+      "status_code": 403,
+      "detail": "buyer_role_required"
+    }
+  },
+  "before": {
+    "orders": 56,
+    "creation_audits": 1
+  },
+  "after": {
+    "orders": 56,
+    "creation_audits": 1
+  },
+  "no_new_order_or_creation_audit": true
+}
