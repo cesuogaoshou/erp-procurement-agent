@@ -1,0 +1,750 @@
+{
+  "archive": "erp-course-delivery-2026-10-13.zip",
+  "packaged_at": "2026-10-29T00:09:37.116390+08:00",
+  "source_delivery_date": "2026-10-13",
+  "source_delivery_commit": "77a09a8aafb02b690a8cc134f97ac42237b89cc1",
+  "regenerated": false,
+  "includes_20261028_remediation": false,
+  "personal_fields": "Unfilled placeholders remain.",
+  "file_count": 147,
+  "bytes": 4623868,
+  "sha256": "a0578b8b1005c213105b9db646cda803c9d7dae6ec03047258239eb53e899bfe",
+  "excluded_renderer_profile_and_cache_files": 70,
+  "files": [
+    {
+      "path": "render_contact_sheet.png",
+      "bytes": 319679,
+      "sha256": "44a0b9cb8c8eac9a3c4e267940b164139df08b643e33dbb3ec5eb8c933df0338"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/_generated_assets/architecture_flow.png",
+      "bytes": 121428,
+      "sha256": "5b4300b522347f9de85aee374fcf61c51be4a96fbcfd0871320473bc8a205fc0"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/_generated_assets/forecast_metrics.png",
+      "bytes": 63912,
+      "sha256": "3581622edea4e86dbaa70178fa9bbc919f4120d7abc0b7c8b1cd6d1195cc31dc"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/_generated_assets/supplier_metrics.png",
+      "bytes": 43760,
+      "sha256": "859022830d1f9fbdd53d7745d607d9283c1031c34317218828f1eb54c2421c55"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/PACKAGE_MANIFEST.md",
+      "bytes": 1369,
+      "sha256": "88ce635c00168e2afbcfcf9c793ec711e28c54c742e4c199e60cadc054ae29ce"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/SENSITIVE_SCAN.md",
+      "bytes": 593,
+      "sha256": "e10b096c0f7e1803cf170aa2b8f70d2c4ef986f6d020476b88fa00ba5dbfafe0"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告.docx",
+      "bytes": 452386,
+      "sha256": "3ab6d5a6b43171a2f07440edf9447ddeec52535d0097f94dcb1382ae5fafb099"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告_render/pdf/【待填写姓名】ERP课程作业报告.pdf",
+      "bytes": 858523,
+      "sha256": "13b37ddd21f7af20f4b485cf79aaa108d014e447bc9f0f531d102bad67223c49"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告_render/png/page-1.png",
+      "bytes": 90033,
+      "sha256": "d89b9fd071b0d6f291091486d4beff1d562915e4b566f1866c574d1aeef035c0"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告_render/png/page-2.png",
+      "bytes": 355284,
+      "sha256": "7118f70080a58dcabd3c45e12d294b804711edc398de3665b53cb2c6f5e570d1"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告_render/png/page-3.png",
+      "bytes": 317847,
+      "sha256": "d101845f9777b46f67f749f4db5eae418d512fb5b4f4dfca13646304504abce8"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告_render/png/page-4.png",
+      "bytes": 471770,
+      "sha256": "67ad406442e8f31c15d668ac0711a200c95189397413b821a12f9a379165e11a"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告_render/png/page-5.png",
+      "bytes": 314704,
+      "sha256": "14036e9e6fb0382685057cf11ca1ee35e8fc5fb2aa498ee0d1d49d0f6ed6b308"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告_render/png/page-6.png",
+      "bytes": 297160,
+      "sha256": "b688399857c795b121724dc5fbbc1ad2cdea51a18915e52c5f4ec7950f693752"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告_render/png/page-7.png",
+      "bytes": 314924,
+      "sha256": "6c0ddfe71191b689d8cd477af8d5b0f3add97da95f59dc20c4a3a81c6f24da5a"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告_render/png/page-8.png",
+      "bytes": 246862,
+      "sha256": "d0e047bf24250f1568e8e42756aed353ea53ca7cd783993d75357fc7bb43f3f4"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/【待填写姓名】ERP课程作业报告_render/png/page-9.png",
+      "bytes": 142964,
+      "sha256": "0b7d838799f5373ecee88d362124b81fa0b0e41d34ad2cf7dcb48d74b5bc6c46"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/.env.example",
+      "bytes": 360,
+      "sha256": "2cc942c493a09643e8e180ab15302b11786ce75c6ca553f5ea233a281e055b70"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/.gitignore",
+      "bytes": 243,
+      "sha256": "4fb61fa1954d37f9dd24689d421fa30da011a7c6813db441754766daedd455ac"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/agent/DECISIONS.md",
+      "bytes": 21409,
+      "sha256": "96392ecdb3dbbc831d28b4ff49a1a90bad4cb23534be58828215de03e3e0de39"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/agent/HANDOFF.md",
+      "bytes": 16675,
+      "sha256": "328a03078cb17ac7a6d63b1f13e0384aa8a4e5795d16382838e2d64c85962069"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/agent/MEMORY.md",
+      "bytes": 34040,
+      "sha256": "e441b961dc42960db4cd09163ae93a2b94249682923603e62c061f9ea1700b3f"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/agent/TASK.md",
+      "bytes": 17216,
+      "sha256": "14e005b0bd30b381d6ea24aa86d7e43826d70e14df82ba8d64e6383965c9f11c"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/AGENTS.md",
+      "bytes": 2302,
+      "sha256": "b7465579df87d193b21d24d25966beab967c96f0d39f5e577f921f88b9115557"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/alembic.ini",
+      "bytes": 602,
+      "sha256": "7355d4508ebd4979443c64834c38e7515b5aa2c34a2b3495110f2357083e1936"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/alembic/env.py",
+      "bytes": 1240,
+      "sha256": "e2b2f7cc0868ca2e3fbfc69c17ab64dbd2f73578d9c6036e7319fc7421fe2593"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/alembic/versions/.gitkeep",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/alembic/versions/20261010_0001_initial_schema.py",
+      "bytes": 5310,
+      "sha256": "bbb0f9ddab2b698d3889ff6594306e5d8398d31aca5b553a8f59ff68cc5245b9"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/alembic/versions/20261010_0002_purchase_drafts.py",
+      "bytes": 2860,
+      "sha256": "90111106abad1d718f1a5acdf2c04e614bce0cbf982fd23cfdfd216035c4ab8c"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/alembic/versions/20261010_0003_approvals.py",
+      "bytes": 3816,
+      "sha256": "1da7f1ca7a8757eceaaca58006a88f09e4d41b49797a8761775b1048eced477a"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/alembic/versions/20261010_0004_agent_runs.py",
+      "bytes": 2525,
+      "sha256": "8eecbdc36d6c3fd9fead9d2e028ed69e14a231542f4c50b7d1cad393534927b9"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/alembic/versions/20261011_0005_package_multiple.py",
+      "bytes": 780,
+      "sha256": "440938a9b63ecd562682fe132300b7e0bdffbb4db91f540f0e17afe42106202c"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/alembic/versions/20261011_0006_demo_package_multiple_values.py",
+      "bytes": 666,
+      "sha256": "105e85d44a343a1e05b11938e4d3e9f5de04a8ae95f3669a7fb8c5110e63aa80"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/algorithms/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/algorithms/recommendation.py",
+      "bytes": 5380,
+      "sha256": "291abe3532a9e0cf0c1fdc72133f565496abc0a10bff577069877c4ed5ae053b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/algorithms/shortage.py",
+      "bytes": 924,
+      "sha256": "e898c735a46e0be5683a476950249b36582c025e06799855a0684c83ce4911e1"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/config.py",
+      "bytes": 1393,
+      "sha256": "fd2534bf50497e5c976d4c78909c1a3c86b78ec420f0d05746c3626c442d2522"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/db/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/db/init_demo_data.py",
+      "bytes": 3065,
+      "sha256": "08864323e0a4b4caaca29980d2a3708df264c069c1f0f8b6a07cd3233ee1f66d"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/db/session.py",
+      "bytes": 1287,
+      "sha256": "b1ac0363e01b912ff92556985b6d0de3b42188250c1717e465c259f2b94d7b44"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/main.py",
+      "bytes": 20119,
+      "sha256": "20c9e655dfbf531e7f68b88dc5ab9025522feb109b688cad6f43f1d360aa0815"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/models/__init__.py",
+      "bytes": 567,
+      "sha256": "4dad1aff613f2a464198f57e95abd1d46568ddc3a71c7e5652bf65fb7072022d"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/models/base.py",
+      "bytes": 83,
+      "sha256": "987edfd9dfe38b2c49492c7d1a4e774015d16b72e2281b018e4160be6b47d560"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/models/procurement.py",
+      "bytes": 7843,
+      "sha256": "f44d99866bcb707bc8703275e0068782e9c6b7d071a502c1ee204e6c1e383b25"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/schemas/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/schemas/procurement.py",
+      "bytes": 4322,
+      "sha256": "a8f970bec4cf2fb9b649857fa8971acf91eb781d6d86e338d80bde3aca8b12bc"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/agent_loop.py",
+      "bytes": 9407,
+      "sha256": "bec60df12b4813e1d4b2c6ad03e0d65f3c8e0b23b5baca1fc3ff9072b21afe80"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/agent_provider.py",
+      "bytes": 4007,
+      "sha256": "e3de0ee60ab9867279972866cca8e5a2772caef4ef02346d606199525ffec880"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/agent_tools.py",
+      "bytes": 9449,
+      "sha256": "4fcc2f76e562b4d176f137deb0e4d4a213ec84be8346b88f478f2d89b3fa22d9"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/approvals.py",
+      "bytes": 7070,
+      "sha256": "34ccb1d5bcc29c86793916cfd544efa5f83abf8910fcf93337366363cc3dc1c5"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/auth.py",
+      "bytes": 3238,
+      "sha256": "649d2cc45dd3369ba05963e4cbe8ff890fa0a239b0b5e9869fa846cc7c690630"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/forecasting.py",
+      "bytes": 9523,
+      "sha256": "31f2a80659659e0c26d1d23ac93a2c757ae41a05dc9a064378d352918c9b8110"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/inventory.py",
+      "bytes": 1024,
+      "sha256": "ac7db975b97a6eebcb804aed82320ed7b1c74d41d8dca64ad36673242f07c8d0"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/langgraph_runner.py",
+      "bytes": 1598,
+      "sha256": "d3af40b2f806563206f306af8770d82be91e64078877371077904836923abc0b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/purchase_drafts.py",
+      "bytes": 7189,
+      "sha256": "e9acb9eb298fc179be7f96ce33a513e26affc8451e0cb1ad8e9c7e666dad4f4c"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/recommendations.py",
+      "bytes": 2313,
+      "sha256": "066aad9cd7798576aabb72d82ed851c1782abf64ae2736e93608cde0fb6bbad6"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/seed.py",
+      "bytes": 4576,
+      "sha256": "54b519a5f2fd97a9269f9ea9052cafda6fb31dbf93be89d39c3e24665f23f020"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/app/services/seed_export.py",
+      "bytes": 6192,
+      "sha256": "7fcbe3e818b1d4359fd3ed249a3bca9ea39558525b263909fc3467729819e019"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/evaluation/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/evaluation/metrics.py",
+      "bytes": 2021,
+      "sha256": "4c3a32f055421c64c1eeae767753a0d9611ab3df5069cb64bf71bb6c8b19ea61"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/evaluation/run_baseline.py",
+      "bytes": 4661,
+      "sha256": "6d84079553d4c1dd4ec71f69d42f3c1baf71e5aee13273bb4073ae6b380acd68"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/evaluation/run_forecast_comparison.py",
+      "bytes": 15981,
+      "sha256": "786d17119c13f37419a42d8cc11d1ad8833f0c0eddeed2593c47316515af822e"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/evaluation/run_forecast_diagnostics.py",
+      "bytes": 22877,
+      "sha256": "a68fd7cec6ecdfe9f4c576f083b935d186f7457ea96e6e5beb1545a8a4554a59"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/evaluation/run_real_model_acceptance.py",
+      "bytes": 11056,
+      "sha256": "0684fb5bad26899511e915a8acf60207d1a3f3fdaf97d66735f440f896f952de"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/evaluation/run_supplier_eval.py",
+      "bytes": 2072,
+      "sha256": "b3d0b3d7676c29495a83e2622f0326953f2450d9c123f6d5cdbc24879d1c83d1"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/evaluation/supplier_recommendation.py",
+      "bytes": 15727,
+      "sha256": "3f4294f6f8b7d335836b8638fc7682089b89f75aab1870ad3f0e16a30906397f"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_agent_loop.py",
+      "bytes": 4517,
+      "sha256": "ddacb84a3980051e28fa43a1c0904ffaefd6ec9f56532b464478873d549004bd"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_agent_persistence_and_edges.py",
+      "bytes": 6468,
+      "sha256": "8f135af99301ee08cfccd155f267223f88d1c08939b3dfd40e68c439a5e607b9"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_api_flow.py",
+      "bytes": 4075,
+      "sha256": "7f34eae05c2a8bf47f0dae2e35f46141bd45966620c8c4fe3a097f2f5f02ad51"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_approval_flow.py",
+      "bytes": 9444,
+      "sha256": "51259b666cec58c609f7ed858aadea9352eaee45b951f7d6d2d023a939efc99a"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_auth_api.py",
+      "bytes": 4493,
+      "sha256": "cf389e23aa5a459849ac39ad5e44234999e359607c0d466005ba0987be737df6"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_backtest.py",
+      "bytes": 913,
+      "sha256": "b3b1c0242db0c2d896e74a53315f15ab75ecb6470d2426a5408985516b140806"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_forecast_comparison.py",
+      "bytes": 6069,
+      "sha256": "f68998cdabc2ca921951f1312767faedd22e387bc0b2d771ac2c8a40570e4d2e"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_forecast_service_strategy.py",
+      "bytes": 5114,
+      "sha256": "96ceb0189611a8a1d545c4e51beb2e6c58159cc6bccc2fbedb9ca14157d99f68"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_frontend_api_contract.py",
+      "bytes": 6732,
+      "sha256": "696a278f9735293c9e92df3ab5722ebe9ba6ada5b6340614e4f2b16ce0241bce"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_langgraph_execution.py",
+      "bytes": 4508,
+      "sha256": "115c6a148a3d76ada0619bd576f161e49a17d234727ed139a33f0ca882be33b4"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_metrics.py",
+      "bytes": 657,
+      "sha256": "a8efb9a789393273c7bdc43cfa87c8905d22c8de2614b3a528c5bcf58413e604"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_mysql_integration.py",
+      "bytes": 13270,
+      "sha256": "0202330fd9eac90ccd614406fb1fed59b5748f7f9acfd83bdd0e0cc38556fce1"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_provider_and_config.py",
+      "bytes": 5273,
+      "sha256": "46730526fff00bf8657391efe90b18fe8e5773607d1572438b149e483cb6d2e3"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_purchase_drafts.py",
+      "bytes": 6331,
+      "sha256": "169f954fb5d916eb720ee4c4750a3c0580753fd05d4a7be7a9eb0e139e1c26ff"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_recommendation.py",
+      "bytes": 2559,
+      "sha256": "d7f79746eea0dc0ddf9101c3314e2db96abcf778fd0c4f33ec0373f59c030ffd"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_runtime_config.py",
+      "bytes": 4459,
+      "sha256": "89826befa76894a0a4883bf11678b2e2dc7e9e711168b30e3ab6864818ac9727"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_seed_export.py",
+      "bytes": 1709,
+      "sha256": "a04e8ed802f6d7d6602434009a530a85b5e6875d2d99a1714dded253ab231533"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_shortage.py",
+      "bytes": 1204,
+      "sha256": "70a51cb22b0294e119976094dfc13a30ab963fa70e387861899b995353274058"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/backend/tests/test_supplier_evaluation.py",
+      "bytes": 2620,
+      "sha256": "e07723e86e834c12af4c6b2b7055afe99a1922d0c372c6eb695bcd3d82619bec"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/data/raw/data_splits.csv",
+      "bytes": 118,
+      "sha256": "8955422fb38521d3262607f5015eb13ee8fb0dceba2819722810442d88a47b50"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/data/raw/demand_history.csv",
+      "bytes": 108478,
+      "sha256": "fe1662a2bf0850acc36bd202ae17e14f0e108e89ae257e638e34ac5f91e0c2a5"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/data/raw/generation_metadata.json",
+      "bytes": 423,
+      "sha256": "45edcd5febf76bbe975f29117dbd4eeec1bc6eae974ef768cc1d02bdbb4e458e"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/data/raw/inventory_snapshots.csv",
+      "bytes": 380,
+      "sha256": "4c2ef747f651e02b55251ea4afaf6c1f7506f37d173b4fa12dce651a32a12766"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/data/raw/materials.csv",
+      "bytes": 382,
+      "sha256": "7b6a7052dcfaf886b96c408acb06a18a776bf19137a885cfd2c897e1e320a45d"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/data/raw/recommendation_cases.csv",
+      "bytes": 4113,
+      "sha256": "0f5646b849d27744d3491eb82e9d918a035759b6b581eca985cadebae9cfd55f"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/data/raw/recommendation_challenge_cases.csv",
+      "bytes": 4174,
+      "sha256": "1039cd1373974434ab345d7462013af2ca3d616a8191b8b9a35056833342a845"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/data/raw/supplier_materials.csv",
+      "bytes": 3288,
+      "sha256": "5ce2650ca94bd1ea80290ad6e0e3dc9129e68e12cebe134970c3f27b8f94b2ad"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/data/raw/supplier_performance.csv",
+      "bytes": 4637,
+      "sha256": "46cf4928bd030ea185e796b5abd4ec4a79174c209d278335e7e7ce377b3b0362"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/data/raw/suppliers.csv",
+      "bytes": 234,
+      "sha256": "bf6fbff53dcaab76bb84146a824ec6ce760da04bbb7f936339921964bddee93b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docker-compose.yml",
+      "bytes": 295,
+      "sha256": "caa9665458b8ed07a1c7a2fb160a82ff821f93dee55138fda399252faf27154e"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/API.md",
+      "bytes": 4703,
+      "sha256": "20b639ce0b08ab8abb99d56b887cdfccc900c5f68dfeaf94bb9481afd7495188"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/ARCHITECTURE.md",
+      "bytes": 3539,
+      "sha256": "ad9c4116cc000fc94be0a1f8b135260a943b3035bbcd9e39d0fb932bbd9491d5"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/BACKGROUND.md",
+      "bytes": 643,
+      "sha256": "394f75f24f7e51b4483dc99b0ab590a7bee7f6ab18a043e2fffea35819dfe9ed"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/COURSE_ACCEPTANCE_REVIEW.md",
+      "bytes": 25694,
+      "sha256": "c98661bf823a4b7ccdfdc20d4dc670fc1c1b60d0d6b545a697331940f9495133"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/DATA_DICTIONARY.md",
+      "bytes": 3282,
+      "sha256": "9a29f5ef78d7f49a7c712b97e57eecb81d8542f074e71b73025ed529d89a2e0b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/DELIVERY_CHECKLIST.md",
+      "bytes": 4007,
+      "sha256": "fb9af16e23e4e6d3a24d4150237d0610627a4ade57635ccd79b9eef8dd007e70"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/DEMO_GUIDE.md",
+      "bytes": 2674,
+      "sha256": "c17b300e908403109b141622d2d4c83c802f915061787b95c8a1c9dbcad29e15"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/PROJECT_INDEX.md",
+      "bytes": 19238,
+      "sha256": "b5ca205472aa8695f4bcd2079750d93dffb9b879bff4b67b09b7342e39dea1e3"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/REPORT_EVIDENCE_INDEX.md",
+      "bytes": 5084,
+      "sha256": "630e53c64495fe44f03570deccae2f71e16ff12c2ea1be42f9fa2e4c88e0c56b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/REQUIREMENTS.md",
+      "bytes": 1958,
+      "sha256": "997a68ccc75753b5d7a4302011d2a8e0b1b03763253d461fdc97dffbb32a0000"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/ROADMAP.md",
+      "bytes": 6739,
+      "sha256": "7bb7b997034f18b7afa4a98089a2422c5d1bcd4d16b650f91731db01124b3e6f"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/docs/superpowers/plans/2026-10-12-minimal-acceptance-remediation.md",
+      "bytes": 4763,
+      "sha256": "0b9a045c990b592a8d83530bb3f39fc9457c40e389aa263e442eb95f0b7c110c"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/ERP智能采购Agent_开发实施大纲 .md",
+      "bytes": 22569,
+      "sha256": "b6c073106b005317130b333a6cbe738ddfb6a9b9efb743ce35b490bd75e9df6b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/index.html",
+      "bytes": 308,
+      "sha256": "295b62be44c749dd2f1949fe01e666b3c2f16da772c17d567a891dbc06aecd6d"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/package-lock.json",
+      "bytes": 58289,
+      "sha256": "7b16eec38f764ab887e91756132a81c4c4e6e5efe754285e29bde506d89628bb"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/package.json",
+      "bytes": 487,
+      "sha256": "8fd8a60454c2b4e83db7e1f3639a3b1329e51db3b67ffb99cf8764cbc62a8d09"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/src/api.ts",
+      "bytes": 3741,
+      "sha256": "e063a1d30be12152498cfb46eb2daf8a84f635a9232bcae484730e46e1589580"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/src/App.vue",
+      "bytes": 18848,
+      "sha256": "d0a09fba865dac6b71d81e6e9284af9734996a60ba3be27178d131a27e3ef5a6"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/src/main.ts",
+      "bytes": 211,
+      "sha256": "9a343e4cb3d55409efb1f5b0cafa9f16e7fceab8f77993bac457b4c6853bc59a"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/src/styles.css",
+      "bytes": 3074,
+      "sha256": "c7b4fd8f162614fad669209970885a0f422b49169a17c129783c4163a70a4de4"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/src/types.ts",
+      "bytes": 2483,
+      "sha256": "d290eb00afb012f813863c9f2241468d9a53ce76169554875a673e44fdea5218"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/src/vite-env.d.ts",
+      "bytes": 38,
+      "sha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/tsconfig.json",
+      "bytes": 431,
+      "sha256": "517567ff48e6e7e74a96311a8dd109735e3fde262305795802a9e52b686fc0f4"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/tsconfig.node.json",
+      "bytes": 213,
+      "sha256": "f49ef24e097144fecc29f677361cb45b2019e1bcc0dba54bab083760f7df6200"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/frontend/vite.config.ts",
+      "bytes": 361,
+      "sha256": "79d2395c8ada9eb6c7b93ac96ed2362bc551e45f45b34fc3dc5bacb51a59b26b"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/README.md",
+      "bytes": 2784,
+      "sha256": "d23d7c693c451471c36a51f6af2a66ead06b4c0868eeabdba76d0842847ee7e4"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/baseline_eval.json",
+      "bytes": 35910,
+      "sha256": "4c85e8cae6a9136eb9336bb13b8c7b7a9dc74f405860fcf6dc3fc0cd9b4f6a1d"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/forecast_comparison.json",
+      "bytes": 510210,
+      "sha256": "f042f717586995a0c409fd34f96b87d9077a9c85eec0a842e54e83ac10305d32"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/forecast_diagnostics/baseline_20261011/baseline_hashes.json",
+      "bytes": 2290,
+      "sha256": "858e5ad6cd2314040eecc626eb32898e9eb5718fa66e059af23a837bdc2e1aaa"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/forecast_diagnostics/baseline_20261011/forecast_comparison_baseline.json",
+      "bytes": 39734,
+      "sha256": "fef479539346313ab7b5e33ae8b5dadc4101f96edaa8a682a68541cdc66d1771"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/forecast_diagnostics/curves/material_1_cutoff_2025-06-02.png",
+      "bytes": 44549,
+      "sha256": "f3146461470bb228c5b7bf3f2495136c246373cc8f18ffa605937249053bf2d6"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/forecast_diagnostics/curves/material_1_cutoff_2025-08-31.png",
+      "bytes": 46842,
+      "sha256": "a7a601c8593a1921f55116e64b91067b86fc382d546a0f65385e3c550821088c"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/forecast_diagnostics/curves/material_1_cutoff_2026-06-27.png",
+      "bytes": 47372,
+      "sha256": "730338776e618437a4f8029e79ffa8469e950ffbf6b41fd0d65ac9e753184004"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/forecast_diagnostics/curves/material_2_cutoff_2026-04-28.png",
+      "bytes": 47616,
+      "sha256": "4ed94c2a9b40736b7e12bba1ce343069663d5d2c03541ba2b28d98f6c06e91a1"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/forecast_diagnostics/forecast_diagnostics.json",
+      "bytes": 30611,
+      "sha256": "fb6dce391456af0d11350cea4703d72939d62774857f2b98501cbf28a0b2fa4f"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/forecast_diagnostics/forecast_window_diagnostics.csv",
+      "bytes": 30379,
+      "sha256": "b0f490bd54164bfe4711b4dc37656f630b2a7141da5bb85170cb63bedc981b55"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/mysql_integration.json",
+      "bytes": 1365,
+      "sha256": "cb973b19f27bfc740c852a8de48da5f914d5dc04b90c020ee238589c0080bb75"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/mysql_integration_review.json",
+      "bytes": 1365,
+      "sha256": "84b37f68839ed450a694329861fd302423964af80caadea06f9de8e1523a6459"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/real_llm_function_calling.json",
+      "bytes": 1345,
+      "sha256": "1d8e4a3ad360b10ba0490916c062f0dcacd0cec4e5ea099a600825c454ce4518"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/real_model_acceptance.json",
+      "bytes": 32504,
+      "sha256": "554a679862e84c2ccf7fb564502d4c1c7cbf6f2fac28ed17fc09cb60184252e9"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/real_model_acceptance.previous-20261012-135908.json",
+      "bytes": 2382,
+      "sha256": "54a16fcb16198ce487c0e48d7f6b04abf456b74f453183902319aeb456eb6d81"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/screenshots/01-buyer-agent-home.png",
+      "bytes": 52553,
+      "sha256": "2c7495f47b256160f0fba18723d81e4767f889c300ec5b553aa31db9a752509d"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/screenshots/02-analysis-page.png",
+      "bytes": 65521,
+      "sha256": "517ec8340da0991bc2b775c5ab23dd8acdd27c886766ab4aa53b02bc23d27721"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/screenshots/03-approval-approved-order.png",
+      "bytes": 41614,
+      "sha256": "3909355cbdf66dd83d6b80c4e836677f33d6447c49961df5d18e7a2de618e978"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/reports/generated/supplier_eval.json",
+      "bytes": 58984,
+      "sha256": "f9db571c485f8e8cfe7309237ef5971227ad593d00c8a1e3e8a9ab772bd9cbe7"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/requirements.txt",
+      "bytes": 208,
+      "sha256": "573788c5023645dced754cd77d381df1ab5fa3f50ab00fe70685a189382eec36"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/scripts/build_course_delivery.py",
+      "bytes": 38383,
+      "sha256": "a86dc7d0c8c059daa85719f46abec4644b823837405f8f71617e2b7d3047649d"
+    },
+    {
+      "path": "【待填写姓名】ERP课程作业报告/源代码和数据集/scripts/export_seed_data.py",
+      "bytes": 503,
+      "sha256": "40b28d5f71f72eb317077e497a799895ebfcf729488023475b46e3df54de41cc"
+    }
+  ]
+}

@@ -23,3 +23,9 @@ delivery/
 node_modules/
 dist/
 build/
+
+# Explicitly published database snapshots; keep runtime/test databases ignored.
+!/artifacts/database/2026-10-29/erp_demo.sqlite
+!/artifacts/database/2026-10-29/erp_dev.sqlite
+!/artifacts/delivery/
+!/artifacts/delivery/**

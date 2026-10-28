@@ -1,0 +1,6 @@
+# Preserve published payload bytes so manifest hashes survive checkout.
+database/**/*.sql -text
+database/**/*.sqlite -text
+delivery/*.zip -text
+*.json text eol=lf
+*.md text eol=lf

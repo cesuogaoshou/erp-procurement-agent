@@ -1,0 +1,15 @@
+{
+  "verified_at": "2026-10-29T00:12:31.653962+08:00",
+  "credential_scan": {
+    "payloads_scanned": 181,
+    "includes_nested_docx_and_pdf_text": true,
+    "high_confidence_formats_and_local_secret_matches": true,
+    "findings": []
+  },
+  "sqlite_integrity": "2 passed",
+  "mysql_dump_structure_and_row_counts": "13 tables and 6080 rows matched",
+  "mysql_isolated_restore": "Not performed: configured account lacks CREATE DATABASE permission.",
+  "archive_crc_and_sha256": "passed",
+  "payload_sha256": "passed",
+  "publication_scope": "Only artifacts/ and narrow .gitignore exceptions; existing source/document modifications excluded."
+}

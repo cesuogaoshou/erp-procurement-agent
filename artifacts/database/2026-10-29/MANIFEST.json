@@ -1,0 +1,88 @@
+{
+  "created_at": "2026-10-29T00:09:37.116390+08:00",
+  "source_git_commit": "77a09a8aafb02b690a8cc134f97ac42237b89cc1",
+  "source_worktree_has_uncommitted_changes": true,
+  "snapshots": [
+    {
+      "file": "erp_demo.sqlite",
+      "engine": "sqlite",
+      "backup_method": "sqlite_online_backup",
+      "integrity_check": "ok",
+      "tables": {
+        "materials": 10,
+        "suppliers": 10,
+        "inventory": 10,
+        "demand_history": 5400,
+        "supplier_materials": 100,
+        "supplier_performance": 100,
+        "purchase_orders": 0,
+        "purchase_order_items": 0,
+        "approval_records": 0,
+        "audit_logs": 0,
+        "agent_runs": 0,
+        "tool_traces": 0
+      },
+      "bytes": 450560,
+      "sha256": "09cffabc97f5b5fbfdb3a970ddfd1fc69a24a0e011346f7b0e6234204b13827a"
+    },
+    {
+      "file": "erp_dev.sqlite",
+      "engine": "sqlite",
+      "backup_method": "sqlite_online_backup",
+      "integrity_check": "ok",
+      "tables": {
+        "materials": 10,
+        "suppliers": 10,
+        "inventory": 10,
+        "demand_history": 5400,
+        "supplier_materials": 100,
+        "supplier_performance": 100,
+        "purchase_orders": 2,
+        "purchase_order_items": 2,
+        "approval_records": 2,
+        "audit_logs": 4,
+        "agent_runs": 3,
+        "tool_traces": 12,
+        "alembic_version": 0
+      },
+      "bytes": 479232,
+      "sha256": "762b9f395dd487500d2c254a16fdb7e987876777ab18eb4c36f3614dca2ced69"
+    },
+    {
+      "file": "erp_procurement.sql",
+      "engine": "mysql",
+      "source_database": "erp_procurement",
+      "backup_method": "mysqldump_single_transaction",
+      "contains_create_database_or_use": false,
+      "tables": {
+        "agent_runs": 65,
+        "alembic_version": 1,
+        "approval_records": 36,
+        "audit_logs": 93,
+        "demand_history": 5400,
+        "inventory": 10,
+        "materials": 10,
+        "purchase_order_items": 56,
+        "purchase_orders": 56,
+        "supplier_materials": 100,
+        "supplier_performance": 100,
+        "suppliers": 10,
+        "tool_traces": 143
+      },
+      "scope": "Project schema and data only; no MySQL accounts, grants, server files or connection credentials.",
+      "bytes": 477199,
+      "sha256": "8acdf5baa0f9dca6dbf9ff6b1f4259edbcad6a38aaf0353ee599a2ed9004796e",
+      "export_verification": {
+        "status": "passed",
+        "method": "Checked CREATE TABLE names and parsed all INSERT row counts against source counts.",
+        "verified_tables": 13,
+        "verified_rows": 6080
+      },
+      "restore_verification": {
+        "status": "not_performed",
+        "reason": "Configured MySQL account cannot CREATE DATABASE for an isolated restore test (error 1044). No privileges changed; source database untouched."
+      },
+      "line_endings": "LF; normalized from the Windows mysqldump output without changing SQL statements or escaped field values."
+    }
+  ]
+}
