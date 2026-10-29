@@ -35,7 +35,7 @@ def test_frontend_contract_runs_agent_traces_and_approval_loop():
     agent_run = client.post(
         "/agent/runs",
         headers={"Authorization": f"Bearer {buyer_token}"},
-        json={"prompt": "为 MAT-001 生成采购草稿"},
+        json={"total_budget": "5000", "prompt": "为 MAT-001 生成采购草稿"},
     )
 
     assert agent_run.status_code == 200
@@ -127,7 +127,7 @@ def test_read_apis_scope_runs_traces_and_orders_by_buyer_owner_and_approver_need
     created = client.post(
         "/agent/runs",
         headers={"X-User-Id": "buyer-1", "X-User-Role": "buyer"},
-        json={"prompt": "buyer 1 creates a draft"},
+        json={"total_budget": "5000", "prompt": "buyer 1 creates a draft"},
     )
     assert created.status_code == 200
     run_id = created.json()["run_id"]

@@ -60,6 +60,7 @@ Request:
 ```json
 {
   "supplier_id": 1,
+  "total_budget": "5000.00",
   "items": [{"material_id": 1, "quantity": "120"}],
   "idempotency_key": "demo-draft-001",
   "evidence_refs": ["<evidence_ref returned by POST /forecasts>", "<evidence_ref returned by POST /recommendations>"]
@@ -107,7 +108,7 @@ Buyer-only endpoint that runs the procurement Agent through the real LangGraph w
 Request:
 
 ```json
-{"prompt": "为 MAT-001 创建采购草稿，采购数量120，交期20天，预算5000。", "use_langgraph": true}
+{"prompt": "为 MAT-001 创建采购草稿，采购数量120，交期20天，预算5000。", "total_budget": "5000.00", "use_langgraph": true}
 ```
 
 Returns Agent run status, tool calls, run id, optional purchase order id, and whether real Function Calling / LangGraph execution was used.
@@ -154,3 +155,12 @@ The Agent loop is service-level and verified with mock providers plus real DeepS
 - `create_purchase_draft`
 
 `get_demand_forecast` returns horizon, inventory snapshot, forecast demand, shortage, and a server-created evidence reference. `create_purchase_draft` validates that forecast evidence exists and that requested quantities do not exceed the server-calculated shortage. Approval and rejection endpoints are not exposed as model tools.
+
+## 2026-10-29 safety contract
+
+- A new direct draft requires `total_budget`, a positive finite Decimal (decimal strings accepted, at most two decimal places). Agent analysis permits `null`; writing then requires structured confirmation. Prompt text alone cannot establish the authoritative budget. The UI provides an explicit confirmation field. No model tool accepts `total_budget`: it is injected from the immutable run input. Recommendation `budget` is only a per-line filter and cannot exceed the confirmed total.
+- Orders and run summaries expose nullable `total_budget`. Migration `20261029_0007` leaves historical values NULL; the UI displays unknown. Unknown-budget historical drafts cannot be approved (`budget_confirmation_required`); they may be rejected and recreated with a confirmed budget and a new key. Already-approved orders are not altered. Historical request fingerprints and pre-rounding quantities also remain unknown.
+- Aggregate requested quantities by material before checking shortage, then round `ceil(max(sum(requested), MOQ) / package_multiple) * package_multiple` once. Check rounded capacity and recommendation coverage, calculate quoted line amounts using Decimal, and check the whole-order budget. Approval rechecks aggregate quantities, evidence, capacity, quotes and budget. Rejection remains available for invalid drafts.
+- Replay requires the same creator and canonical request content. Decimal forms such as `120.0`/`120.00` and duplicate-line decompositions with equal totals are equivalent. Changed content returns 409 `idempotency_payload_conflict`; legacy identity cannot be verified and returns 409 `idempotency_payload_unknown`. Only a specific order-idempotency unique-key race is recovered, using savepoint rollback and current reads of the winner, its items and creator.
+- Every tool uses a local Pydantic parameter model; published JSON Schema is generated from that same model. Unknown fields, invalid structures, nonpositive or nonfinite quantities/budgets, invalid IDs, oversized strings and invalid horizons/deadlines are rejected as `tool_parameter_error` before business logic. Evidence numeric fields are validated separately, including on replay.
+- The default Agent limit is 8 tool calls and a 180-second loop deadline, in addition to the provider's 30-second request timeout. Explicit lower test limits remain supported. Forecast output already includes inventory; observations and latest evidence per material are reused. Exhaustion persists a run and traces and returns HTTP 409. Other controlled outcomes include `tool_error`, `provider_error`, `failed`, `timeout`, `completed`, `no_shortage`, and `no_qualified_suppliers`; failure runs remain queryable by their creator.

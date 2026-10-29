@@ -88,7 +88,7 @@ def test_agent_forecast_evidence_is_persisted_to_trace_and_purchase_draft_with_r
         ),
     )
 
-    result = loop.run("buy material 9 with forecast evidence")
+    result = loop.run("buy material 9 with forecast evidence", total_budget=Decimal("5000"))
 
     with session_scope(engine) as session:
         forecast_trace = session.scalar(

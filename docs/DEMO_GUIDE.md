@@ -80,3 +80,7 @@ Use material_id 1 directly. Recommend a supplier for 120 units required in 20 da
 - `reports/generated/screenshots/03-approval-approved-order.png`
 
 The latest browser DOM validation also verified a real Agent draft run, buyer submit, approver approval, and formal order `PO-000002` on the local demo service.
+
+## 2026-10-29 budget confirmation change
+
+Before running a write task, enter a positive whole-order budget in the new confirmation field (for the standard 120-unit demo, use `5000.00`). Leaving it empty supports analysis only. All new direct draft requests also require `total_budget`. Run `python -m alembic upgrade head` before starting a checkout with this change. Historical orders display unknown budget; an unknown-budget draft cannot be approved and should be rejected/recreated with explicit confirmation if still needed. Do not modify already-approved #57 for rehearsal.

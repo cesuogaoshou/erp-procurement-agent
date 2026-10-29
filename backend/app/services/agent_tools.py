@@ -3,6 +3,8 @@ from decimal import Decimal
 from typing import Any
 
 from sqlalchemy.orm import Session
+from pydantic import ValidationError
+from backend.app.schemas.tool_parameters import TOOL_PARAMETER_MODELS
 
 from backend.app.models import Material
 from backend.app.services.inventory import get_inventory_snapshot, list_materials
@@ -20,86 +22,17 @@ class AgentTool:
 
 
 def build_agent_tools() -> list[AgentTool]:
-    return [
-        AgentTool(
-            name="list_materials",
-            description="List available procurement materials.",
-            parameters={"type": "object", "properties": {}, "required": []},
-        ),
-        AgentTool(
-            name="resolve_material",
-            description="Resolve a material code or name fragment. Returns ambiguous when multiple materials match.",
-            parameters={
-                "type": "object",
-                "properties": {"query": {"type": "string"}},
-                "required": ["query"],
-            },
-        ),
-        AgentTool(
-            name="get_inventory",
-            description="Read inventory for one material.",
-            parameters={
-                "type": "object",
-                "properties": {"material_id": {"type": "integer"}},
-                "required": ["material_id"],
-            },
-        ),
-        AgentTool(
-            name="get_demand_forecast",
-            description="Forecast demand and shortage for one material over a horizon. Returns a server evidence reference.",
-            parameters={
-                "type": "object",
-                "properties": {
-                    "material_id": {"type": "integer"},
-                    "horizon_days": {"type": "integer"},
-                },
-                "required": ["material_id", "horizon_days"],
-            },
-        ),
-        AgentTool(
-            name="recommend_suppliers",
-            description="Read supplier recommendations for a material and quantity.",
-            parameters={
-                "type": "object",
-                "properties": {
-                    "material_id": {"type": "integer"},
-                    "quantity": {"type": "string"},
-                    "required_in_days": {"type": "integer"},
-                    "budget": {"type": "string"},
-                },
-                "required": ["material_id", "quantity", "required_in_days"],
-            },
-        ),
-        AgentTool(
-            name="create_purchase_draft",
-            description=(
-                "Create a backend-validated purchase draft. This does not approve or issue an order. "
-                "Use evidence refs returned by get_demand_forecast and recommend_suppliers; "
-                "use_latest_forecast/use_latest_recommendation are accepted only for the current run."
-            ),
-            parameters={
-                "type": "object",
-                "properties": {
-                    "supplier_id": {"type": "integer"},
-                    "items": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "material_id": {"type": "integer"},
-                                "quantity": {"type": "string"},
-                            },
-                            "required": ["material_id", "quantity"],
-                        },
-                    },
-                    "idempotency_key": {"type": "string"},
-                    "evidence_refs": {"type": "array", "items": {"type": "string"}},
-                },
-                "required": ["supplier_id", "items", "idempotency_key", "evidence_refs"],
-            },
-            write_mode="create_draft",
-        ),
-    ]
+    descriptions = {
+        "list_materials": "List materials with stable IDs/codes. Reuse this mapping throughout the run.",
+        "resolve_material": "Resolve a material code or name fragment; avoid this when the ID is already known.",
+        "get_inventory": "Inventory only. Usually unnecessary: get_demand_forecast already includes current inventory and available supply.",
+        "get_demand_forecast": "Forecast demand AND inventory, available supply, shortage, and evidence for one material (1-180 days). Call once per material/horizon; reuse current-run evidence.",
+        "recommend_suppliers": "Recommend suppliers for positive finite quantity. Use forecast shortage or user's smaller quantity. Budget is a per-line filter, never the whole-order budget decision. Evidence must cover final MOQ/package rounded quantity.",
+        "create_purchase_draft": "Create one draft for one supplier and multiple materials; backend aggregates duplicate lines, rounds once and enforces the confirmed whole-order budget. No approval. Use all relevant current-run evidence; use_latest_forecast/use_latest_recommendation expand to all relevant materials. Budget is injected by server; do not supply or change it.",
+    }
+    return [AgentTool(name, description, TOOL_PARAMETER_MODELS[name].model_json_schema(),
+                      "create_draft" if name == "create_purchase_draft" else "read_only")
+            for name, description in descriptions.items()]
 
 
 def execute_agent_tool(
@@ -107,9 +40,22 @@ def execute_agent_tool(
     name: str,
     arguments: dict[str, Any],
     evidence_registry: dict[str, dict[str, Any]] | None = None,
+    *, total_budget: Decimal | None = None,
 ) -> Any:
+    model = TOOL_PARAMETER_MODELS.get(name)
+    if model is None:
+        raise ValueError(f"tool_not_allowed:{name}")
+    try:
+        arguments = model.model_validate(arguments).model_dump()
+    except ValidationError as exc:
+        errors = [{"loc": list(error["loc"]), "type": error["type"]} for error in exc.errors()]
+        raise ValueError(f"tool_parameter_error:{name}:{errors}") from exc
+    if name == "recommend_suppliers" and total_budget is not None:
+        if arguments.get("budget") is not None and arguments["budget"] > total_budget:
+            raise ValueError("tool_parameter_error:budget_exceeds_confirmed_total")
     if name == "list_materials":
-        return [item.__dict__ for item in list_materials(session)]
+        return [{"id": item.id, "code": item.code, "name": item.name,
+                 "unit": item.unit, "safety_stock": str(item.safety_stock)} for item in list_materials(session)]
     if name == "resolve_material":
         query = str(arguments["query"]).lower()
         matches = [
@@ -126,12 +72,18 @@ def execute_agent_tool(
         snapshot = get_inventory_snapshot(session, int(arguments["material_id"]))
         return snapshot
     if name == "get_demand_forecast":
+        for ref, cached in (evidence_registry or {}).items():
+            if ref.startswith("forecast:") and cached.get("material_id") == arguments["material_id"] and cached.get("horizon_days") == arguments["horizon_days"]:
+                evidence_registry.pop(ref)
+                evidence_registry[ref] = cached
+                return cached
         forecast = get_demand_forecast(
             session,
             material_id=int(arguments["material_id"]),
             horizon_days=int(arguments["horizon_days"]),
         )
         if evidence_registry is not None:
+            evidence_registry.pop(forecast["evidence_ref"], None)
             evidence_registry[forecast["evidence_ref"]] = forecast
         return forecast
     if name == "recommend_suppliers":
@@ -155,6 +107,7 @@ def execute_agent_tool(
             "excluded": result.excluded,
         }
         if evidence_registry is not None and evidence_ref is not None:
+            evidence_registry.pop(evidence_ref, None)
             evidence_registry[evidence_ref] = output
         return output
     if name == "create_purchase_draft":
@@ -171,6 +124,7 @@ def execute_agent_tool(
                 idempotency_key=str(arguments["idempotency_key"]),
                 evidence_refs=resolved_refs,
                 evidence_payloads=forecast_evidence,
+                total_budget=total_budget,
             ),
         )
         return order
@@ -183,9 +137,9 @@ def _validate_forecast_evidence(
 ) -> tuple[list[str], list[dict[str, Any]]]:
     refs = [str(item) for item in arguments.get("evidence_refs", [])]
     if "use_latest_forecast" in refs and evidence_registry:
-        forecast_refs = [ref for ref in evidence_registry if ref.startswith("forecast:")]
+        forecast_refs = _latest_refs_per_material(evidence_registry, "forecast:")
         if forecast_refs:
-            refs = [forecast_refs[-1] if ref == "use_latest_forecast" else ref for ref in refs]
+            refs = [r for ref in refs for r in (forecast_refs if ref == "use_latest_forecast" else [ref])]
     forecasts = [evidence_registry[ref] for ref in refs if ref in evidence_registry and ref.startswith("forecast:")]
     if not forecasts:
         raise ValueError("forecast_evidence_required")
@@ -206,10 +160,18 @@ def _resolve_recommendation_evidence_refs(
     evidence_registry: dict[str, dict[str, Any]],
 ) -> list[str]:
     if "use_latest_recommendation" in refs and evidence_registry:
-        recommendation_refs = [ref for ref in evidence_registry if ref.startswith("recommendation:")]
+        recommendation_refs = _latest_refs_per_material(evidence_registry, "recommendation:")
         if recommendation_refs:
-            refs = [recommendation_refs[-1] if ref == "use_latest_recommendation" else ref for ref in refs]
+            refs = [r for ref in refs for r in (recommendation_refs if ref == "use_latest_recommendation" else [ref])]
     return refs
+
+
+def _latest_refs_per_material(registry: dict[str, dict[str, Any]], prefix: str) -> list[str]:
+    latest: dict[str, str] = {}
+    for ref in registry:
+        if ref.startswith(prefix):
+            latest[ref.split(":")[1]] = ref
+    return list(latest.values())
 
 
 def _recommendation_ref(

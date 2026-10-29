@@ -97,6 +97,7 @@ export interface PurchaseOrder {
   supplier_name?: string;
   status: string;
   total_amount: string;
+  total_budget: string | null;
   idempotency_key: string;
   version: number;
   formal_order_number: string | null;

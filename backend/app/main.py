@@ -44,7 +44,7 @@ from backend.app.services.approvals import (
     reject_order,
     submit_for_approval,
 )
-from backend.app.services.purchase_drafts import DraftItemInput, PurchaseDraftInput, create_purchase_draft
+from backend.app.services.purchase_drafts import DraftItemInput, PurchaseDraftInput, create_purchase_draft, validate_replay
 from backend.app.services.forecasting import baseline_forecast
 from backend.app.services.inventory import get_inventory_snapshot, list_materials
 from backend.app.services.langgraph_runner import run_langgraph_procurement
@@ -186,24 +186,23 @@ def create_app(
         if auth.role != "buyer":
             raise HTTPException(status_code=403, detail="buyer_role_required")
         try:
+            draft_request = PurchaseDraftInput(
+                supplier_id=request.supplier_id,
+                items=[DraftItemInput(item.material_id, item.quantity) for item in request.items],
+                idempotency_key=request.idempotency_key, evidence_refs=request.evidence_refs,
+                total_budget=request.total_budget,
+            )
             existing = session.scalar(
                 select(PurchaseOrder).where(PurchaseOrder.idempotency_key == request.idempotency_key)
             )
             if existing is not None:
                 if not _can_read_purchase_order(session, existing, auth):
                     raise HTTPException(status_code=403, detail="order_owner_required")
+                validate_replay(existing, draft_request)
                 return existing
             order = create_purchase_draft(
                 session,
-                PurchaseDraftInput(
-                    supplier_id=request.supplier_id,
-                    items=[
-                        DraftItemInput(material_id=item.material_id, quantity=item.quantity)
-                        for item in request.items
-                    ],
-                    idempotency_key=request.idempotency_key,
-                    evidence_refs=request.evidence_refs,
-                ),
+                draft_request,
             )
             # The service can reuse a key committed after the initial lookup.
             creator = _purchase_order_creator(session, order.id)
@@ -306,7 +305,11 @@ def create_app(
                     provider=provider,
                     prompt=request.prompt,
                     thread_id=request.thread_id or f"frontend-{auth.user_id}",
+                    total_budget=request.total_budget,
+                    owner_user_id=auth.user_id,
                 )
+                if result.get("error") == "order_owner_required":
+                    raise HTTPException(status_code=403, detail="order_owner_required")
                 _mark_agent_run_owner(
                     app.state.session_factory,
                     run_id=result.get("run_id"),
@@ -322,7 +325,10 @@ def create_app(
                     "real_function_calling": result.get("real_function_calling", False),
                     "langgraph_executed": result.get("langgraph_executed", False),
                 }
-            result = AgentLoop(engine=app.state.engine, provider=provider).run(request.prompt)
+            result = AgentLoop(engine=app.state.engine, provider=provider).run(
+                request.prompt, total_budget=request.total_budget, owner_user_id=auth.user_id)
+            if result.error == "order_owner_required":
+                raise HTTPException(status_code=403, detail="order_owner_required")
             _mark_agent_run_owner(
                 app.state.session_factory,
                 run_id=result.run_id,
@@ -430,6 +436,7 @@ def _agent_run_summary(run: AgentRun) -> dict[str, Any]:
         "id": run.id,
         "status": run.status,
         "prompt": run.prompt,
+        "total_budget": run.total_budget,
         "error": run.error,
         "purchase_order_id": run.purchase_order_id,
         "created_at": run.created_at.isoformat(),
@@ -458,6 +465,7 @@ def _purchase_order_summary(order: PurchaseOrder) -> dict[str, Any]:
         "supplier_name": order.supplier.name if order.supplier else "",
         "status": order.status,
         "total_amount": order.total_amount,
+        "total_budget": order.total_budget,
         "idempotency_key": order.idempotency_key,
         "version": order.version,
         "formal_order_number": order.formal_order_number,
@@ -524,6 +532,7 @@ def _purchase_order_creator(session: Session, order_id: int) -> str | None:
         )
         .order_by(AuditLog.created_at, AuditLog.id)
         .limit(1)
+        .with_for_update()
     )
 
 

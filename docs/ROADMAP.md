@@ -1,4 +1,19 @@
+## Local commit authorization (2026-10-29)
+
+User explicitly requested a local Git commit after the remediation report. This supersedes the earlier no-commit instruction only; no push or delivery regeneration is authorized. The remediation code, regressions and existing acceptance documentation are included; generated evidence remains ignored.
+
 # Roadmap
+
+Final verification (2026-10-29): backend 133 passed / 5 opt-in skips; real MySQL 5 passed; build/help passed; original extreme 63/63 passed. Evidence: reports/generated/extreme_remediation_20261029/.
+
+
+## Extreme Remediation Gate: 2026-10-29
+
+The six defects identified in the earlier gate below are repaired and verified; see `docs/EXTREME_REMEDIATION_20261029.md`. Original 63-case rerun passed, real MySQL INSERT contention uses a barrier after both key misses, and browser buyer/approver approval/rejection checks completed. Ordinary Chinese two-material request completed in 6 LLM-selected calls. Final backend/MySQL counts are recorded in the remediation report and release-check logs. Historical failure evidence remains authoritative for the pre-fix version. Unknown historical budgets remain unknown and block approval until a new confirmed-budget request is created. No forecasting/data/label changes or delivery rebuild.
+
+## Latest Business Quality Gate: 2026-10-29
+
+Extreme acceptance: 53/63 checks passed; full business sign-off is reopened. See `docs/EXTREME_ACCEPTANCE_20261029.md` for aggregate quantity/budget gaps, read-only/concurrent-create 500s, tool parameter mismatch, and multi-material limits. Prior authentication fixes still passed targeted checks. No business/test or frozen-strategy changes this turn. Evidence is ignored under `reports/generated/extreme_acceptance_20261029/`; user #57 unchanged, invalid #63/#64 rejected. Earlier dated pass statements below describe historical or narrower scopes.
 
 ## Latest Acceptance Override: 2026-10-28
 

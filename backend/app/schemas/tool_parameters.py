@@ -1,0 +1,29 @@
+"""One local runtime model per tool; published schemas come from these models."""
+from pydantic import Field
+
+from backend.app.schemas.procurement import (
+    ParameterModel, PositiveId, ForecastRequest, RecommendationIn, PurchaseDraftParameters,
+)
+
+
+class EmptyParameters(ParameterModel):
+    pass
+
+
+class ResolveMaterialParameters(ParameterModel):
+    query: str = Field(min_length=1, max_length=120, pattern=r"\S")
+
+
+class InventoryParameters(ParameterModel):
+    material_id: PositiveId
+
+
+TOOL_PARAMETER_MODELS = {
+    "list_materials": EmptyParameters,
+    "resolve_material": ResolveMaterialParameters,
+    "get_inventory": InventoryParameters,
+    "get_demand_forecast": ForecastRequest,
+    "recommend_suppliers": RecommendationIn,
+    # Budget is injected from the confirmed run, never accepted from the model.
+    "create_purchase_draft": PurchaseDraftParameters,
+}

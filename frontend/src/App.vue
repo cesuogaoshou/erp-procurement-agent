@@ -49,6 +49,8 @@
               show-word-limit
               placeholder="例如：请根据 MAT-001 的库存和未来30天需求生成采购草稿"
             />
+            <el-input v-model="totalBudget" aria-label="确认整单预算（元）" placeholder="确认整单预算（元），如 5000.00；仅分析可留空" maxlength="16" />
+            <p class="budget-help">此金额作为整单硬上限，模型不能更改；留空时仅支持分析。</p>
             <div class="actions">
               <el-button type="primary" :disabled="!canRunAgent" :loading="agentBusy" @click="runAgent">
                 运行真实Agent
@@ -65,6 +67,7 @@
               <h3>建议与草稿</h3>
               <p>供应商：{{ draftOrder.supplier_name || draftOrder.supplier_id }}</p>
               <p>金额：{{ money(draftOrder.total_amount) }}，版本：{{ draftOrder.version }}</p>
+              <p>整单预算：{{ draftOrder.total_budget == null ? "未知（历史订单）" : money(draftOrder.total_budget) }}</p>
               <el-table :data="draftOrder.items" size="small">
                 <el-table-column prop="material_id" label="物料" width="90" />
                 <el-table-column prop="quantity" label="数量" />
@@ -147,6 +150,9 @@
               <el-table-column prop="status" label="状态" width="130" />
               <el-table-column prop="version" label="版本" width="80" />
               <el-table-column prop="total_amount" label="金额" width="120" />
+              <el-table-column label="整单预算" width="130">
+                <template #default="{ row }">{{ row.total_budget == null ? "未知（历史）" : money(row.total_budget) }}</template>
+              </el-table-column>
               <el-table-column prop="formal_order_number" label="正式单号" width="150" />
               <el-table-column label="操作" width="280">
                 <template #default="{ row }">
@@ -218,6 +224,7 @@ const analysisBusy = ref(false);
 const chartEl = ref<HTMLDivElement | null>(null);
 
 const agentPrompt = ref("请根据 MAT-001 的库存和未来30天需求生成采购草稿");
+const totalBudget = ref("");
 const agentBusy = ref(false);
 const latestRun = ref<AgentRun | null>(null);
 const traces = ref<ToolTrace[]>([]);
@@ -246,6 +253,9 @@ async function login() {
   try {
     const password = loginPassword.value || (loginRole.value === "buyer" ? "buyer-pass" : "approver-pass");
     session.value = await api.login(loginRole.value, password);
+    latestRun.value = null;
+    traces.value = [];
+    selectedRunId.value = null;
     localStorage.setItem("erp-session", JSON.stringify(session.value));
     ElMessage.success("登录成功");
     await refreshAll();
@@ -261,7 +271,7 @@ async function runAgent() {
   agentBusy.value = true;
   error.value = "";
   try {
-    latestRun.value = await api.runAgent(agentPrompt.value.trim(), token.value);
+    latestRun.value = await api.runAgent(agentPrompt.value.trim(), token.value, totalBudget.value.trim() || null);
     if (latestRun.value.run_id) {
       selectedRunId.value = latestRun.value.run_id;
       await loadTraces();

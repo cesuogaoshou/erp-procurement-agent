@@ -33,7 +33,7 @@ def test_api_exposes_inventory_forecast_and_recommendations():
             "/auth/login", json={"username": "buyer", "password": "buyer-pass"}
         ).json()["access_token"]},
         json={
-            "supplier_id": 1,
+            "total_budget": "5000", "total_budget": "5000", "supplier_id": 1,
             "items": [{"material_id": material_id, "quantity": "120"}],
             "idempotency_key": "api-draft-key-001",
             "evidence_refs": [forecast.json()["evidence_ref"], recommendations.json()["evidence_ref"]],
@@ -68,7 +68,7 @@ def test_api_approval_uses_auth_headers_not_body_actor_claims():
         "/purchase-drafts",
         headers={"X-User-Id": "buyer-1", "X-User-Role": "buyer"},
         json={
-            "supplier_id": 1,
+            "total_budget": "5000", "total_budget": "5000", "supplier_id": 1,
             "items": [{"material_id": 1, "quantity": "120"}],
             "idempotency_key": "api-approval-draft-001",
             "evidence_refs": [forecast.json()["evidence_ref"], recommendations.json()["evidence_ref"]],

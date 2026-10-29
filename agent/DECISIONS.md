@@ -278,3 +278,10 @@ Revisit when: moving beyond signed demo identities, adding ownership transfers/t
 ## 2026-10-29 - Explicit publication artifacts
 
 Publish only selected database snapshots and a dated historical delivery ZIP under artifacts/, with checksums and provenance. Keep runtime databases, temporary check databases, secrets and renderer caches ignored. The user explicitly authorized the public upload. Preserve unrelated uncommitted source changes.
+
+## 2026-10-29: Procurement safety context and transactions
+
+- Structured prompt + total_budget is the minimal confirmed procurement demand context. Persist budget on run/order; model write parameters cannot carry or replace it. Unknown historical values stay NULL; approval of an unknown-budget draft is blocked, rejection remains possible. No new full demand-management module.
+- Aggregate requested quantities by material before shortage comparison; apply MOQ/package ceiling once; persisted actual quantity requires capacity and recommendation coverage. Store pre-rounding demand to keep legitimate MOQ behavior during approval.
+- Recover only the order-idempotency unique index under SAVEPOINT rollback. Under MySQL REPEATABLE READ, winner order, items and creator use current reads; normal snapshot reads after collision are insufficient. Keep atomic order/creation audit. Canonical request identity preserves Decimal equality, rejects changed content and malformed evidence.
+- Commit run identity before tools; isolate each business tool and roll back before logging errors. Tool runtime models generate provider schemas, with local validation always mandatory. Keep bounded LLM orchestration (8 calls, 180s plus request timeout), reuse per-material latest evidence and forecast-inventory output.

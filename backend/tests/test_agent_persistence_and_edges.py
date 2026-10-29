@@ -34,7 +34,7 @@ def test_agent_forecast_evidence_is_required_for_purchase_quantity():
         ),
     )
 
-    result = loop.run("buy 120 material 1")
+    result = loop.run("buy 120 material 1", total_budget=Decimal("5000"))
 
     assert result.status == "tool_error"
     assert result.error == "forecast_evidence_required"
@@ -60,7 +60,7 @@ def test_agent_rejects_quantity_above_server_forecast_shortage():
         ),
     )
 
-    result = loop.run("buy too much material 1")
+    result = loop.run("buy too much material 1", total_budget=Decimal("5000"))
 
     assert result.status == "tool_error"
     assert result.error == "quantity_exceeds_forecast_shortage"
@@ -90,7 +90,7 @@ def test_agent_persists_run_trace_and_draft_across_new_session():
         ),
     )
 
-    result = loop.run("need material 1")
+    result = loop.run("need material 1", total_budget=Decimal("5000"))
 
     factory = create_session_factory(engine)
     with factory() as session:
@@ -114,10 +114,10 @@ def test_agent_handles_no_shortage_and_provider_timeout():
         engine=_engine(),
         provider=MockLLMProvider([ToolCall("get_demand_forecast", {"material_id": 1, "horizon_days": 1})]),
     )
-    no_shortage = no_shortage_loop.run("check material 1")
+    no_shortage = no_shortage_loop.run("check material 1", total_budget=Decimal("5000"))
 
     timeout_loop = AgentLoop(engine=_engine(), provider=MockLLMProvider([], error=ProviderError("provider_timeout")))
-    timeout = timeout_loop.run("timeout please")
+    timeout = timeout_loop.run("timeout please", total_budget=Decimal("5000"))
 
     assert no_shortage.status in {"completed", "no_shortage"}
     assert timeout.status == "provider_error"
@@ -142,8 +142,8 @@ def test_duplicate_agent_draft_request_returns_existing_order():
             },
         ),
     ]
-    first = AgentLoop(engine=engine, provider=MockLLMProvider(calls)).run("draft once")
-    second = AgentLoop(engine=engine, provider=MockLLMProvider(calls)).run("draft twice")
+    first = AgentLoop(engine=engine, provider=MockLLMProvider(calls)).run("draft once", total_budget=Decimal("5000"))
+    second = AgentLoop(engine=engine, provider=MockLLMProvider(calls)).run("draft twice", total_budget=Decimal("5000"))
 
     assert first.status == "draft_created"
     assert second.status == "draft_created"
@@ -154,11 +154,11 @@ def test_agent_reports_tool_parameter_error_material_ambiguity_and_no_qualified_
     parameter_error = AgentLoop(
         engine=_engine(),
         provider=MockLLMProvider([ToolCall("get_demand_forecast", {"horizon_days": 30})]),
-    ).run("missing material id")
+    ).run("missing material id", total_budget=Decimal("5000"))
     ambiguous = AgentLoop(
         engine=_engine(),
         provider=MockLLMProvider([ToolCall("resolve_material", {"query": "MAT"})]),
-    ).run("find MAT")
+    ).run("find MAT", total_budget=Decimal("5000"))
     no_supplier = AgentLoop(
         engine=_engine(),
         provider=MockLLMProvider(
@@ -169,7 +169,7 @@ def test_agent_reports_tool_parameter_error_material_ambiguity_and_no_qualified_
                 )
             ]
         ),
-    ).run("impossible supplier")
+    ).run("impossible supplier", total_budget=Decimal("5000"))
 
     assert parameter_error.status == "tool_error"
     assert parameter_error.error is not None

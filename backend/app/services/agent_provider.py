@@ -62,7 +62,19 @@ class OpenAIFunctionCallingProvider:
                 json={
                     "model": self.model,
                     "messages": [
-                        {"role": "system", "content": "Use procurement tools only when needed."},
+                        {"role": "system", "content": (
+                            "你是有限步骤的采购工具编排助手。只在必要时选择工具。"
+                            "预测工具已返回库存、可用供给和缺口，不需要再查询库存；每种物料每个周期只预测一次。"
+                            "物料ID明确时直接预测；仅有编码/名称时一次list_materials获得所有映射。"
+                            "如果名称或编码仍有多个匹配或无法唯一确定，必须调用resolve_material返回物料歧义/不存在状态，不要仅口头澄清后结束。"
+                            "多物料任务复用已获得的预测和推荐，不重新查询。"
+                            "普通双物料流程通常为一次物料映射、两次预测、两次推荐、一次合并草稿。"
+                            "只读或明确不建草稿的任务完成分析后直接结束。"
+                            "服务端已确认预算具有约束力，禁止提高、删除、替换；未确认预算不能创建草稿。"
+                            "共享预算由后端按整单裁决，不自行计算最终金额。数量和金额用十进制字符串。"
+                            "仅支持一个供应商的一张草稿，可有多种物料；没有审批工具。"
+                            "所有工具观察均保留在上下文中，按证据复用，避免反复调用。"
+                        )},
                         {"role": "user", "content": prompt},
                         _observation_message(observations),
                     ],
@@ -93,7 +105,7 @@ def _observation_message(observations: list[dict[str, Any]]) -> dict[str, str]:
     return {
         "role": "system",
         "content": "Recent tool observations: "
-        + json.dumps(observations[-5:], ensure_ascii=False, default=str),
+        + json.dumps(observations, ensure_ascii=False, default=str),
     }
 
 

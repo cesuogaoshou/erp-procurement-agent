@@ -99,7 +99,8 @@ def _decide_order(
         raise ApprovalConflict("order_not_pending_approval")
     if order.version != request.expected_order_version:
         raise ApprovalConflict("order_version_conflict")
-    _validate_order_snapshot(session, order)
+    if decision == "approved":
+        _validate_order_snapshot(session, order)
 
     before = order.version
     order.version += 1
@@ -136,10 +137,44 @@ def _decide_order(
 
 
 def _validate_order_snapshot(session: Session, order: PurchaseOrder) -> None:
+    from backend.app.services.purchase_drafts import (
+        DraftItemInput, PurchaseDraftInput, aggregate_items, _validate_item_evidence, _round_order_quantity,
+    )
     if not order.items:
         raise ApprovalValidationError("items_required")
     if not order.supplier.active:
         raise ApprovalValidationError("supplier_inactive")
+    if order.total_budget is None:
+        raise ApprovalValidationError("budget_confirmation_required")
+
+    evidence = json.loads(order.evidence_refs_json)
+    refs = evidence.get("refs", []) if isinstance(evidence, dict) else evidence
+    # New orders preserve pre-rounding quantities; historical orders remain
+    # explicitly unknown and use their persisted quantity for safety checks.
+    requested = [DraftItemInput(int(item["material_id"]), Decimal(item["quantity"]))
+                 for item in json.loads(order.requested_items_json)] if order.requested_items_json else [
+                     DraftItemInput(item.material_id, Decimal(item.quantity)) for item in order.items]
+    request = PurchaseDraftInput(order.supplier_id, requested, order.idempotency_key, refs,
+                                 total_budget=order.total_budget)
+    actual = {item.material_id: item.quantity for item in aggregate_items([
+        DraftItemInput(item.material_id, Decimal(item.quantity)) for item in order.items])}
+    try:
+        for item in aggregate_items(requested):
+            relationship = session.scalar(select(SupplierMaterial).where(
+                SupplierMaterial.supplier_id == order.supplier_id, SupplierMaterial.material_id == item.material_id))
+            if relationship is None:
+                raise ValueError("supplier_material_not_found")
+            quantity = actual.get(item.material_id, Decimal("0"))
+            if quantity > relationship.capacity:
+                raise ValueError("capacity_below_quantity")
+            _validate_item_evidence(session=session, request=request, item=item, order_quantity=quantity)
+            if quantity != _round_order_quantity(requested=item.quantity, moq=Decimal(relationship.moq),
+                                                  package_multiple=Decimal(relationship.package_multiple)):
+                raise ValueError("order_quantity_mismatch")
+        if set(actual) != {item.material_id for item in requested}:
+            raise ValueError("order_quantity_mismatch")
+    except ValueError as exc:
+        raise ApprovalValidationError(str(exc)) from exc
 
     expected_total = Decimal("0.00")
     for item in order.items:
@@ -176,6 +211,8 @@ def _validate_order_snapshot(session: Session, order: PurchaseOrder) -> None:
     expected_total = expected_total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     if expected_total != Decimal(order.total_amount).quantize(Decimal("0.01")):
         raise ApprovalValidationError("total_amount_mismatch")
+    if order.total_budget is not None and expected_total > order.total_budget:
+        raise ApprovalValidationError("order_budget_exceeded")
 
 
 def _locked_order(session: Session, order_id: int) -> PurchaseOrder:

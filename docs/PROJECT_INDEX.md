@@ -1,6 +1,17 @@
+## Local commit authorization (2026-10-29)
+
+User explicitly requested a local Git commit after the remediation report. This supersedes the earlier no-commit instruction only; no push or delivery regeneration is authorized. The remediation code, regressions and existing acceptance documentation are included; generated evidence remains ignored.
+
 # Project Index
 
+Final verification (2026-10-29): backend 133 passed / 5 opt-in skips; real MySQL 5 passed; build/help passed; original extreme 63/63 passed. Evidence: reports/generated/extreme_remediation_20261029/.
+
 ## Current State
+
+Latest extreme remediation on 2026-10-29: implemented all six defect classes with regressions and local verification. Read `docs/EXTREME_REMEDIATION_20261029.md` before interpreting historical conclusions below. Original 63 checks reran successfully; structured confirmed whole-order budget, aggregate quantity/rounding/approval guards, runtime tool models, durable error traces, and real MySQL idempotency contention recovery are implemented. Migration head `20261029_0007`; historical budgets remain NULL and unknown-budget approval is blocked. Evidence is separate under `reports/generated/extreme_remediation_20261029/`; original failure files and user order #57 preserved. No commit/push or course package regeneration.
+
+
+Latest extreme acceptance on 2026-10-29: **partial pass**, see `docs/EXTREME_ACCEPTANCE_20261029.md`. Executed 63 checks: 53 passed/10 failed, grouped into aggregate quantity/capacity bypass, missing shared order-budget enforcement, read-only Agent 500/trace loss, concurrent same-key create 500, internal tool/schema mismatch, and a multi-material run hitting 6-call limit. No business/test code changed. User #57 unchanged; invalid test #63/#64 rejected for isolation. Evidence: ignored `reports/generated/extreme_acceptance_20261029/`. Earlier remediation passes below remain scoped to that earlier work.
 
 Latest remediation acceptance on 2026-10-28: **P1/P2 and requested browser loop passed**, see `docs/REMEDIATION_ACCEPTANCE_20261028.md`. Draft creation requires a signed buyer token, atomically writes creator audit, and checks ownership on replay/submission; Agent HTTP replay also preserves ownership and a single creation audit. Fresh verification: 82 backend tests passed (3 opt-in skips), all 3 MySQL tests passed with current evidence, frontend build passed, real browser runs #66/#67 created #55/#56, PO-000055 was approved, and #56 was rejected after a real backend restart. Run/order/7-trace snapshots matched across restart. Evidence: ignored `reports/generated/remediation_acceptance_20261028/`. The earlier partial-pass discovery is preserved in `docs/LOCAL_ACCEPTANCE_20261028.md`. Frozen forecasting limitations and unfilled course report fields remain; the delivery package was not regenerated.
 

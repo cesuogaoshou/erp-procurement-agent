@@ -1,5 +1,9 @@
 # Course Acceptance Review
 
+> Extreme remediation (2026-10-29): see `EXTREME_REMEDIATION_20261029.md`. All six findings below were repaired; backend 133 passed/5 opt-in skipped, real MySQL 5 passed, original extreme cases 63/63 passed. Original failure evidence and order #57 are preserved. This engineering remediation does not change frozen forecasting limitations or refresh the course delivery package.
+
+> Expanded business-quality acceptance (2026-10-29): 53/63 checks passed; 10 failures map to 6 findings. See `EXTREME_ACCEPTANCE_20261029.md` for aggregate quantity/budget gaps, read-only/concurrent-create 500s, internal schema mismatch and multi-material limits. No business fixes in that acceptance turn. Earlier scoped authentication remediation pass is not full business-quality sign-off.
+
 > Latest remediation acceptance (2026-10-28): see `REMEDIATION_ACCEPTANCE_20261028.md`. P1 draft auth/creator ownership and P2 stale MySQL evidence are fixed and revalidated: 82 backend tests passed/3 default skipped, all 3 opt-in MySQL tests passed, frontend build passed, browser approved PO-000055 and rejected #56 after backend restart with identical persisted runs/traces/orders before continuing. The earlier partial-pass discovery is preserved in `LOCAL_ACCEPTANCE_20261028.md`. This closes the requested engineering blockers; forecasting scope limitations, personal report fields and an unchanged delivery package remain. Older statements below, including missing-report status and historical test counts, must be interpreted at their recorded dates.
 
 Review date: 2026-10-12  

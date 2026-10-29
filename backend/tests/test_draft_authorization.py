@@ -31,7 +31,7 @@ def draft_api(monkeypatch):
             "material_id": 1, "quantity": "120", "required_in_days": 20, "budget": "5000.00",
         }).json()
         payload = {
-            "supplier_id": 1, "items": [{"material_id": 1, "quantity": "120"}],
+            "total_budget": "5000", "total_budget": "5000", "supplier_id": 1, "items": [{"material_id": 1, "quantity": "120"}],
             "idempotency_key": "owned-draft",
             "evidence_refs": [forecast["evidence_ref"], recommendation["evidence_ref"]],
         }
@@ -133,18 +133,18 @@ def test_agent_replay_cannot_reassign_owner_or_duplicate_creator_audit(draft_api
             ToolCall("recommend_suppliers", {
                 "material_id": 1, "quantity": "120", "required_in_days": 20, "budget": "5000.00",
             }),
-            ToolCall("create_purchase_draft", payload | {
+            ToolCall("create_purchase_draft", {k: v for k, v in payload.items() if k != "total_budget"} | {
                 "evidence_refs": ["use_latest_forecast", "use_latest_recommendation"],
             }),
         ])
 
     agent_client = TestClient(create_app(engine, auth_secret="test-secret", agent_provider_factory=provider))
-    replay = agent_client.post("/agent/runs", headers=_headers(), json={"prompt": "repeat owned draft"})
+    replay = agent_client.post("/agent/runs", headers=_headers(), json={"total_budget": "5000", "prompt": "repeat owned draft"})
     assert replay.status_code == 200
     assert replay.json()["purchase_order_id"] == order_id
     with session_scope(engine) as session:
         assert len(session.scalars(select(AuditLog).where(AuditLog.action == "created_draft")).all()) == 1
-    other = agent_client.post("/agent/runs", headers=_headers("buyer-2"), json={"prompt": "reuse other buyer key"})
+    other = agent_client.post("/agent/runs", headers=_headers("buyer-2"), json={"total_budget": "5000", "prompt": "reuse other buyer key"})
     assert other.status_code == 403
     assert agent_client.get("/purchase-orders", headers=_headers("buyer-2")).json() == []
     with session_scope(engine) as session:

@@ -1,4 +1,25 @@
+## Local commit authorization (2026-10-29)
+
+User explicitly requested a local Git commit after the remediation report. This supersedes the earlier no-commit instruction only; no push or delivery regeneration is authorized. The remediation code, regressions and existing acceptance documentation are included; generated evidence remains ignored.
+
 # Handoff
+
+Final verification (2026-10-29): backend 133 passed / 5 opt-in skips; real MySQL 5 passed; build/help passed; original extreme 63/63 passed. Evidence: reports/generated/extreme_remediation_20261029/.
+
+
+## Latest User Request: Extreme remediation (2026-10-29)
+
+Completed six requested fixes and real local acceptance; read docs/EXTREME_REMEDIATION_20261029.md and reports/generated/extreme_remediation_20261029/SUMMARY.json. Start from current uncommitted workspace, preserve earlier user documentation modifications; preexisting.patch records starting diff. Original 63 cases reran passed; separate unit/MySQL release-check logs are current verification. Added migration 20261029_0007 on local MySQL, no reset/backfill. New drafts require structured total_budget, model cannot replace it. Historical NULL budgets block approval, allow rejection/recreation; #57 untouched. #79/#81 early failed-race artifacts rejected via business services with original audit evidence retained. Backend remains loopback 8000 (PID file in new evidence dir), frontend 5173. Final code changes are not committed/pushed and course package not rebuilt. Frozen forecasting and labels unchanged.
+
+
+## Latest Extreme Acceptance: 2026-10-29
+
+- User asked us to execute extreme tests. Completed63 checks:53pass/10fail,6 groups. See docs/EXTREME_ACCEPTANCE_20261029.md and ignored reports/generated/extreme_acceptance_20261029/ (JSON/matrix/4JPG/scripts/logs).
+- Started clean at HEAD7737e62d40eb083ac23defbbd79e14fbfe970c6b. No business/test edits, reset, tuning, package rebuild, commit or push. #57 snapshot unchanged; rows57→68. Invalid own #63/#64 rejected via normal APIs; approval probes rolled back, no formal bad orders committed.
+- P1: #63 accepted4×120=480 versus shortage406.11/capacity300,3888yuan; approval guard also accepts aggregation in rolled-back probe. #64 accepted972+984=1956 with separate1000-budget refs; no order-wide budget field/guard, also accepted by rolled-back approval probe. Guided real Run87 correctly used residual28/no draft; not proof of backend enforcement.
+- P1: read-only Agent HTTP/browser500, KeyError shortage_quantity because _latest_shortage_is_zero reads last recommendation evidence; run/traces rolled back. P2: simultaneous same-key create one200/one500 IntegrityError1062, only #60/1audit. P2: dispatch accepts181day/negative quantity unlike HTTP422, NaN raises Decimal error. P2: Run85 exhausted6calls; focused87 stops safely in4calls. Keep both failures and focused success.
+- Passed auth/roles, HTTP bounds, forged evidence, serial idempotency, approve/reject competition, terminal refusals, response-loss retry, backend price/status, browser cancel/role/double-submit65(version2/1audit), model100budget/1day constraints.17 actual Agent requests; direct probes labelled separately. Zero/negative/NaN no-write passes are not strict schema passes. Corrected harness120.0/120.00 false comparison with raw initial JSON kept.
+- Findings remain unfixed. No full pytest/backtest rerun; earlier remediation/publication notes below are historical. Next work is remediation only if requested; do not equate old scoped passes with complete business quality.
 
 ## Latest Publication: 2026-10-29
 

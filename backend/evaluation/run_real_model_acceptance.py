@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import time
+from decimal import Decimal
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -234,7 +235,7 @@ def _run_real_agent(engine, model: str, base_url: str, prompt: str, max_tool_cal
             timeout_seconds=60,
         ),
         max_tool_calls=max_tool_calls,
-    ).run(prompt)
+    ).run(prompt, total_budget=Decimal("5000"), owner_user_id="buyer-1")
 
 
 def _agent_result(result) -> dict[str, Any]:

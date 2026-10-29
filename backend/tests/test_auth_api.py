@@ -25,7 +25,7 @@ def _draft(client: TestClient) -> dict:
         "/purchase-drafts",
         headers={"Authorization": f"Bearer {_login(client, 'buyer', 'buyer-pass')}"},
         json={
-            "supplier_id": 1,
+            "total_budget": "5000", "total_budget": "5000", "supplier_id": 1,
             "items": [{"material_id": 1, "quantity": "120"}],
             "idempotency_key": "auth-api-draft-001",
             "evidence_refs": [forecast.json()["evidence_ref"], recommendations.json()["evidence_ref"]],

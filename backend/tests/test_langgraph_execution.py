@@ -21,6 +21,7 @@ def test_langgraph_executes_agent_loop_and_persists_state_across_new_session():
     engine = _engine()
 
     result = run_langgraph_procurement(
+        total_budget=Decimal("5000"),
         engine=engine,
         provider=MockLLMProvider(
             [
@@ -62,6 +63,7 @@ def test_langgraph_executes_agent_loop_and_persists_state_across_new_session():
 def test_langgraph_draft_pending_approval_can_be_queried_and_approved_after_restart_scope():
     engine = _engine()
     result = run_langgraph_procurement(
+        total_budget=Decimal("5000"),
         engine=engine,
         provider=MockLLMProvider(
             [

@@ -65,7 +65,7 @@ def test_agent_loop_runs_read_only_tools_before_creating_purchase_draft():
     )
     loop = AgentLoop(engine=_engine(), provider=provider, max_tool_calls=5)
 
-    result = loop.run("Need 120 units of material 1 within 20 days")
+    result = loop.run("Need 120 units of material 1 within 20 days", total_budget=Decimal("5000"))
 
     assert result.status == "draft_created"
     assert result.tool_calls == ["list_materials", "get_demand_forecast", "recommend_suppliers", "create_purchase_draft"]
@@ -77,7 +77,7 @@ def test_agent_loop_rejects_provider_attempt_to_call_approval_tool():
     provider = MockLLMProvider([ToolCall("approve_order", {"order_id": 1})])
     loop = AgentLoop(engine=_engine(), provider=provider, max_tool_calls=4)
 
-    result = loop.run("Approve order 1")
+    result = loop.run("Approve order 1", total_budget=Decimal("5000"))
 
     assert result.status == "tool_not_allowed"
     assert result.error == "tool_not_allowed:approve_order"
@@ -94,7 +94,7 @@ def test_agent_loop_enforces_tool_call_limit():
     loop = AgentLoop(engine=_engine(), provider=provider, max_tool_calls=2)
 
     try:
-        loop.run("loop forever")
+        loop.run("loop forever", total_budget=Decimal("5000"))
     except AgentRunLimitExceeded as exc:
         assert str(exc) == "max_tool_calls_exceeded"
     else:
@@ -113,7 +113,7 @@ def test_agent_loop_persists_tool_call_limit_state_for_restart_query():
     loop = AgentLoop(engine=engine, provider=provider, max_tool_calls=2)
 
     try:
-        loop.run("loop forever")
+        loop.run("loop forever", total_budget=Decimal("5000"))
     except AgentRunLimitExceeded:
         pass
     else:

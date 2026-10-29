@@ -36,6 +36,7 @@ def test_create_purchase_draft_calculates_amount_and_is_idempotent():
     with session_scope(engine) as session:
         seed_demo_data(session)
         request = PurchaseDraftInput(
+            total_budget=Decimal("5000"),
             supplier_id=1,
             items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
             idempotency_key="draft-key-001",
@@ -69,6 +70,7 @@ def test_create_purchase_draft_rounds_quantity_to_moq_and_package_multiple():
         relationship.moq = Decimal("25")
         relationship.package_multiple = Decimal("10")
         request = PurchaseDraftInput(
+            total_budget=Decimal("5000"),
             supplier_id=1,
             items=[DraftItemInput(material_id=1, quantity=Decimal("21"))],
             idempotency_key="draft-key-package-rounding",
@@ -86,6 +88,7 @@ def test_create_purchase_draft_rejects_supplier_without_material_relationship():
     with session_scope(engine) as session:
         seed_demo_data(session)
         request = PurchaseDraftInput(
+            total_budget=Decimal("5000"),
             supplier_id=999,
             items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
             idempotency_key="draft-key-invalid-supplier",
@@ -101,6 +104,7 @@ def test_create_purchase_draft_rejects_capacity_conflict():
     with session_scope(engine) as session:
         seed_demo_data(session)
         request = PurchaseDraftInput(
+            total_budget=Decimal("5000"),
             supplier_id=1,
             items=[DraftItemInput(material_id=1, quantity=Decimal("9999"))],
             idempotency_key="draft-key-capacity",
@@ -116,6 +120,7 @@ def test_create_purchase_draft_requires_evidence_refs():
     with session_scope(engine) as session:
         seed_demo_data(session)
         request = PurchaseDraftInput(
+            total_budget=Decimal("5000"),
             supplier_id=1,
             items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
             idempotency_key="draft-key-no-evidence",
@@ -131,6 +136,7 @@ def test_create_purchase_draft_rejects_forged_forecast_evidence_ref():
     with session_scope(engine) as session:
         seed_demo_data(session)
         request = PurchaseDraftInput(
+            total_budget=Decimal("5000"),
             supplier_id=1,
             items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
             idempotency_key="draft-key-forged-forecast",
@@ -147,6 +153,7 @@ def test_create_purchase_draft_rejects_recommendation_for_wrong_supplier():
         seed_demo_data(session)
         forecast = get_demand_forecast(session, material_id=1, horizon_days=30)
         request = PurchaseDraftInput(
+            total_budget=Decimal("5000"),
             supplier_id=1,
             items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
             idempotency_key="draft-key-wrong-recommendation",

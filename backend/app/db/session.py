@@ -17,7 +17,9 @@ def create_app_engine(url: str | None = None) -> Engine:
 
 
 def create_sqlite_engine(url: str = "sqlite+pysqlite:///./erp_dev.sqlite") -> Engine:
-    connect_args = {"check_same_thread": False}
+    # Python 3.13 sqlite's legacy mode does not BEGIN for SELECT/SAVEPOINT.
+    # A released savepoint could otherwise outlive a later outer rollback.
+    connect_args = {"check_same_thread": False, "autocommit": False}
     kwargs = {"connect_args": connect_args}
     if url.endswith(":memory:"):
         kwargs["poolclass"] = StaticPool

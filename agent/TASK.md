@@ -1,4 +1,19 @@
+## Local commit authorization (2026-10-29)
+
+User explicitly requested a local Git commit after the remediation report. This supersedes the earlier no-commit instruction only; no push or delivery regeneration is authorized. The remediation code, regressions and existing acceptance documentation are included; generated evidence remains ignored.
+
+
+## Latest Request: Extreme remediation (2026-10-29)
+Final verification (2026-10-29): backend 133 passed / 5 opt-in skips; real MySQL 5 passed; build/help passed; original extreme 63/63 passed. Evidence: reports/generated/extreme_remediation_20261029/.
+
+
+Six requested defect classes implemented, original 63 checks rerun passed, plus ordinary two-material and browser approve/reject checks. See docs/EXTREME_REMEDIATION_20261029.md for exact commands, staged failures and remaining limits. Do not resume old instructions to commit/regenerate package: this request explicitly forbids commit/push/package rebuild. Current remaining work is user-directed follow-up only after final verification/report delivery. Preserve #57, original evidence, frozen data/labels, and all preexisting documentation edits.
+
 # Current Task
+
+## Latest User Request: Execute Extreme Acceptance (2026-10-29)
+
+Completed actual63-check acceptance:53pass/10fail,6 finding groups; docs/EXTREME_ACCEPTANCE_20261029.md. No business fixes implemented. Priority: aggregate quantities/capacity, explicit shared order budget, read-only Agent completion/error persistence, concurrent-create IntegrityError, uniform tool schema, multi-material orchestration. Evidence ignored under reports/generated/extreme_acceptance_20261029/. #57 unchanged; invalid #63/#64 rejected/retained, rows57→68. No reset/tuning/package regeneration/commit/push. Earlier scoped remediation passes below are historical, not full business-quality sign-off.
 
 ## Latest Publication: 2026-10-29
 

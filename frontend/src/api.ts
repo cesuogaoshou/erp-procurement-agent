@@ -77,10 +77,10 @@ export const api = {
       token
     );
   },
-  runAgent(prompt: string, token: string) {
+  runAgent(prompt: string, token: string, totalBudget: string | null) {
     return request<AgentRun>(
       "/agent/runs",
-      { method: "POST", body: JSON.stringify({ prompt, use_langgraph: true }) },
+      { method: "POST", body: JSON.stringify({ prompt, use_langgraph: true, total_budget: totalBudget }) },
       token
     );
   },

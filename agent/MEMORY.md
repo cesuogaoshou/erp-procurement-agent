@@ -196,3 +196,22 @@
 - Credential scan included nested DOCX and PDF text and found no known local credential matches or common token/private-key formats. Configuration secrets remain excluded.
 - Only artifacts/ plus scoped .gitignore exceptions were committed. All pre-existing backend/frontend/tests/docs changes from October 28 remain uncommitted and preserved.
 - New publication scope supersedes earlier instructions that databases/delivery must never be uploaded; runtime root databases, raw delivery working directory, .env and agent/ remain ignored.
+
+## 2026-10-29 - Extreme business acceptance
+
+- User requested actual extreme business acceptance. Ran 63 checks: 53 passed, 10 failed, 6 finding groups. Added docs/EXTREME_ACCEPTANCE_20261029.md and refreshed status docs. No business/test changes, resets, tuning, commits, pushes or package regeneration.
+- P1: duplicate material rows accepted 480 units (#63) against shortage406.11/capacity300; missing shared-budget expression/enforcement accepted #64 at1956 from separate1000-budget refs. Approval guards accepted both in explicitly rolled-back MySQL probes. Both invalid drafts subsequently rejected through normal APIs, no committed formal orders.
+- P1: read-only Agent actual HTTP/browser500; last recommendation registry entry incorrectly read for shortage_quantity; failed run/traces rolled back. P2: two concurrent same-key creations returned200/500 with one stored order/audit, IntegrityError1062. P2: tool181day/negative qty accepted versus HTTP422; NaN Decimal exception. P2: normal two-material Run85 hit6-call limit; focused87 correctly used remaining28 and stopped in4calls.
+- Passed role/auth, HTTP bounds/evidence checks, serial idempotency, approve/reject race, approved/rejected terminal state refusal, response body disconnect/retry, authoritative price/status, browser cancellation/role switch/double-submit65 (version2/one audit), actual low-budget and1day requests.17 real Agent requests; direct-dispatch and transaction probes separately labelled.
+- Evidence ignored under reports/generated/extreme_acceptance_20261029/: raw case JSON, SUMMARY.json, CASE_MATRIX.md, server error excerpts, quarantine, scripts/logs and4JPGs. #57 before/after identical; rows57→68. Kept initial false harness string comparison120.0/120.00 report, then corrected numeric comparison and verified DB; did not change app to pass.
+- Full pytest/backtest not repeated. Source defects remain unfixed. Prior scoped remediation pass does not imply full business-quality acceptance. NaN model run stopped at ambiguity, and no-write tests do not establish strict schema coverage.
+
+## 2026-10-29 extreme remediation
+
+Read required handoff/acceptance evidence and saved preexisting Git diff before code edits. Added regressions then repaired aggregate quantity/rounding/approval constraints, explicit confirmed whole-order budget, read-only completion and failure-safe trace persistence, narrow idempotency collision recovery with canonical Decimal fingerprints and MySQL current reads, shared local tool models, and bounded multi-material orchestration. Independent review found latest-ref and malformed-replay paths, both repaired with regression evidence. Kept original 63 failure records byte-for-byte (hash manifest), #57 business snapshot unchanged. Real MySQL tests, model runs, browser submit/approve/reject/roles and full backend/frontend checks recorded in new reports/generated/extreme_remediation_20261029. Migration 0007 applied without reset/backfill. No frozen data/labels, forecasting tuning, delivery generation, commit or push. Full dated report docs/EXTREME_REMEDIATION_20261029.md; old conclusions remain history.
+
+Final verification: backend 133 passed / 5 opt-in skipped; RUN_MYSQL_INTEGRATION=1 suite 5 passed; frontend build and CLI help passed; original63/63 rerun and additional current-code HTTP/model smoke5/5. Unknown-budget approval live422 unchanged snapshot; #57 and original hashes rechecked unchanged. Final backend PID file server.pid (loopback8000); frontend5173 retained.
+
+## 2026-10-29 local commit authorization
+
+User requested local commit after accepting remediation delivery. Preserve existing acceptance documentation and include it with the safety fixes, migration and regressions. Recheck code hashes against prior verified evidence and run backend suite before committing. No push, delivery rebuild or database changes in this commit-only turn.

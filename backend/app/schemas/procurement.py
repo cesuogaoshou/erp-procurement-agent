@@ -1,7 +1,17 @@
 from decimal import Decimal
-from typing import Any
+from typing import Any, Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
+
+
+PositiveId = Annotated[int, Field(strict=True, gt=0)]
+Quantity = Annotated[Decimal, Field(gt=0, allow_inf_nan=False, max_digits=12, decimal_places=2)]
+Money = Annotated[Decimal, Field(gt=0, allow_inf_nan=False, max_digits=14, decimal_places=2)]
+EvidenceRef = Annotated[str, Field(min_length=1, max_length=500)]
+
+
+class ParameterModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
 
 
 class MaterialOut(BaseModel):
@@ -22,9 +32,9 @@ class InventoryOut(BaseModel):
     version: int
 
 
-class ForecastRequest(BaseModel):
-    material_id: int
-    horizon_days: int = Field(ge=1, le=180)
+class ForecastRequest(ParameterModel):
+    material_id: PositiveId
+    horizon_days: int = Field(strict=True, ge=1, le=180)
 
 
 class ForecastOut(BaseModel):
@@ -48,11 +58,11 @@ class ForecastOut(BaseModel):
     notes: list[str]
 
 
-class RecommendationIn(BaseModel):
-    material_id: int
-    quantity: Decimal = Field(gt=0)
-    required_in_days: int = Field(ge=1, le=365)
-    budget: Decimal | None = Field(default=None, gt=0)
+class RecommendationIn(ParameterModel):
+    material_id: PositiveId
+    quantity: Quantity
+    required_in_days: int = Field(strict=True, ge=1, le=365)
+    budget: Money | None = None
 
 
 class RecommendationItemOut(BaseModel):
@@ -76,16 +86,20 @@ class RecommendationOut(BaseModel):
     excluded: list[ExcludedSupplierOut]
 
 
-class PurchaseDraftItemIn(BaseModel):
-    material_id: int
-    quantity: Decimal = Field(gt=0)
+class PurchaseDraftItemIn(ParameterModel):
+    material_id: PositiveId
+    quantity: Quantity
 
 
-class PurchaseDraftIn(BaseModel):
-    supplier_id: int
-    items: list[PurchaseDraftItemIn] = Field(min_length=1)
+class PurchaseDraftParameters(ParameterModel):
+    supplier_id: PositiveId
+    items: list[PurchaseDraftItemIn] = Field(min_length=1, max_length=100)
     idempotency_key: str = Field(min_length=8, max_length=120)
-    evidence_refs: list[str] = Field(min_length=1)
+    evidence_refs: list[EvidenceRef] = Field(min_length=1, max_length=200)
+
+
+class PurchaseDraftIn(PurchaseDraftParameters):
+    total_budget: Money
 
 
 class PurchaseDraftItemOut(BaseModel):
@@ -100,6 +114,7 @@ class PurchaseDraftOut(BaseModel):
     supplier_id: int
     status: str
     total_amount: Decimal
+    total_budget: Decimal | None = None
     idempotency_key: str
     version: int
     formal_order_number: str | None = None
@@ -127,10 +142,11 @@ class TokenOut(BaseModel):
     role: str
 
 
-class AgentRunIn(BaseModel):
+class AgentRunIn(ParameterModel):
     prompt: str = Field(min_length=1, max_length=2000)
     thread_id: str | None = Field(default=None, max_length=120)
     use_langgraph: bool = True
+    total_budget: Money | None = None
 
 
 class AgentRunOut(BaseModel):
@@ -148,6 +164,7 @@ class AgentRunSummaryOut(BaseModel):
     id: int
     status: str
     prompt: str
+    total_budget: Decimal | None = None
     error: str | None = None
     purchase_order_id: int | None = None
     created_at: str
@@ -172,6 +189,7 @@ class PurchaseOrderSummaryOut(BaseModel):
     supplier_name: str
     status: str
     total_amount: Decimal
+    total_budget: Decimal | None = None
     idempotency_key: str
     version: int
     formal_order_number: str | None = None

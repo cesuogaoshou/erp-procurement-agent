@@ -1,13 +1,17 @@
 import json
+import hashlib
 from dataclasses import dataclass
 from decimal import Decimal, ROUND_CEILING, ROUND_HALF_UP
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.attributes import set_committed_value
+from sqlalchemy.exc import IntegrityError
 
 from backend.app.models import PurchaseOrder, PurchaseOrderItem, SupplierMaterial
 from backend.app.services.forecasting import get_demand_forecast
 from backend.app.services.recommendations import recommend_for_material
+from backend.app.schemas.procurement import ForecastRequest, RecommendationIn
 
 
 @dataclass(frozen=True)
@@ -23,6 +27,7 @@ class PurchaseDraftInput:
     idempotency_key: str
     evidence_refs: list[str]
     evidence_payloads: list[dict] | None = None
+    total_budget: Decimal | None = None
 
 
 def create_purchase_draft(session: Session, request: PurchaseDraftInput) -> PurchaseOrder:
@@ -35,13 +40,18 @@ def create_purchase_draft(session: Session, request: PurchaseDraftInput) -> Purc
         select(PurchaseOrder).where(PurchaseOrder.idempotency_key == request.idempotency_key)
     )
     if existing is not None:
+        validate_replay(existing, request)
         return existing
+
+    if request.total_budget is None:
+        raise ValueError("budget_confirmation_required")
+    if not request.total_budget.is_finite() or request.total_budget <= 0:
+        raise ValueError("budget_must_be_positive_finite")
 
     order_items: list[PurchaseOrderItem] = []
     total_amount = Decimal("0.00")
-    for item in request.items:
-        if item.quantity <= 0:
-            raise ValueError("quantity_must_be_positive")
+    aggregated = aggregate_items(request.items)
+    for item in aggregated:
         relationship = session.scalar(
             select(SupplierMaterial).where(
                 SupplierMaterial.supplier_id == request.supplier_id,
@@ -55,14 +65,19 @@ def create_purchase_draft(session: Session, request: PurchaseDraftInput) -> Purc
             moq=Decimal(relationship.moq),
             package_multiple=Decimal(relationship.package_multiple),
         )
+        # Requested aggregate is checked before rounding. MOQ/package rounding
+        # is allowed above shortage, but only with capacity and evidence support.
+        forecast = _forecast_evidence_for_item(session, request, item.material_id)
+        if item.quantity > Decimal(str(forecast["shortage_quantity"])):
+            raise ValueError("quantity_exceeds_forecast_shortage")
+        if order_quantity > relationship.capacity:
+            raise ValueError("capacity_below_quantity")
         _validate_item_evidence(
             session=session,
             request=request,
             item=item,
             order_quantity=order_quantity,
         )
-        if order_quantity > relationship.capacity:
-            raise ValueError("capacity_below_quantity")
 
         unit_price = Decimal(relationship.unit_price).quantize(Decimal("0.01"))
         line_amount = (unit_price * order_quantity).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
@@ -76,17 +91,91 @@ def create_purchase_draft(session: Session, request: PurchaseDraftInput) -> Purc
             )
         )
 
+    if total_amount > request.total_budget:
+        raise ValueError("order_budget_exceeded")
     order = PurchaseOrder(
         supplier_id=request.supplier_id,
         status="draft",
         idempotency_key=request.idempotency_key,
         total_amount=total_amount.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP),
+        total_budget=request.total_budget,
+        request_fingerprint=request_fingerprint(request),
+        requested_items_json=json.dumps([{ "material_id": item.material_id, "quantity": str(item.quantity)} for item in aggregated]),
         evidence_refs_json=_evidence_json(request),
         items=order_items,
     )
-    session.add(order)
-    session.flush()
+    try:
+        # Savepoint rollback leaves the caller's run/log transaction usable.
+        with session.begin_nested():
+            session.add(order)
+            session.flush()
+    except IntegrityError as exc:
+        if not is_idempotency_collision(exc):
+            raise
+        # Locking read sees the winner even under MySQL REPEATABLE READ.
+        existing = session.scalar(select(PurchaseOrder).where(
+            PurchaseOrder.idempotency_key == request.idempotency_key).with_for_update())
+        if existing is None:
+            raise
+        # Lazy loading would use the transaction's old consistent snapshot and
+        # could return no items. Both winner and items require current reads.
+        items = list(session.scalars(select(PurchaseOrderItem).where(
+            PurchaseOrderItem.order_id == existing.id).with_for_update()))
+        set_committed_value(existing, "items", items)
+        validate_replay(existing, request)
+        return existing
     return order
+
+
+def aggregate_items(items: list[DraftItemInput]) -> list[DraftItemInput]:
+    quantities: dict[int, Decimal] = {}
+    for item in items:
+        if not item.quantity.is_finite() or item.quantity <= 0:
+            raise ValueError("quantity_must_be_positive_finite")
+        quantities[item.material_id] = quantities.get(item.material_id, Decimal("0")) + item.quantity
+    return [DraftItemInput(material, quantity) for material, quantity in sorted(quantities.items())]
+
+
+def request_fingerprint(request: PurchaseDraftInput) -> str:
+    def canonical_decimal(value):
+        try:
+            number = Decimal(value)
+            if not number.is_finite() or number <= 0:
+                raise ValueError("recommendation_evidence_invalid")
+            return format(number.normalize(), "f")
+        except ArithmeticError as exc:
+            raise ValueError("recommendation_evidence_invalid") from exc
+    refs = []
+    for ref in request.evidence_refs:
+        parts = ref.split(":")
+        if parts[0] == "recommendation" and len(parts) in {5, 6}:
+            parts[3] = canonical_decimal(parts[3])
+            if len(parts) == 6 and parts[5] != "none":
+                parts[5] = canonical_decimal(parts[5])
+        refs.append(":".join(parts))
+    payload = {"supplier_id": request.supplier_id,
+               "items": [(item.material_id, canonical_decimal(item.quantity)) for item in aggregate_items(request.items)],
+               "total_budget": None if request.total_budget is None else canonical_decimal(request.total_budget),
+               "evidence_refs": sorted(set(refs))}
+    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+
+
+def validate_replay(order: PurchaseOrder, request: PurchaseDraftInput) -> None:
+    if order.request_fingerprint is None:
+        raise ValueError("idempotency_payload_unknown")
+    if order.request_fingerprint != request_fingerprint(request):
+        raise ValueError("idempotency_payload_conflict")
+
+
+def is_idempotency_collision(exc: IntegrityError) -> bool:
+    args = getattr(exc.orig, "args", ())
+    if args and args[0] == 1062:
+        # Match ONLY the order idempotency index, not other unique constraints.
+        message = str(args[1])
+        return any(f"'{key}'" in message for key in (
+            "purchase_orders.idempotency_key", "idempotency_key",
+            "purchase_orders.ix_purchase_orders_idempotency_key", "ix_purchase_orders_idempotency_key"))
+    return "UNIQUE constraint failed: purchase_orders.idempotency_key" == str(exc.orig)
 
 
 def _round_order_quantity(*, requested: Decimal, moq: Decimal, package_multiple: Decimal) -> Decimal:
@@ -151,6 +240,7 @@ def _current_forecast_for_ref(session: Session, ref: str) -> dict:
     try:
         material_id = int(parts[1])
         horizon_days = int(parts[2])
+        ForecastRequest(material_id=material_id, horizon_days=horizon_days)
     except ValueError as exc:
         raise ValueError("forecast_evidence_invalid") from exc
     return get_demand_forecast(session, material_id=material_id, horizon_days=horizon_days)
@@ -173,6 +263,10 @@ def _recommendation_evidence_for_item(
             rec_quantity = Decimal(parts[3])
             required_in_days = int(parts[4])
             budget = None if len(parts) == 5 or parts[5] == "none" else Decimal(parts[5])
+            RecommendationIn(material_id=rec_material_id, quantity=rec_quantity,
+                             required_in_days=required_in_days, budget=budget)
+            if rec_supplier_id <= 0:
+                raise ValueError("invalid_supplier_id")
         except (ValueError, ArithmeticError) as exc:
             raise ValueError("recommendation_evidence_invalid") from exc
         return rec_material_id, rec_supplier_id, rec_quantity, required_in_days, budget

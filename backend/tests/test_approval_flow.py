@@ -34,6 +34,7 @@ def _draft(session, key: str = "approval-draft-001") -> PurchaseOrder:
     return create_purchase_draft(
         session,
         PurchaseDraftInput(
+            total_budget=Decimal("5000"),
             supplier_id=1,
             items=[DraftItemInput(material_id=1, quantity=Decimal("120"))],
             idempotency_key=key,

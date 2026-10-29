@@ -1,4 +1,5 @@
 from typing import Any, TypedDict
+from decimal import Decimal
 
 from langgraph.graph import END, StateGraph
 from langgraph.checkpoint.memory import MemorySaver
@@ -25,12 +26,15 @@ def run_langgraph_procurement(
     provider: LLMProvider,
     prompt: str,
     thread_id: str,
-    max_tool_calls: int = 6,
+    max_tool_calls: int = 8,
+    total_budget: Decimal | None = None,
+    owner_user_id: str | None = None,
 ) -> ProcurementGraphState:
     graph = StateGraph(ProcurementGraphState)
 
     def run_agent(state: ProcurementGraphState) -> ProcurementGraphState:
-        result = AgentLoop(engine=engine, provider=provider, max_tool_calls=max_tool_calls).run(state["prompt"])
+        result = AgentLoop(engine=engine, provider=provider, max_tool_calls=max_tool_calls).run(
+            state["prompt"], total_budget=total_budget, owner_user_id=owner_user_id)
         return {
             "prompt": state["prompt"],
             "status": result.status,

@@ -7,7 +7,7 @@ from pathlib import Path
 from threading import Barrier
 
 import pytest
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, event
 
 from backend.app.db.session import create_session_factory
 from backend.app.models import AgentRun, ApprovalRecord, AuditLog, PurchaseOrder, ToolTrace
@@ -61,6 +61,7 @@ def _draft_with_current_evidence(session, key: str):
     return create_purchase_draft(
         session,
         PurchaseDraftInput(
+            total_budget=Decimal("5000"),
             supplier_id=1,
             items=[DraftItemInput(material_id=1, quantity=quantity)],
             idempotency_key=key,
@@ -184,7 +185,7 @@ def test_mysql_approval_concurrency_rollback_and_agent_persistence(mysql_engine)
                 ),
             ]
         ),
-    ).run("Need 120 units of material 1 within 20 days")
+    ).run("Need 120 units of material 1 within 20 days", total_budget=Decimal("5000"))
     assert agent_result.status == "draft_created"
 
     with factory() as session:
@@ -349,3 +350,51 @@ def _write_report_section(section: str, payload: dict[str, object]) -> None:
         report = {}
     report[section] = payload
     path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+@pytest.mark.parametrize("other_buyer", [False, True])
+def test_mysql_same_key_create_really_competes(mysql_engine, other_buyer):
+    """Barrier is at INSERT, after BOTH requests have missed the existing key."""
+    from fastapi.testclient import TestClient
+    from backend.app.main import create_app
+    from backend.app.services.auth import issue_token, DEMO_ACCOUNTS
+    key = f"extreme-race-{time.time_ns()}"
+    factory = create_session_factory(mysql_engine)
+    with factory() as session:
+        forecast = get_demand_forecast(session, material_id=1, horizon_days=30)
+    payload = {"supplier_id": 1, "items": [{"material_id": 1, "quantity": "120.00"}],
+               "idempotency_key": key, "total_budget": "5000.00",
+               "evidence_refs": [forecast["evidence_ref"], "recommendation:1:1:120:20:5000"]}
+    barrier = Barrier(2)
+    arrivals = []
+    def before_insert(mapper, connection, order):
+        if order.idempotency_key == key:
+            arrivals.append(connection)
+            barrier.wait(timeout=20)
+    event.listen(PurchaseOrder, "before_insert", before_insert)
+    DEMO_ACCOUNTS.setdefault("extreme-buyer-2", {"password": "test-only", "user_id": "extreme-buyer-2", "role": "buyer"})
+    def create_once(user):
+        token = issue_token(username=user, user_id="buyer-1" if user == "buyer" else user, role="buyer", secret="race-secret")
+        with TestClient(create_app(mysql_engine, auth_secret="race-secret")) as client:
+            response = client.post("/purchase-drafts", json=payload, headers={"Authorization": f"Bearer {token}"})
+            return {"status": response.status_code, "body": response.json()}
+    try:
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            futures = [executor.submit(create_once, user) for user in ["buyer", "extreme-buyer-2" if other_buyer else "buyer"]]
+            outcomes = [f.result() for f in futures]
+    finally:
+        event.remove(PurchaseOrder, "before_insert", before_insert)
+    assert len(arrivals) == 2 and arrivals[0] is not arrivals[1]
+    assert sorted(o["status"] for o in outcomes) == ([200, 403] if other_buyer else [200, 200])
+    for outcome in outcomes:
+        if outcome["status"] == 200:
+            assert len(outcome["body"]["items"]) == 1
+            assert Decimal(outcome["body"]["items"][0]["quantity"]) == Decimal("120")
+    with factory() as session:
+        orders = session.scalars(select(PurchaseOrder).where(PurchaseOrder.idempotency_key == key)).all()
+        assert len(orders) == 1
+        audits = session.scalars(select(AuditLog).where(AuditLog.order_id == orders[0].id, AuditLog.action == "created_draft")).all()
+        assert len(audits) == 1
+        _write_report_section("create_race_cross_buyer" if other_buyer else "create_race_same_buyer", {
+            "order_id": orders[0].id, "insert_barrier_arrivals": len(arrivals), "outcomes": outcomes,
+            "creation_audits": len(audits), "creator": audits[0].actor_user_id})
