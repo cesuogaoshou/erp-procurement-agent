@@ -98,6 +98,20 @@ export const api = {
   orders(token: string) {
     return request<PurchaseOrder[]>("/purchase-orders", {}, token);
   },
+  updateDraft(orderId: number, version: number, items: Array<{ material_id: number; quantity: string }>, totalBudget: string | null, token: string) {
+    return request<PurchaseOrder>(
+      `/purchase-orders/${orderId}/draft`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          expected_order_version: version,
+          items,
+          total_budget: totalBudget || null
+        })
+      },
+      token
+    );
+  },
   submit(orderId: number, token: string) {
     return request<PurchaseOrder>(`/purchase-orders/${orderId}/submit`, { method: "POST" }, token);
   },

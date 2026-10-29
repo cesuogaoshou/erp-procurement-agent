@@ -117,7 +117,16 @@
               </el-select>
               <el-input-number v-model="horizonDays" :min="1" :max="180" />
             </div>
+            <p class="chart-title">历史需求（{{ analysisWindowDays }} 天滚动累计）</p>
             <div ref="chartEl" class="chart"></div>
+            <p v-if="forecast" class="muted chart-caption">
+              历史曲线为 {{ analysisWindowDays }} 天滚动累计；下方柱状图单独展示未来 {{ forecast.horizon_days }} 天累计需求与缺口。
+              <span v-if="analysisWindowCapped">历史只有 {{ demandHistory.length }} 天，滚动窗口按 {{ analysisWindowDays }} 天计算。</span>
+            </p>
+            <template v-if="forecast">
+              <p class="chart-title">未来 {{ forecast.horizon_days }} 天预测</p>
+              <div ref="forecastChartEl" class="chart chart-forecast"></div>
+            </template>
             <el-descriptions v-if="inventory && forecast" :column="2" size="small" border>
               <el-descriptions-item label="可用库存">{{ inventory.available_supply }}</el-descriptions-item>
               <el-descriptions-item label="安全库存">{{ forecast.safety_stock }}</el-descriptions-item>
@@ -130,14 +139,25 @@
             <div class="panel-heading">
               <h2>模型与供应商评分</h2>
               <el-tag v-if="forecast" :type="forecast.fallback_reason ? 'warning' : 'success'">
-                {{ forecast.selected_model_name }}
+                {{ modelDisplayName }}
               </el-tag>
             </div>
             <el-empty v-if="!forecast" description="请选择物料并分析" />
             <template v-else>
-              <p class="muted">配置：{{ forecast.config_version }}</p>
-              <p class="muted">降级：{{ forecast.fallback_reason || "未降级" }}</p>
-              <el-alert v-for="note in forecast.notes" :key="note" class="note" :title="note" type="info" :closable="false" />
+              <p class="muted">运行状态：{{ friendlyFallbackReason(forecast.fallback_reason) }}</p>
+              <div v-if="friendlyForecastNotes.length" class="forecast-notes">
+                <p class="forecast-notes-title">分析说明</p>
+                <ul>
+                  <li v-for="note in friendlyForecastNotes" :key="note">{{ note }}</li>
+                </ul>
+              </div>
+              <details class="tech-details">
+                <summary>查看技术细节</summary>
+                <p>模型标识：{{ forecast.selected_model_name }}</p>
+                <p>策略版本：{{ forecast.config_version }}</p>
+                <p>降级原因：{{ forecast.fallback_reason || "无" }}</p>
+                <p v-for="note in forecast.notes" :key="note">原始说明：{{ note }}</p>
+              </details>
               <el-table :data="recommendations" size="small" empty-text="暂无合格供应商">
                 <el-table-column prop="supplier_name" label="供应商" min-width="120" />
                 <el-table-column prop="score" label="评分" width="90" />
@@ -169,7 +189,7 @@
               <el-table-column prop="formal_order_number" label="正式单号" width="150" />
               <el-table-column label="操作" width="360">
                 <template #default="{ row }">
-                  <el-button size="small" @click="selectedOrder = row">查看明细</el-button>
+                  <el-button size="small" @click="openOrder(row)">查看明细</el-button>
                   <el-button size="small" :disabled="session?.role !== 'buyer' || row.status !== 'draft' || actionBusy" @click="submitOrder(row)">提交</el-button>
                   <el-button size="small" type="success" :disabled="session?.role !== 'approver' || row.status !== 'pending_approval' || actionBusy" @click="approveOrder(row)">批准</el-button>
                   <el-button size="small" type="danger" :disabled="session?.role !== 'approver' || row.status !== 'pending_approval' || actionBusy" @click="rejectOrder(row)">驳回</el-button>
@@ -177,22 +197,60 @@
               </el-table-column>
             </el-table>
             <el-alert class="note" title="审批前请查看明细并核对数量、金额、预算和交期。订单已被他人处理时，请刷新后查看最新结果。" type="info" :closable="false" />
-            <el-dialog :model-value="Boolean(selectedOrder)" title="采购订单明细" width="760px" @close="selectedOrder = null">
+            <el-dialog :model-value="Boolean(selectedOrder)" title="采购订单明细" width="760px" @close="closeOrderDialog">
               <template v-if="selectedOrder">
                 <p>订单{{ selectedOrder.id }} · {{ statusName(selectedOrder.status) }} · {{ selectedOrder.supplier_name }}</p>
-                <p>整单金额：{{ money(selectedOrder.total_amount) }}；整单预算：{{ selectedOrder.total_budget == null ? '无法确认（历史订单）' : money(selectedOrder.total_budget) }}</p>
-                <p>交付要求：{{ selectedOrder.delivery_requirement }}</p>
-                <p>推荐依据：{{ selectedOrder.recommendation_basis }}</p>
-                <el-table :data="selectedOrder.items">
-                  <el-table-column prop="material_name" label="物料" min-width="120" />
-                  <el-table-column prop="unit" label="单位" />
+                <p>整单金额：{{ money(selectedOrder.total_amount) }}；整单预算：{{ selectedOrder.total_budget == null ? '未记录（历史订单）' : money(selectedOrder.total_budget) }}</p>
+                <p>交付要求：{{ selectedOrder.delivery_requirement || '暂无法确认，请核对历史证据' }}</p>
+                <p>推荐依据：{{ selectedOrder.recommendation_basis || '暂无法确认，请核对历史证据' }}</p>
+                <el-alert
+                  v-if="editingDraft"
+                  class="note"
+                  type="warning"
+                  :closable="false"
+                  title="只能修改数量或整单预算；物料和供应商保持不变。保存后系统会按当前库存、缺口、推荐和预算重新校验。"
+                />
+                <div v-if="editingDraft" class="form-row draft-budget-row">
+                  <el-input v-model="draftBudget" aria-label="整单预算" placeholder="整单预算（元），如 5000.00" />
+                </div>
+                <el-table v-if="editingDraft" :data="draftItems" size="small">
+                  <el-table-column label="物料" min-width="120">
+                    <template #default="{ row }">{{ row.material_name || `物料#${row.material_id}` }}</template>
+                  </el-table-column>
+                  <el-table-column label="单位" width="70">
+                    <template #default="{ row }">{{ row.unit || '-' }}</template>
+                  </el-table-column>
+                  <el-table-column label="数量" width="150">
+                    <template #default="{ row }">
+                      <el-input-number v-model="row.quantity" :min="1" :precision="2" :step="1" size="small" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="unit_price" label="单价（元）" width="100" />
+                  <el-table-column label="行金额（元）" width="120">
+                    <template #default="{ row }">{{ linePreview(row) }}</template>
+                  </el-table-column>
+                </el-table>
+                <el-table v-else :data="selectedOrder.items" size="small">
+                  <el-table-column label="物料" min-width="120">
+                    <template #default="{ row }">{{ row.material_name || `物料#${row.material_id}` }}</template>
+                  </el-table-column>
+                  <el-table-column label="单位" width="70">
+                    <template #default="{ row }">{{ row.unit || '-' }}</template>
+                  </el-table-column>
                   <el-table-column prop="quantity" label="数量" />
                   <el-table-column prop="unit_price" label="单价（元）" />
                   <el-table-column prop="line_amount" label="行金额（元）" />
                 </el-table>
-                <p>采购员核对并提交后，由审批员人工决定是否批准。</p>
+                <p v-if="!editingDraft">采购员核对并提交后，由审批员人工决定是否批准。</p>
               </template>
-              <template #footer><el-button @click="selectedOrder = null">关闭明细</el-button></template>
+              <template #footer>
+                <template v-if="selectedOrder?.status === 'draft' && session?.role === 'buyer'">
+                  <el-button v-if="!editingDraft" type="primary" @click="startEditDraft">编辑草稿</el-button>
+                  <el-button v-if="editingDraft" type="primary" :loading="actionBusy" @click="saveDraft">保存修改</el-button>
+                  <el-button v-if="editingDraft" @click="cancelEditDraft">取消</el-button>
+                </template>
+                <el-button @click="closeOrderDialog">关闭明细</el-button>
+              </template>
             </el-dialog>
           </div>
         </section>
@@ -261,6 +319,7 @@ const demandHistory = ref<DemandPoint[]>([]);
 const recommendations = ref<Recommendation[]>([]);
 const analysisBusy = ref(false);
 const chartEl = ref<HTMLDivElement | null>(null);
+const forecastChartEl = ref<HTMLDivElement | null>(null);
 
 const agentPrompt = ref(localStorage.getItem('erp-request') || "请买120件标准轴承，20天内到货，总预算5000元，先生成草稿等人工审批。");
 const totalBudget = ref(localStorage.getItem('erp-budget') || "");
@@ -279,10 +338,40 @@ const refreshBusy = ref(false);
 const actionBusy = ref(false);
 const selectedRunId = ref<number | null>(null);
 const selectedOrder = ref<PurchaseOrder | null>(null);
+const editingDraft = ref(false);
+const draftBudget = ref("");
+type DraftEditItem = {
+  material_id: number;
+  material_name: string;
+  unit: string;
+  unit_price: string;
+  quantity: number;
+};
+const draftItems = ref<DraftEditItem[]>([]);
 
 const token = computed(() => session.value?.access_token || "");
 const canRunAgent = computed(() => Boolean(token.value && session.value?.role === "buyer" && agentPrompt.value.trim() && !agentBusy.value));
 const pageTitle = computed(() => ({ agent: "智能采购", analysis: "数据分析", approval: "采购审批", records: "执行记录" })[activePage.value]);
+const modelDisplayName = computed(() => {
+  const name = forecast.value?.selected_model_name ?? "";
+  if (name.includes("prophet")) return "Prophet 需求预测";
+  if (name.includes("moving_average")) return "30 天移动平均";
+  return name || "暂无模型";
+});
+const friendlyForecastNotes = computed(() => {
+  const result: string[] = [];
+  for (const note of forecast.value?.notes ?? []) {
+    const text = friendlyForecastNote(note);
+    if (!result.includes(text)) result.push(text);
+  }
+  return result;
+});
+const analysisWindowDays = computed(() => {
+  const horizon = forecast.value?.horizon_days ?? horizonDays.value;
+  const available = demandHistory.value.length;
+  return Math.max(1, Math.min(horizon, available || horizon));
+});
+const analysisWindowCapped = computed(() => Boolean(forecast.value && demandHistory.value.length < forecast.value.horizon_days));
 const connectionText = computed(() => (session.value ? `${session.value.role === 'buyer' ? '采购员' : '审批员'}（${session.value.user_id}）` : "未登录"));
 const draftOrder = computed(() => orders.value.find((order) => order.id === latestRun.value?.purchase_order_id));
 
@@ -356,7 +445,7 @@ async function loadAnalysis() {
     const [nextInventory, nextForecast, history] = await Promise.all([
       api.inventory(materialId, token.value),
       api.forecast(materialId, horizonDays.value, token.value),
-      api.demandHistory(materialId, token.value, 120)
+      api.demandHistory(materialId, token.value, Math.min(540, Math.max(120, horizonDays.value + 120)))
     ]);
     inventory.value = nextInventory;
     forecast.value = nextForecast;
@@ -365,7 +454,7 @@ async function loadAnalysis() {
     const recs = await api.recommendations(materialId, quantity, 20, null, token.value);
     recommendations.value = recs.recommendations;
     await nextTick();
-    renderChart();
+    renderCharts();
   } catch (err) {
     handleError(err);
   } finally {
@@ -457,6 +546,74 @@ async function rejectOrder(order: PurchaseOrder) {
   }
 }
 
+function loadDraftForm(order: PurchaseOrder) {
+  draftBudget.value = order.total_budget ?? "";
+  draftItems.value = order.items.map((item) => ({
+    material_id: item.material_id,
+    material_name: item.material_name || `物料#${item.material_id}`,
+    unit: item.unit || "-",
+    unit_price: item.unit_price,
+    quantity: Number(item.quantity)
+  }));
+}
+
+function openOrder(order: PurchaseOrder) {
+  selectedOrder.value = order;
+  editingDraft.value = false;
+  loadDraftForm(order);
+}
+
+function closeOrderDialog() {
+  selectedOrder.value = null;
+  editingDraft.value = false;
+}
+
+function startEditDraft() {
+  if (!selectedOrder.value) return;
+  loadDraftForm(selectedOrder.value);
+  editingDraft.value = true;
+}
+
+function cancelEditDraft() {
+  if (selectedOrder.value) loadDraftForm(selectedOrder.value);
+  editingDraft.value = false;
+}
+
+function linePreview(item: DraftEditItem) {
+  return (Number(item.unit_price) * Number(item.quantity)).toFixed(2);
+}
+
+async function saveDraft() {
+  if (!selectedOrder.value || !token.value || actionBusy.value) return;
+  if (!draftBudget.value.trim()) {
+    ElMessage.warning("请填写整单预算后再保存。");
+    return;
+  }
+  if (draftItems.value.some((item) => !Number.isFinite(item.quantity) || item.quantity <= 0)) {
+    ElMessage.warning("采购数量必须大于零。");
+    return;
+  }
+  actionBusy.value = true;
+  try {
+    const updated = await api.updateDraft(
+      selectedOrder.value.id,
+      selectedOrder.value.version,
+      draftItems.value.map((item) => ({ material_id: item.material_id, quantity: String(item.quantity) })),
+      draftBudget.value.trim(),
+      token.value
+    );
+    selectedOrder.value = updated;
+    draftBudget.value = updated.total_budget ?? "";
+    editingDraft.value = false;
+    await loadOrders();
+    ElMessage.success("草稿已更新");
+  } catch (err) {
+    handleError(err);
+  } finally {
+    actionBusy.value = false;
+  }
+}
+
 async function selectRun(row: AgentRunSummary) {
   selectedRunId.value = row.id;
   latestRun.value = {
@@ -476,23 +633,86 @@ async function selectRun(row: AgentRunSummary) {
   await loadTraces();
 }
 
-function renderChart() {
-  if (!chartEl.value || !forecast.value) return;
-  const chart = echarts.init(chartEl.value);
+function renderCharts() {
+  renderHistoryChart();
+  renderForecastChart();
+}
+
+function renderHistoryChart() {
+  if (!chartEl.value || !forecast.value || demandHistory.value.length === 0) return;
+  const chart = echarts.getInstanceByDom(chartEl.value) ?? echarts.init(chartEl.value);
+  const horizon = forecast.value.horizon_days;
   const historyValues = demandHistory.value.map((point) => Number(point.quantity));
+  const windowDays = Math.max(1, Math.min(horizon, historyValues.length));
+  const rollingValues = rollingSum(historyValues, windowDays);
   const labels = demandHistory.value.map((point) => point.date.slice(5));
-  labels.push(`预测${forecast.value.horizon_days}天`);
-  chart.setOption({
-    tooltip: { trigger: "axis" },
-    grid: { left: 42, right: 20, top: 24, bottom: 36 },
-    xAxis: { type: "category", data: labels },
-    yAxis: { type: "value" },
-    series: [
-      { name: "历史日需求", type: "line", smooth: true, data: [...historyValues, null], showSymbol: false },
-      { name: "累计预测需求", type: "bar", data: [...new Array(historyValues.length).fill(null), Number(forecast.value.forecast_demand)] },
-      { name: "预测缺口", type: "bar", data: [...new Array(historyValues.length).fill(null), Number(forecast.value.shortage_quantity)] }
-    ]
-  });
+  chart.setOption(
+    {
+      tooltip: { trigger: "axis" },
+      grid: { left: 56, right: 24, top: 24, bottom: 36 },
+      xAxis: { type: "category", data: labels, boundaryGap: true },
+      yAxis: { type: "value", name: `${windowDays}天累计数量`, nameTextStyle: { color: "#667085" } },
+      series: [
+        {
+          name: `历史${windowDays}天累计`,
+          type: "line",
+          smooth: true,
+          showSymbol: false,
+          connectNulls: false,
+          data: rollingValues,
+          lineStyle: { color: "#3b82f6", width: 2 },
+          itemStyle: { color: "#3b82f6" }
+        }
+      ]
+    },
+    true
+  );
+}
+
+function renderForecastChart() {
+  if (!forecastChartEl.value || !forecast.value) return;
+  const chart = echarts.getInstanceByDom(forecastChartEl.value) ?? echarts.init(forecastChartEl.value);
+  const horizon = forecast.value.horizon_days;
+  const demand = Number(forecast.value.forecast_demand);
+  const shortage = Number(forecast.value.shortage_quantity);
+  chart.setOption(
+    {
+      tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+      grid: { left: 56, right: 24, top: 32, bottom: 36 },
+      xAxis: { type: "category", data: [`未来${horizon}天需求`, `未来${horizon}天缺口`] },
+      yAxis: { type: "value", name: "数量", nameTextStyle: { color: "#667085" } },
+      series: [
+        {
+          type: "bar",
+          barWidth: 64,
+          data: [
+            {
+              value: demand,
+              itemStyle: { color: "#2f9e44" },
+              label: { show: true, position: "top", formatter: "{c}" }
+            },
+            {
+              value: shortage,
+              itemStyle: { color: "#e8590c" },
+              label: { show: true, position: "top", formatter: "{c}" }
+            }
+          ]
+        }
+      ]
+    },
+    true
+  );
+}
+
+function rollingSum(values: number[], windowDays: number): Array<number | null> {
+  const result: Array<number | null> = [];
+  let sum = 0;
+  for (let i = 0; i < values.length; i += 1) {
+    sum += values[i];
+    if (i >= windowDays) sum -= values[i - windowDays];
+    result.push(i >= windowDays - 1 ? Number(sum.toFixed(2)) : null);
+  }
+  return result;
 }
 
 function scoreBasis(evidence: Record<string, unknown>) {
@@ -511,6 +731,40 @@ function money(value: string) {
 function shortJson(value: unknown) {
   const text = JSON.stringify(value, null, 2);
   return text.length > 900 ? `${text.slice(0, 900)}\n...` : text;
+}
+
+const FORECAST_NOTE_TEXT: Record<string, string> = {
+  
+};
+
+function friendlyForecastNote(note: string): string {
+  const translated = FORECAST_NOTE_TEXT[note];
+  if (translated) return translated;
+  if (note.startsWith("Forecast downgraded to moving average")) {
+    return "本次预测已自动降级为 30 天移动平均，具体原因见“运行状态”。";
+  }
+  return "预测服务返回了一条技术说明，展开“技术细节”可查看原文。";
+}
+
+function friendlyFallbackReason(reason: string | null): string {
+  if (!reason) return "运行正常，未降级";
+  if (reason.startsWith("insufficient_history")) {
+    const match = reason.match(/required (\d+), got (\d+)/);
+    if (match) {
+      return `历史数据不足（至少需要 ${match[1]} 天，当前 ${match[2]} 天），已自动改用 30 天移动平均。`;
+    }
+    return "历史数据不足，已自动改用 30 天移动平均。";
+  }
+  if (reason.startsWith("cmdstan_unavailable")) {
+    return "未检测到 Prophet 运行环境（CmdStan），已自动改用 30 天移动平均。";
+  }
+  if (reason.startsWith("prophet_unavailable")) {
+    return "Prophet 组件不可用，已自动改用 30 天移动平均。";
+  }
+  if (reason.startsWith("prophet_error")) {
+    return "Prophet 运行异常，已自动改用 30 天移动平均。";
+  }
+  return "模型运行异常，已自动改用 30 天移动平均。";
 }
 
 function handleError(err: unknown) {
