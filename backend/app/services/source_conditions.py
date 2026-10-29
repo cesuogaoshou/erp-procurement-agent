@@ -53,7 +53,9 @@ def current_amounts(prompt):
         if re.match(r'是上次|是旧|历史金额', prompt[end:end+12]):
             continue
         # Only current whole-order amounts; quoted prices/history are not budgets.
-        if not re.search(r'预算|总共|一共|合计|合起来|加起来|最多|花|只有|同意', prefix):
+        # An explicit "改成/改为" amount is a budget proposal even when the word
+        # "预算" appeared before a contrastive "但".
+        if not re.search(r'预算|总共|一共|合计|合起来|加起来|最多|花|只有|同意|改成|改为|调整为|调到|提高到|降到|变更为|变成', prefix):
             continue
         if re.search(r'[0-9]', raw):
             if not re.fullmatch(r'-?(?:\d+|\d{1,3}(?:[,，]\d{3})+)(?:\.\d{1,2})?', raw):

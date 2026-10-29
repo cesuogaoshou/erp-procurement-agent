@@ -194,3 +194,16 @@ def test_shared_budget_explained_when_model_stops_before_draft(engine):
     assert "整单" in result.business_message and "预算不足" in result.business_message
     assert "1956" in result.business_message and "1000" in result.business_message
     assert result.purchase_order_id is None
+
+
+def test_explicit_budget_change_after_contrast_is_not_silently_ignored(engine):
+    provider = MockLLMProvider([intent()])
+    provider.real_function_calling = True
+    result = AgentLoop(engine=engine, provider=provider).run(
+        "请买120件标准轴承，20天内到货，预算栏是5000元但我想改成100000元，生成草稿。",
+        total_budget=Decimal("5000"),
+    )
+    assert result.status == "needs_information"
+    assert "100000" in result.business_message
+    assert "5000" in result.business_message
+    assert result.purchase_order_id is None
