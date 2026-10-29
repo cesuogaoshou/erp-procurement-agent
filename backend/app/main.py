@@ -14,6 +14,7 @@ from backend.app.models import AgentRun, AuditLog, DemandHistory, Material, Purc
 from backend.app.db.session import create_app_engine, create_session_factory
 from backend.app.schemas.procurement import (
     AgentRunIn,
+    RequestConfirmationIn,
     AgentRunOut,
     AgentRunSummaryOut,
     ApprovalActionIn,
@@ -49,6 +50,7 @@ from backend.app.services.forecasting import baseline_forecast
 from backend.app.services.inventory import get_inventory_snapshot, list_materials
 from backend.app.services.langgraph_runner import run_langgraph_procurement
 from backend.app.services.recommendations import recommend_for_material
+from backend.app.services.business_feedback import order_business_details
 
 
 load_project_env()
@@ -322,6 +324,11 @@ def create_app(
                     "tool_calls": result.get("tool_calls", []),
                     "purchase_order_id": result.get("purchase_order_id"),
                     "error": result.get("error"),
+                    "total_amount": result.get("total_amount"),
+                    "business_message": result.get("business_message", ""),
+                    "confirmation_fingerprint": result.get("confirmation_fingerprint"),
+                    "next_action": result.get("next_action", ""),
+                    "model_response": result.get("model_response", ""),
                     "real_function_calling": result.get("real_function_calling", False),
                     "langgraph_executed": result.get("langgraph_executed", False),
                 }
@@ -342,9 +349,40 @@ def create_app(
                 "purchase_order_id": result.purchase_order_id,
                 "total_amount": result.total_amount,
                 "error": result.error,
+                "business_message": result.business_message,
+                "confirmation_fingerprint": result.confirmation_fingerprint,
+                "next_action": result.next_action,
+                "model_response": result.model_response,
                 "real_function_calling": result.real_function_calling,
                 "langgraph_executed": False,
             }
+        except AgentRunLimitExceeded as exc:
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+    @app.post('/agent/runs/{run_id}/confirm', response_model=AgentRunOut)
+    def confirm_agent_request(run_id: int, request: RequestConfirmationIn,
+        auth: AuthContext = Depends(get_auth_context),
+        provider: LLMProvider = Depends(get_agent_provider),
+        session: Session = Depends(get_session)):
+        if auth.role != 'buyer':
+            raise HTTPException(status_code=403, detail='buyer_role_required')
+        run = session.scalar(select(AgentRun).where(AgentRun.id == run_id).with_for_update())
+        if run is None or _loads_json(run.state_json, {}).get('created_by_user_id') != auth.user_id:
+            raise HTTPException(status_code=404, detail='agent_run_not_found')
+        state = _loads_json(run.state_json, {})
+        from backend.app.services.source_conditions import source_digest
+        saved = state.get('user_request', {})
+        if (run.status != 'awaiting_confirmation' or state.get('confirmation_fingerprint') != request.confirmation_fingerprint
+            or saved.get('source_digest') != source_digest(request.prompt, request.total_budget)):
+            raise HTTPException(status_code=409, detail='需求或预算已修改，或本次确认已使用。请重新分析并核对完整清单。')
+        saved = {**saved, 'verification': 'human_confirmed', 'confirmed_by': auth.user_id, 'confirmation_run_id': run_id}
+        state['human_confirmation'] = saved
+        run.status = 'confirmation_consumed'
+        run.state_json = json.dumps(state, ensure_ascii=False)
+        session.commit()  # consume once before a slow model call; repeated clicks cannot create twice
+        try:
+            return AgentLoop(engine=app.state.engine, provider=provider).run(request.prompt,
+                total_budget=request.total_budget, owner_user_id=auth.user_id, confirmed_request=saved)
         except AgentRunLimitExceeded as exc:
             raise HTTPException(status_code=409, detail=str(exc)) from exc
 
@@ -433,6 +471,8 @@ def _approval_input(request: ApprovalActionIn) -> ApprovalActionInput:
 
 def _agent_run_summary(run: AgentRun) -> dict[str, Any]:
     return {
+        'confirmation_fingerprint': _loads_json(run.state_json, {}).get('confirmation_fingerprint'),
+        **{key: _loads_json(run.state_json, {}).get(key, "") for key in ("business_message", "next_action", "model_response")},
         "id": run.id,
         "status": run.status,
         "prompt": run.prompt,
@@ -470,7 +510,7 @@ def _purchase_order_summary(order: PurchaseOrder) -> dict[str, Any]:
         "version": order.version,
         "formal_order_number": order.formal_order_number,
         "evidence_refs": _loads_json(order.evidence_refs_json, []),
-        "items": order.items,
+        **order_business_details(order),
         "created_at": order.created_at.isoformat(),
         "updated_at": order.updated_at.isoformat(),
     }

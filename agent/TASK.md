@@ -1,3 +1,45 @@
+## 最终：需求绑定整改与复验通过（2026-10-29）
+
+本轮三组缺陷已关闭，最终报告 `docs/NL_BINDING_FINAL_REACCEPTANCE_20261029.md`，证据 `reports/generated/nl_binding_remediation_20261029/final_v3/`。中间197/201/202成绩、条件句/只读推荐缺口及模型幂等键冲突保留记录，不冒充最终结果。
+
+最新实际执行：完整后端203 passed / 6默认MySQL跳过；单独真实MySQL6 passed；前端类型/构建、CLI和diff通过；最终原21+新增5真实模型接口26/26；8次真实页面/确认运行、9个MySQL回滚链探针（8拒绝+1正确对照）、7种隔离页面故障、6项实时拒绝/快照检查通过。最终确认369→修改失效→370明确确认→371草稿326（轴承120+外壳80，1628元），人工批准PO-000326；321取消驳回快照不变后已驳回；324待审批。
+
+模型候选独立绑定原文全集/逐项数量/单位/只分析/交期/预算，有效需求持久化并锚定原始运行。只读中明确条件同样约束推荐；普通前置“如果”不解除禁写。草稿幂等键由服务端运行ID确定，同运行重试只产生一个草稿，直接API幂等协议保留；后续重放不改变最初来源。两周14天、交付等表达及5,000/非法金额/单价历史语境均已覆盖。
+
+全程124次真实模型业务运行=104接口（4轮各26）+20页面/确认，最终只计26不同接口用例+8页面/确认；模拟注入与MySQL Mock不算真实模型请求。57完整快照、冻结数据/预测源码及旧三轮证据散列一致，错误探针全部回滚。没有提交、推送、清库、迁移、调参或重建交付包。
+
+后端62980/8000和原前端5173保持运行，隔离8001已停。保留复杂NL保守确认、单供应商、演示账号、固定库存、无外部采购与不回填历史锚点的既有边界；不同新AgentRun仍是新业务执行，未新增跨运行客户端去重。下一步仅按用户新任务继续。
+
+## 最新：原文需求绑定整改与真实复验（2026-10-29）
+
+**本轮三组缺陷通过（明确范围）**。见 `docs/NL_BINDING_REMEDIATION_20261029.md`；旧独立“部分通过”报告保留原样。服务端独立绑定物料全集/逐项数量/只分析限制，保存有效需求；不可靠对应时完整中文清单明确确认，确认绑定原文/预算/记录/所属人，一次消费；推荐、草稿和审批从原执行记录复核。交付/周单位（两周14天）及合法千分金额已修复，并补历史数量/预算上下文、单位与禁写表达边界。
+
+最终实际验证：后端197 passed / 6默认MySQL跳过；单独真实MySQL6 passed；类型/构建、CLI、diff通过；原21+新增5真实模型接口26/26，最终浏览器8次真实模型业务运行、5种隔离错误模型页面拦截、7个MySQL回滚链探针（6拒绝+1正确对照）、6项实时拒绝/快照检查通过。完整清单明确确认后草稿282（120件轴承+80件外壳，1628元）经人工批准PO-000282；278取消驳回完整快照不变后已驳回；281待审批。
+
+证据 `reports/generated/nl_binding_remediation_20261029/final/`，此前迭代仍在父目录。总62次真实模型业务运行=初轮26接口+2页面+最终26接口+8页面/确认，不当作62个不同用例或底层模型HTTP次数。模拟错误模型参数不计入真实模型请求。57完整快照、冻结数据/预测源码和旧三轮自然语言证据散列一致；错误探针事务回滚。旧服务日志追加尾部另存，本轮基线新结果另存，旧证据字节及已跟踪基线内容已保护。
+
+未提交、推送、清库、迁移、调参或重建交付包。主后端67360/8000及前端5173继续运行，隔离8001夹具已停。限制：复杂自然语言保守确认/追问；单供应商单草稿、演示账号、固定库存、无外部采购与历史订单不回填新锚点。后续仅按用户新任务继续，不用本轮范围结论扩张为课程/生产全部通过。
+
+## 最新用户请求：独立验收（2026-10-29）
+
+验收已完成，整体部分通过：docs/INDEPENDENT_NL_ACCEPTANCE_20261029.md。原21接口用例通过，新增5表达2通过3失败；5故障注入2拒绝3接受错误草稿（全部回滚）。后端163pass/6skip、MySQL6pass、构建/CLI通过；浏览器代表3请求2通过1失败、审批7/7、权限版本3/3。无源码修复。待用户指定后修复原文逐项数量/完整性/只分析意图核对及交付/两周/5,000解析。保护所有既有改动；用户57、旧NL证据和源码冻结数据散列一致；219驳回、227批准，未提交推送或重建交付包。
+
+## 最新：普通采购人员业务交互修复与复验（2026-10-29）
+
+**全部通过（本轮明确范围）**：原19条自然语言原句+缺数量/物料歧义2条，真实模型、浏览器逐条执行，四维检查21/21；审批/取消/恢复/补充/冲突页面12/12；实时接口幂等/版本/权限等11/11。详见 `docs/NATURAL_LANGUAGE_REACCEPTANCE_20261029.md`，原验收报告的部分通过结论作为修复前历史保留。
+
+最新实际命令：完整后端163 passed / 6 opt-in skips，单独真实MySQL6 passed，新增反馈回归30 passed（包含在163中），前端类型/构建、CLI help、diff-check通过。证据 `reports/generated/nl_remediation_20261029/`，全部本地忽略。32次原句/补充用例迭代请求加1次过期恢复真实模型请求；最终按21个不同用例计数，不把重试重复加成通过项。
+
+保留原架构；新增capture_request由模型提取，后端核对缺项、名称、原文数量/交期、预算冲突及加购，主结果由后端事实生成；结果与模型辅助说明保存state_json并传递API/LangGraph。页面中文状态和物料名称，技术数据折叠，审批前可查行明细/预算/交期/依据，过期保留输入，冲突提示刷新。
+
+本轮代表订单：195（N01，随后用于过时页面冲突检查，已驳回）；205（双物料1956元，取消驳回快照不变，随后已驳回）；206（80件648元草稿）；207（要求跳过审批，仅草稿972元）；208（100件810元，已批准PO-000208）。本轮连同MySQL及迭代草稿共新增29张，全部保留记录，不清库。#57完整快照、冻结代码/数据文件及旧验收证据一致。
+
+**本轮明确禁止提交、推送、重新生成交付包**；下方旧Local commit authorization仅是历史授权，不适用于本轮。没有迁移、回填历史预算、预测调参或外部采购。后端69204/8000，原前端5173继续运行；过期测试5174/5175夹具已停止。当前工作保留在原目录未提交，保护之前文档修改。
+
+限制：补齐需求后新运行，无聊天续单；复杂中文/其他单位无法核对时保守追问；单供应商单草稿、演示账号与固定库存预测的既有边界不变；没有验证真实收货日期或供应商接单。完整交付包和全课程/生产上线不在本轮全部通过范围。
+
+本轮任务清单已完成：设计/实现、失败回归及修复、后端/MySQL/构建/CLI、真实模型浏览器21例、12项页面流程、11项实时接口、保护性核对与报告。无需提交或再生成交付包。
+
 ## Local commit authorization (2026-10-29)
 
 User explicitly requested a local Git commit after the remediation report. This supersedes the earlier no-commit instruction only; no push or delivery regeneration is authorized. The remediation code, regressions and existing acceptance documentation are included; generated evidence remains ignored.
@@ -10,6 +52,14 @@ Final verification (2026-10-29): backend 133 passed / 5 opt-in skips; real MySQL
 Six requested defect classes implemented, original 63 checks rerun passed, plus ordinary two-material and browser approve/reject checks. See docs/EXTREME_REMEDIATION_20261029.md for exact commands, staged failures and remaining limits. Do not resume old instructions to commit/regenerate package: this request explicitly forbids commit/push/package rebuild. Current remaining work is user-directed follow-up only after final verification/report delivery. Preserve #57, original evidence, frozen data/labels, and all preexisting documentation edits.
 
 # Current Task
+
+## Latest Request: Plain-Language Business Acceptance (2026-10-29)
+
+Acceptance execution and report complete: `docs/NATURAL_LANGUAGE_ACCEPTANCE_20261029.md`. Overall partial pass:19 real natural-language requests pass request/order guards,6 browser workflow checks pass;3 representative user-facing page checks fail feedback/readability. Detailed normal/extreme phrases, expected/actual results and next fixes recorded. User57 and source unchanged; only local acceptance evidence/docs added.182 approved810/PO-000182,179 rejected1956,178/180/181 drafts. No functional fixes or full regression rerun. Do not reuse earlier71/71 as full business-quality approval; proceed only with the next requested work.
+
+## Latest User Request: Independent Reacceptance (2026-10-29)
+
+Completed fresh original63/63 plus8 extra (71/71); docs/REACCEPTANCE_20261029.md and reports/generated/reacceptance_20261029_independent/. Backend133passed/5skipped; realMySQL5passed; build/help pass; real browser and restart pass. No business/test edits, migration/reset, tuning, commit/push or package rebuild. Code/original evidence hashes and user57 unchanged.170 approved PO-000170,175 multi-material rejected; backend44768/8000 and frontend5173 retained. Scoped remediation gate passes; invalid-input explanation text and previously documented non-scope limits remain. Continue only with the next user request, preserve current source and evidence.
 
 ## Latest User Request: Execute Extreme Acceptance (2026-10-29)
 

@@ -59,6 +59,10 @@ export interface RecommendationResponse {
 }
 
 export interface AgentRun {
+  confirmation_fingerprint?: string | null;
+  business_message: string;
+  next_action: string;
+  model_response: string;
   run_id: number | null;
   status: string;
   tool_calls: string[];
@@ -70,6 +74,10 @@ export interface AgentRun {
 }
 
 export interface AgentRunSummary {
+  confirmation_fingerprint?: string | null;
+  business_message: string;
+  next_action: string;
+  model_response: string;
   id: number;
   status: string;
   prompt: string;
@@ -92,6 +100,8 @@ export interface ToolTrace {
 }
 
 export interface PurchaseOrder {
+  delivery_requirement: string;
+  recommendation_basis: string;
   id: number;
   supplier_id: number;
   supplier_name?: string;
@@ -102,7 +112,7 @@ export interface PurchaseOrder {
   version: number;
   formal_order_number: string | null;
   evidence_refs?: unknown;
-  items: Array<{ material_id: number; quantity: string; unit_price: string; line_amount: string }>;
+  items: Array<{ material_id: number; material_name: string; unit: string; quantity: string; unit_price: string; line_amount: string }>;
   created_at?: string;
   updated_at?: string;
 }

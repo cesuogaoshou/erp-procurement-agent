@@ -285,3 +285,24 @@ Publish only selected database snapshots and a dated historical delivery ZIP und
 - Aggregate requested quantities by material before shortage comparison; apply MOQ/package ceiling once; persisted actual quantity requires capacity and recommendation coverage. Store pre-rounding demand to keep legitimate MOQ behavior during approval.
 - Recover only the order-idempotency unique index under SAVEPOINT rollback. Under MySQL REPEATABLE READ, winner order, items and creator use current reads; normal snapshot reads after collision are insufficient. Keep atomic order/creation audit. Canonical request identity preserves Decimal equality, rejects changed content and malformed evidence.
 - Commit run identity before tools; isolate each business tool and roll back before logging errors. Tool runtime models generate provider schemas, with local validation always mandatory. Keep bounded LLM orchestration (8 calls, 180s plus request timeout), reuse per-material latest evidence and forecast-inventory output.
+
+## 2026-10-29 业务反馈与最小确认流程
+
+使用capture_request提取需求，并由后端目录解析、原文及预算栏核对、后续工具条件守卫裁决。未明确数量/交期/预算、歧义、未知物料和隐式加购必须暂停；用户补齐原需求后新运行，不把模型猜测当同意。
+
+中文主结论与下一步由后端事实构造，模型文字保存为辅助排查内容。使用现有AgentRun.state_json持久化business_message/next_action/model_response，无新增迁移，历史未知字段明确显示未知。模型安全停单时后端仍用已比较供应商方案总价计算/解释整单预算不足。
+
+选择现有表和工具编排最小扩展，避免仅展示模型回复造成事实冲突，也避免扩大成聊天平台；订单计算/证据/数量汇总/预算/权限/事务/审批/幂等继续由原服务控制。MOQ或包装导致多买一律要求明确新数量，不接受模型的allow-extra推断。
+
+
+## 2026-10-29 原文绑定与明确确认
+- 模型capture_request只是候选；服务端独立绑定原文物料全集、逐项数量、单位、禁写意图、交期与当前整单预算。不可靠关联必须完整清单确认，明确矛盾直接拒绝。
+- 有效需求持久化并以source_run_id绑定原始AgentRun；推荐/建草稿复核，批准还独立反查关联AgentRun，不能删除订单锚点降级为原文自比。历史订单不回填新锚点。
+- 人工确认专用buyer接口，不暴露为模型工具；绑定原文/预算/记录/所属人，一次消费。界面编辑后旧确认禁用。不会替代后续人工订单审批。
+- 金额完整词元解析和就近预算语境，不截取非法分组的局部数字；交付时间单位规范化，两周固定14天，歧义追问。未改预测参数、冻结数据、事务/幂等/权限机制。
+
+
+## 2026-10-29 最终补强
+- 原文显式数量/交期也约束只读推荐，不把缺失的分析条件用模型猜测补成确认；条件禁写只有明确失败条件才可作条件语义，普通“如果方案合适”不能解禁。
+- Agent草稿幂等键由服务端run_id确定，模型键不决定跨运行订单身份；同运行重复工具执行幂等，直接建单API/服务协议不变，不声称已支持跨新运行HTTP请求去重。
+- 审批从最初创建运行发现来源，不让后续幂等关联追溯改变历史订单锚点。最终验证203后端/6MySQL/26真实接口与最终浏览器闭环；以FINAL_REACCEPTANCE报告为准。

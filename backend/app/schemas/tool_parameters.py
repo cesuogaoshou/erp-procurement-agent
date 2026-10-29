@@ -1,5 +1,6 @@
 """One local runtime model per tool; published schemas come from these models."""
 from pydantic import Field
+from decimal import Decimal
 
 from backend.app.schemas.procurement import (
     ParameterModel, PositiveId, ForecastRequest, RecommendationIn, PurchaseDraftParameters,
@@ -18,7 +19,20 @@ class InventoryParameters(ParameterModel):
     material_id: PositiveId
 
 
+class RequestItem(ParameterModel):
+    query: str = Field(min_length=1, max_length=120)
+    quantity: Decimal | None = Field(default=None, allow_inf_nan=False)
+
+
+class CaptureRequestParameters(ParameterModel):
+    items: list[RequestItem] = Field(default_factory=list, max_length=20)
+    purchase_requested: bool = Field(strict=True)
+    stated_budget: Decimal | None = Field(default=None, allow_inf_nan=False)
+    required_in_days: int | None = Field(default=None, strict=True, ge=1, le=365)
+
+
 TOOL_PARAMETER_MODELS = {
+    "capture_request": CaptureRequestParameters,
     "list_materials": EmptyParameters,
     "resolve_material": ResolveMaterialParameters,
     "get_inventory": InventoryParameters,

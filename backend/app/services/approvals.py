@@ -6,7 +6,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
-from backend.app.models import ApprovalRecord, AuditLog, PurchaseOrder, SupplierMaterial
+from backend.app.models import AgentRun, ApprovalRecord, AuditLog, PurchaseOrder, SupplierMaterial
 
 
 @dataclass(frozen=True)
@@ -149,6 +149,16 @@ def _validate_order_snapshot(session: Session, order: PurchaseOrder) -> None:
 
     evidence = json.loads(order.evidence_refs_json)
     refs = evidence.get("refs", []) if isinstance(evidence, dict) else evidence
+    # The origin is discovered independently of the editable order evidence.
+    # Idempotent replays may link later runs to the same order. Its origin is
+    # the first creation run, never a later replay which must not retrofit a
+    # source anchor onto historical evidence or change approval eligibility.
+    originating = list(session.scalars(select(AgentRun).where(
+        AgentRun.purchase_order_id == order.id).order_by(AgentRun.id).limit(1)))
+    anchored = [json.loads(r.state_json).get('user_request') for r in originating
+                if json.loads(r.state_json).get('user_request', {}).get('source_run_id') is not None]
+    if anchored and (not isinstance(evidence, dict) or evidence.get('user_request') not in anchored):
+        raise ApprovalValidationError('需求证据与原始执行记录不一致，请重新核对需求。')
     # New orders preserve pre-rounding quantities; historical orders remain
     # explicitly unknown and use their persisted quantity for safety checks.
     requested = [DraftItemInput(int(item["material_id"]), Decimal(item["quantity"]))
@@ -156,6 +166,18 @@ def _validate_order_snapshot(session: Session, order: PurchaseOrder) -> None:
                      DraftItemInput(item.material_id, Decimal(item.quantity)) for item in order.items]
     request = PurchaseDraftInput(order.supplier_id, requested, order.idempotency_key, refs,
                                  total_budget=order.total_budget)
+    if isinstance(evidence, dict) and evidence.get('user_request'):
+        from backend.app.services.business_feedback import check_request_conditions
+        from backend.app.services.source_conditions import validate_saved_request
+        saved = evidence['user_request']
+        try:
+            saved = validate_saved_request(session, saved, saved['source_prompt'], order.total_budget)
+            check_request_conditions(session, 'create_purchase_draft', {
+                'supplier_id': order.supplier_id,
+                'items': [{'material_id': i.material_id, 'quantity': i.quantity} for i in order.items],
+                'evidence_refs': refs}, saved)
+        except ValueError as exc:
+            raise ApprovalValidationError(str(exc)) from exc
     actual = {item.material_id: item.quantity for item in aggregate_items([
         DraftItemInput(item.material_id, Decimal(item.quantity)) for item in order.items])}
     try:

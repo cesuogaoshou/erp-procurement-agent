@@ -22,6 +22,7 @@ def test_agent_tool_schema_excludes_approval_tools_and_includes_read_only_plus_d
     names = [tool.name for tool in tools]
 
     assert names == [
+        "capture_request",
         "list_materials",
         "resolve_material",
         "get_inventory",

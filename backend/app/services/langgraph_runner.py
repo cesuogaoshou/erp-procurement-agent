@@ -18,6 +18,11 @@ class ProcurementGraphState(TypedDict, total=False):
     error: str | None
     real_function_calling: bool
     langgraph_executed: bool
+    total_amount: str | None
+    business_message: str
+    next_action: str
+    model_response: str
+    confirmation_fingerprint: str | None
 
 
 def run_langgraph_procurement(
@@ -42,6 +47,11 @@ def run_langgraph_procurement(
             "run_id": result.run_id,
             "purchase_order_id": result.purchase_order_id,
             "error": result.error,
+            "total_amount": None if result.total_amount is None else str(result.total_amount),
+            "business_message": result.business_message,
+            "next_action": result.next_action,
+            "model_response": result.model_response,
+            "confirmation_fingerprint": result.confirmation_fingerprint,
             "real_function_calling": result.real_function_calling,
             "langgraph_executed": True,
         }

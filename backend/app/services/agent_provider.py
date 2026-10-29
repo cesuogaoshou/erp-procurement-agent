@@ -51,6 +51,7 @@ class OpenAIFunctionCallingProvider:
         self.base_url = _chat_completions_url(base_url)
         self.timeout_seconds = timeout_seconds
         self.real_function_calling = True
+        self.last_content = ""
 
     def next_tool_call(self, prompt: str, observations: list[dict[str, Any]]) -> ToolCall | None:
         if not self.api_key:
@@ -63,6 +64,13 @@ class OpenAIFunctionCallingProvider:
                     "model": self.model,
                     "messages": [
                         {"role": "system", "content": (
+                            "第一步必须调用capture_request理解用户需求。返回的物料映射直接复用，不再list_materials。"
+                            "中文数字需准确识别，包括零、负数、一亿；更正数量以最后明确的数量为准。"
+                            "物料名称原样提取，不能将不存在的商品改为相近名称；信息缺失必须传null或空列表。"
+                            "用户没有明确给出的预算、数量、交期不得猜测；预算栏不是文字预算，不要抄入stated_budget。"
+                            "如果文字说预算栏是旧值，stated_budget只取本次同意金额。"
+                            "条件式的买不到不要建单仍属采购请求；纯了解且禁止购买才是仅分析。"
+                            "不要擅自多买或修改用户数量，不存在批准工具。最后用中文解释并说明下一步。"
                             "你是有限步骤的采购工具编排助手。只在必要时选择工具。"
                             "预测工具已返回库存、可用供给和缺口，不需要再查询库存；每种物料每个周期只预测一次。"
                             "物料ID明确时直接预测；仅有编码/名称时一次list_materials获得所有映射。"
@@ -90,7 +98,9 @@ class OpenAIFunctionCallingProvider:
         except httpx.HTTPError as exc:
             raise ProviderError(f"provider_http_error:{exc.__class__.__name__}") from exc
         try:
-            tool_calls = payload["choices"][0]["message"].get("tool_calls") or []
+            message = payload["choices"][0]["message"]
+            self.last_content = message.get("content") or ""
+            tool_calls = message.get("tool_calls") or []
             if not tool_calls:
                 return None
             function = tool_calls[0]["function"]

@@ -87,6 +87,11 @@ export const api = {
   agentRuns(token: string) {
     return request<AgentRunSummary[]>("/agent/runs", {}, token);
   },
+  confirmRequest(runId: number, prompt: string, totalBudget: string, fingerprint: string, token: string) {
+    return request<AgentRun>(`/agent/runs/${runId}/confirm`, {
+      method: 'POST', body: JSON.stringify({ prompt, total_budget: totalBudget, confirmation_fingerprint: fingerprint })
+    }, token);
+  },
   traces(runId: number, token: string) {
     return request<import("./types").ToolTrace[]>(`/agent/runs/${runId}/traces`, {}, token);
   },

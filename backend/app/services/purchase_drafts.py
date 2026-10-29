@@ -28,9 +28,17 @@ class PurchaseDraftInput:
     evidence_refs: list[str]
     evidence_payloads: list[dict] | None = None
     total_budget: Decimal | None = None
+    user_request: dict | None = None
 
 
 def create_purchase_draft(session: Session, request: PurchaseDraftInput) -> PurchaseOrder:
+    if request.user_request:
+        from backend.app.services.business_feedback import check_request_conditions
+        from backend.app.services.source_conditions import validate_saved_request
+        saved = validate_saved_request(session, request.user_request, request.user_request['source_prompt'], request.total_budget)
+        check_request_conditions(session, 'create_purchase_draft', {
+            'supplier_id': request.supplier_id, 'items': [{'material_id': i.material_id, 'quantity': i.quantity} for i in request.items],
+            'evidence_refs': request.evidence_refs}, saved)
     if not request.evidence_refs:
         raise ValueError("evidence_required")
     if not request.items:
@@ -280,6 +288,7 @@ def _evidence_json(request: PurchaseDraftInput) -> str:
         {
             "refs": request.evidence_refs,
             "forecast_evidence": request.evidence_payloads,
+            "user_request": request.user_request,
         },
         ensure_ascii=False,
     )

@@ -104,6 +104,8 @@ class PurchaseDraftIn(PurchaseDraftParameters):
 
 class PurchaseDraftItemOut(BaseModel):
     material_id: int
+    material_name: str = ""
+    unit: str = ""
     quantity: Decimal
     unit_price: Decimal
     line_amount: Decimal
@@ -149,7 +151,14 @@ class AgentRunIn(ParameterModel):
     total_budget: Money | None = None
 
 
+class RequestConfirmationIn(ParameterModel):
+    prompt: str = Field(min_length=1, max_length=2000)
+    total_budget: Money
+    confirmation_fingerprint: str = Field(min_length=64, max_length=64)
+
+
 class AgentRunOut(BaseModel):
+    confirmation_fingerprint: str | None = None
     run_id: int | None
     status: str
     tool_calls: list[str]
@@ -158,9 +167,13 @@ class AgentRunOut(BaseModel):
     error: str | None = None
     real_function_calling: bool = False
     langgraph_executed: bool = False
+    business_message: str = ""
+    next_action: str = ""
+    model_response: str = ""
 
 
 class AgentRunSummaryOut(BaseModel):
+    confirmation_fingerprint: str | None = None
     id: int
     status: str
     prompt: str
@@ -169,6 +182,9 @@ class AgentRunSummaryOut(BaseModel):
     purchase_order_id: int | None = None
     created_at: str
     updated_at: str
+    business_message: str = ""
+    next_action: str = ""
+    model_response: str = ""
 
 
 class ToolTraceOut(BaseModel):
@@ -197,6 +213,8 @@ class PurchaseOrderSummaryOut(BaseModel):
     items: list[PurchaseDraftItemOut]
     created_at: str
     updated_at: str
+    delivery_requirement: str = "交付要求无法确认"
+    recommendation_basis: str = "推荐依据无法确认"
 
 
 class DemandHistoryPointOut(BaseModel):

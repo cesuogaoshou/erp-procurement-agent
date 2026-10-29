@@ -1,5 +1,11 @@
 # Course Acceptance Review
 
+> Independent natural-language acceptance (2026-10-29): **partial pass**. See `INDEPENDENT_NL_ACCEPTANCE_20261029.md`. Fresh163 backend passed/6 default skips, realMySQL6 passed, build/help passed. Original21 HTTP replays passed; extra5 expressions passed2/failed3. Wrong-model fault injection accepted3 invalid interpretations into transaction-local drafts, all rolled back;2 controls correctly rejected. UI workflow7/7 and live permission/version3/3 passed. New blockers are per-material quantity/completeness/purchase-intent alignment and common delivery/week/thousands-format parsing. No business source edits; previous scoped passes are preserved as historical evidence.
+
+> Nontechnical-user business acceptance (2026-10-29): **partial pass**, see `NATURAL_LANGUAGE_ACCEPTANCE_20261029.md`.19 pure-Chinese real-model requests passed this run's order/constraint checks and6 browser workflow checks passed, but all3 representative result-page reviews failed usability checks. Missing Chinese outcomes, clarification, material names and approval details prevent complete business-quality sign-off. Existing engineering passes below remain scoped; this turn made no business fixes.
+
+> Independent rerun (2026-10-29): current code c7004b4 passed original63/63 plus8 extra checks, fresh backend133pass/5skip, realMySQL5pass, build/help and browser/restart verification. See `REACCEPTANCE_20261029.md` for evidence and scope. Existing forecast/Word/delivery boundaries remain, and invalid natural-language input explanations still need improvement. Historical failure records below were not overwritten.
+
 > Extreme remediation (2026-10-29): see `EXTREME_REMEDIATION_20261029.md`. All six findings below were repaired; backend 133 passed/5 opt-in skipped, real MySQL 5 passed, original extreme cases 63/63 passed. Original failure evidence and order #57 are preserved. This engineering remediation does not change frozen forecasting limitations or refresh the course delivery package.
 
 > Expanded business-quality acceptance (2026-10-29): 53/63 checks passed; 10 failures map to 6 findings. See `EXTREME_ACCEPTANCE_20261029.md` for aggregate quantity/budget gaps, read-only/concurrent-create 500s, internal schema mismatch and multi-material limits. No business fixes in that acceptance turn. Earlier scoped authentication remediation pass is not full business-quality sign-off.
@@ -222,3 +228,7 @@ Not rerun:
 - Forecast evidence must still be reported as exploratory hybrid fixed-inventory evidence, not untouched final-test evidence and not pure full-coverage Prophet.
 - Object-level authorization is intentionally minimal and demo-scoped; it is not a full ERP permission platform.
 - Generated reports under `reports/generated/` remain ignored by Git and must be packaged separately for delivery.
+
+## 2026-10-29 普通采购人员交互整改复验补记
+
+本轮明确业务交互范围全部通过：原19句+2附加句浏览器真实模型21/21，页面流程12/12，实时接口11/11；新后端163pass/6skip、独立MySQL6pass、构建/help通过。详见NATURAL_LANGUAGE_REACCEPTANCE_20261029.md。未重新生成课程包，未改变冻结预测和原课程指标限制；不能扩展为全课程或生产上线通过。

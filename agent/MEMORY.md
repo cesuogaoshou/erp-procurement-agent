@@ -215,3 +215,55 @@ Final verification: backend 133 passed / 5 opt-in skipped; RUN_MYSQL_INTEGRATION
 ## 2026-10-29 local commit authorization
 
 User requested local commit after accepting remediation delivery. Preserve existing acceptance documentation and include it with the safety fixes, migration and regressions. Recheck code hashes against prior verified evidence and run backend suite before committing. No push, delivery rebuild or database changes in this commit-only turn.
+
+## 2026-10-29 Independent reacceptance
+
+- User requested fresh reacceptance. On source snapshot c7004b4, reran original63 with explicit valid confirmed budgets and specific business-error assertions; all63 passed.8 extra checks passed,71/71 total. Fresh backend133pass/5skip; realMySQL5pass; frontend build and CLIhelp pass. Raw evidence and6JPGs ignored under reports/generated/reacceptance_20261029_independent/, report docs/REACCEPTANCE_20261029.md.
+- No product/test source edits, reset/migration/tuning, commit/push or package generation. Source hashes/original failure-file hashes unchanged; user57 unchanged. Rows132→150 including MySQL controls.
+- G1aggregate480 blocked specific shortage error; G2amount1956/budget1000 blocked specific order budget error, not missing-field422. Transaction-local old63/64 clones with explicit budgets rejected at approval and rolled back. Additional320/cap300 blocked,9+9 MOQ20 rounds once, historicalNULL budget refuses approval without changing57.
+- True model readonly142 and browser150 complete with2traces/noorder; ordinary shared1000 Run146 noorder; ordinary5000 Run148 creates175 at1956 in5calls. No confirmed budget149 noorder. Concurrent same-key both200/1order/1audit, changed payload409. Browser cancel170 no changes, double-submit175 oneaudit/version2;170 approvedPO-000170,175 rejected. Restart51992→44768 preserves4orders/2runs/7traces and budget values exactly; UI refreshed verified. Keep backend44768/8000, frontend5173.
+- Caveat: invalid natural-language quantities return completed/no calls/no orders; hard validation independently verified, but explanatory UI text remains improvement. No stress/blackout, full forecast evaluation, Word/package QA, or cross-process LangGraph checkpoint claim. No new commit/push authorized in this turn.
+
+## 2026-10-29 Nontechnical natural-language acceptance
+
+User rejected technical-ID acceptance prompts and requested normal/extreme cases for nontechnical users plus execution.19 actual real-model requests,16HTTP/3browser, used only Chinese business phrases.19/19 request/order guards,6/6 browser workflow checks;3/3 representative pages failed clarity. Overall partial pass. See docs/NATURAL_LANGUAGE_ACCEPTANCE_20261029.md and ignored reports/generated/natural_language_acceptance_20261029/. Pure names resolve correctly; Chinese120/100 and last correction80 work. Budgets100/1000,1day delivery, missing/nonexistent material,zero/negative/hugeqty,MOQ-no-extra,skipapproval,no budget and conflicting budget did not produce an invalid order. But completed/no follow-up, untranslated status/JSON, order material1, absent approval details and raw expiry error block nontechnical-user quality.182approved810 PO-000182;179rejected1956;178/180/181drafts; rows150→155; user57 and source hashes unchanged. No source fix/regression rerun/reset/commit/push/package work. Prior71/71 was engineering scope only. Initial finalizer audit-label mismatch corrected to existing submitted_for_approval with first outputs preserved, not a business failure.
+
+## 2026-10-29 自然语言交互修复及真实复验
+
+按用户要求修复业务反馈、澄清确认、草稿/审批明细、中文状态/错误；保存模型文字但后端事实主导。新增capture_request，复用现有run.state_json；后端独立核对原文及每次后续工具的物料/数量/交期和加购；无迁移。首次浏览器发现E05误把零当名称、E09停单但无预算原因，保留初次证据后新增红绿回归修复。只读代码审查补出并修复模糊替换/明天延至20天/单价历史预算误冲突，审查复核通过。
+
+最新完整后端163/6skip、独立MySQL6、新反馈30（已包含）、构建/help/diff-check通过；模型deepseek-v4-flash，21不同自然语言用例四维全部通过（含原19句），页面流程12、接口11全部通过。原句/补充共迭代32次+隔离过期恢复1次真实模型，不把重复计算成通过数。195冲突测试已驳回，205双物料已驳回，206/207草稿，208已批准810/PO-000208；本轮全部新订单29（含MySQL）及审计保留。取消205完整快照相同，重复提交/决定无重复审计，错误版本409、越权403、匿名401；真实过时页面409有中文刷新提示并恢复，195快照不变。
+
+隔离过期夹具首令牌签名有效但已过期，真实401后输入预算保留，二次登录再调用模型成功。测试静态服务器Windows .js MIME初次text/plain空白，修正application/javascript并换新端口避免缓存；两个夹具已停止。生产Vite未受影响。
+
+证据/红绿记录/逐条截图在reports/generated/nl_remediation_20261029，报告docs/NATURAL_LANGUAGE_REACCEPTANCE_20261029.md。订单57、冻结源码/数据文件、旧证据散列不变；初始文档修改保留，HEAD c7004b4未变，无提交推送清库调参包重建。
+
+截图QA补记：少量即时弹窗截图先于浏览器绘制；保留旧图，直接CDP补拍并目视核对待审批211（只读）、已批准208和已驳回205明细。报告已区分批准前DOM与批准后补拍，不伪称旧状态。所有订单未因补拍发生写入。
+
+## 2026-10-29 Independent post-remediation natural-language acceptance
+
+User requested acceptance. New docs/INDEPENDENT_NL_ACCEPTANCE_20261029.md: PARTIAL PASS. Original21 real-model HTTP cases pass; extra5 expressions2pass/3fail (20天内交付/两周内到货 rejected,5,000元 read as0). Wrong-model argument fault injection accepts swapped per-material120/80, omitted material, readonly misclassification into drafts;3 rolled back/IDs222-224 absent,2 controls rejected. This is fault injection, not spontaneous model errors. Root: source numeric membership without item binding/completeness/purchase-intent check; downstream validates captured request only.27HTTP attempts/26distinct cases (E10 collector retry)+3browser calls. Browser zero/normal pass,交付 fails. Workflow7/7 and permission/version3/3;227approved810 PO-000227,219rejected1956, cancel full snapshot unchanged. Fresh163pytest/6skip, MySQL6, build/help/diff pass. Source/data/previous NL evidence hashes and full user57 unchanged; rows184→200 (9real-request drafts incl retry,7MySQL). No source fixes/reset/migration/tuning/commit/push/package rebuild. Preserve previous uncommitted remediation. Evidence reports/generated/nl_independent_20261029 incl initial collector404/KeyError logs and corrected list API collection, no lowered assertions. See latest handoff for exact scope.
+
+
+## 最新：原文需求绑定整改与真实复验（2026-10-29）
+
+**本轮三组缺陷通过（明确范围）**。见 `docs/NL_BINDING_REMEDIATION_20261029.md`；旧独立“部分通过”报告保留原样。服务端独立绑定物料全集/逐项数量/只分析限制，保存有效需求；不可靠对应时完整中文清单明确确认，确认绑定原文/预算/记录/所属人，一次消费；推荐、草稿和审批从原执行记录复核。交付/周单位（两周14天）及合法千分金额已修复，并补历史数量/预算上下文、单位与禁写表达边界。
+
+最终实际验证：后端197 passed / 6默认MySQL跳过；单独真实MySQL6 passed；类型/构建、CLI、diff通过；原21+新增5真实模型接口26/26，最终浏览器8次真实模型业务运行、5种隔离错误模型页面拦截、7个MySQL回滚链探针（6拒绝+1正确对照）、6项实时拒绝/快照检查通过。完整清单明确确认后草稿282（120件轴承+80件外壳，1628元）经人工批准PO-000282；278取消驳回完整快照不变后已驳回；281待审批。
+
+证据 `reports/generated/nl_binding_remediation_20261029/final/`，此前迭代仍在父目录。总62次真实模型业务运行=初轮26接口+2页面+最终26接口+8页面/确认，不当作62个不同用例或底层模型HTTP次数。模拟错误模型参数不计入真实模型请求。57完整快照、冻结数据/预测源码和旧三轮自然语言证据散列一致；错误探针事务回滚。旧服务日志追加尾部另存，本轮基线新结果另存，旧证据字节及已跟踪基线内容已保护。
+
+未提交、推送、清库、迁移、调参或重建交付包。主后端67360/8000及前端5173继续运行，隔离8001夹具已停。限制：复杂自然语言保守确认/追问；单供应商单草稿、演示账号、固定库存、无外部采购与历史订单不回填新锚点。后续仅按用户新任务继续，不用本轮范围结论扩张为课程/生产全部通过。
+
+
+## 最终：需求绑定整改与复验通过（2026-10-29）
+
+本轮三组缺陷已关闭，最终报告 `docs/NL_BINDING_FINAL_REACCEPTANCE_20261029.md`，证据 `reports/generated/nl_binding_remediation_20261029/final_v3/`。中间197/201/202成绩、条件句/只读推荐缺口及模型幂等键冲突保留记录，不冒充最终结果。
+
+最新实际执行：完整后端203 passed / 6默认MySQL跳过；单独真实MySQL6 passed；前端类型/构建、CLI和diff通过；最终原21+新增5真实模型接口26/26；8次真实页面/确认运行、9个MySQL回滚链探针（8拒绝+1正确对照）、7种隔离页面故障、6项实时拒绝/快照检查通过。最终确认369→修改失效→370明确确认→371草稿326（轴承120+外壳80，1628元），人工批准PO-000326；321取消驳回快照不变后已驳回；324待审批。
+
+模型候选独立绑定原文全集/逐项数量/单位/只分析/交期/预算，有效需求持久化并锚定原始运行。只读中明确条件同样约束推荐；普通前置“如果”不解除禁写。草稿幂等键由服务端运行ID确定，同运行重试只产生一个草稿，直接API幂等协议保留；后续重放不改变最初来源。两周14天、交付等表达及5,000/非法金额/单价历史语境均已覆盖。
+
+全程124次真实模型业务运行=104接口（4轮各26）+20页面/确认，最终只计26不同接口用例+8页面/确认；模拟注入与MySQL Mock不算真实模型请求。57完整快照、冻结数据/预测源码及旧三轮证据散列一致，错误探针全部回滚。没有提交、推送、清库、迁移、调参或重建交付包。
+
+后端62980/8000和原前端5173保持运行，隔离8001已停。保留复杂NL保守确认、单供应商、演示账号、固定库存、无外部采购与不回填历史锚点的既有边界；不同新AgentRun仍是新业务执行，未新增跨运行客户端去重。下一步仅按用户新任务继续。

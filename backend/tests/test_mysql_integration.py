@@ -40,6 +40,25 @@ def _database_url() -> str:
     return url
 
 
+def test_mysql_business_clarification_persists_without_order(mysql_engine):
+    provider = MockLLMProvider([ToolCall("capture_request", {"items": [{"query":"标准轴承", "quantity":"0"}],
+        "purchase_requested":True, "stated_budget":"5000", "required_in_days":20})])
+    factory = create_session_factory(mysql_engine)
+    with factory() as session:
+        before_ids = set(session.scalars(select(PurchaseOrder.id)))
+    result = AgentLoop(engine=mysql_engine, provider=provider).run("数量为零的业务反馈集成检查", total_budget=Decimal("5000"), owner_user_id="buyer-1")
+    assert result.status == "needs_information"
+    mysql_engine.dispose()
+    with factory() as session:
+        run = session.get(AgentRun, result.run_id)
+        state = json.loads(run.state_json)
+        assert "大于零" in state["business_message"]
+        assert state["next_action"]
+        assert state["created_by_user_id"] == "buyer-1"
+        assert run.purchase_order_id is None
+        assert set(session.scalars(select(PurchaseOrder.id))) == before_ids
+
+
 @pytest.fixture()
 def mysql_engine():
     engine = create_engine(_database_url(), pool_pre_ping=True)

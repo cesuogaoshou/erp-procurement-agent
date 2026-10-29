@@ -23,6 +23,7 @@ class AgentTool:
 
 def build_agent_tools() -> list[AgentTool]:
     descriptions = {
+        "capture_request": "First extract the user's request: material queries exactly as stated (never substitute), final corrected quantity per material (null if missing, zero/negative preserved), purchase_requested false ONLY for analysis-only tasks, stated_budget user's CURRENT whole-order budget (null if absent), required_in_days (null if absent). Backend resolves names and returns IDs; reuse them. Do not infer missing values or consent. Do not repeat this tool.",
         "list_materials": "List materials with stable IDs/codes. Reuse this mapping throughout the run.",
         "resolve_material": "Resolve a material code or name fragment; avoid this when the ID is already known.",
         "get_inventory": "Inventory only. Usually unnecessary: get_demand_forecast already includes current inventory and available supply.",
@@ -56,6 +57,34 @@ def execute_agent_tool(
     if name == "list_materials":
         return [{"id": item.id, "code": item.code, "name": item.name,
                  "unit": item.unit, "safety_stock": str(item.safety_stock)} for item in list_materials(session)]
+    if name == "capture_request":
+        from backend.app.services.business_feedback import capture_request
+        registry = evidence_registry if evidence_registry is not None else {}
+        if "user_request" in registry:
+            raise ValueError("request_already_captured")
+        result = capture_request(session, arguments, total_budget, registry.get("request_source", {}).get("prompt"))
+        if registry.get('request_source', {}).get('run_id') is not None:
+            result['source_run_id'] = registry['request_source']['run_id']
+        confirmed = registry.get("human_confirmation")
+        if confirmed:
+            from backend.app.services.source_conditions import validate_saved_request
+            confirmed = validate_saved_request(session, confirmed, registry["request_source"]["prompt"], total_budget)
+            if any(result[k] != confirmed[k] for k in ("items", "purchase_requested", "required_in_days", "confirmed_total_budget")):
+                from backend.app.services.business_feedback import ClarificationRequired
+                raise ClarificationRequired("模型提取与本次人工确认需求不一致，请重新核对，不会修改已确认条件。")
+            result = confirmed
+        if evidence_registry is not None:
+            evidence_registry["user_request"] = result
+        return result
+    from backend.app.services.business_feedback import check_request_conditions
+    if evidence_registry and "request_source" in evidence_registry and name in {"recommend_suppliers", "create_purchase_draft"}:
+        from backend.app.services.source_conditions import validate_saved_request
+        if "user_request" not in evidence_registry:
+            from backend.app.services.business_feedback import ClarificationRequired
+            raise ClarificationRequired("尚未核对原文需求，不允许推荐或生成草稿。")
+        evidence_registry["user_request"] = validate_saved_request(session, evidence_registry["user_request"], evidence_registry["request_source"]["prompt"], total_budget)
+    if evidence_registry and "user_request" in evidence_registry:
+        check_request_conditions(session, name, arguments, evidence_registry["user_request"])
     if name == "resolve_material":
         query = str(arguments["query"]).lower()
         matches = [
@@ -111,6 +140,12 @@ def execute_agent_tool(
             evidence_registry[evidence_ref] = output
         return output
     if name == "create_purchase_draft":
+        source_run_id = (evidence_registry or {}).get('request_source', {}).get('run_id')
+        if source_run_id is not None:
+            # The model cannot select a historical order or collide two different
+            # business executions by inventing/reusing an idempotency key. Retries
+            # inside this server-owned run still resolve to exactly one draft.
+            arguments['idempotency_key'] = f'agent-run-{source_run_id}'
         resolved_refs, forecast_evidence = _validate_forecast_evidence(arguments, evidence_registry or {})
         resolved_refs = _resolve_recommendation_evidence_refs(resolved_refs, evidence_registry or {})
         order = create_purchase_draft(
@@ -125,6 +160,7 @@ def execute_agent_tool(
                 evidence_refs=resolved_refs,
                 evidence_payloads=forecast_evidence,
                 total_budget=total_budget,
+                user_request=((evidence_registry or {}).get("user_request") if (evidence_registry or {}).get("request_source") else None),
             ),
         )
         return order
