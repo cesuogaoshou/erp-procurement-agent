@@ -26,6 +26,7 @@ from backend.app.schemas.procurement import (
     MaterialOut,
     PurchaseDraftIn,
     PurchaseDraftOut,
+    PurchaseDraftUpdateIn,
     PurchaseOrderSummaryOut,
     RecommendationIn,
     RecommendationOut,
@@ -46,6 +47,7 @@ from backend.app.services.approvals import (
     submit_for_approval,
 )
 from backend.app.services.purchase_drafts import DraftItemInput, PurchaseDraftInput, create_purchase_draft, validate_replay
+from backend.app.services.draft_updates import DraftUpdateInput, DraftUpdateItem, update_purchase_draft
 from backend.app.services.forecasting import baseline_forecast
 from backend.app.services.inventory import get_inventory_snapshot, list_materials
 from backend.app.services.langgraph_runner import run_langgraph_procurement
@@ -227,6 +229,39 @@ def create_app(
         except ValueError as exc:
             session.rollback()
             raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+    @app.patch("/purchase-orders/{order_id}/draft", response_model=PurchaseOrderSummaryOut)
+    def update_draft(
+        order_id: int,
+        request: PurchaseDraftUpdateIn,
+        session: Session = Depends(get_session),
+        auth: AuthContext = Depends(get_auth_context),
+    ):
+        try:
+            order = update_purchase_draft(
+                session,
+                order_id,
+                auth,
+                DraftUpdateInput(
+                    expected_order_version=request.expected_order_version,
+                    items=[DraftUpdateItem(item.material_id, item.quantity) for item in request.items],
+                    total_budget=request.total_budget,
+                ),
+            )
+            session.commit()
+            return _purchase_order_summary(order)
+        except ApprovalPermissionError as exc:
+            session.rollback()
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
+        except ApprovalConflict as exc:
+            session.rollback()
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
+        except ApprovalValidationError as exc:
+            session.rollback()
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        except ValueError as exc:
+            session.rollback()
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     @app.post("/purchase-orders/{order_id}/submit", response_model=PurchaseDraftOut)
     def submit_purchase_order(

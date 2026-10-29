@@ -149,6 +149,7 @@ def _validate_order_snapshot(session: Session, order: PurchaseOrder) -> None:
 
     evidence = json.loads(order.evidence_refs_json)
     refs = evidence.get("refs", []) if isinstance(evidence, dict) else evidence
+    manual_edit = isinstance(evidence, dict) and bool(evidence.get("manual_edit"))
     # The origin is discovered independently of the editable order evidence.
     # Idempotent replays may link later runs to the same order. Its origin is
     # the first creation run, never a later replay which must not retrofit a
@@ -157,7 +158,7 @@ def _validate_order_snapshot(session: Session, order: PurchaseOrder) -> None:
         AgentRun.purchase_order_id == order.id).order_by(AgentRun.id).limit(1)))
     anchored = [json.loads(r.state_json).get('user_request') for r in originating
                 if json.loads(r.state_json).get('user_request', {}).get('source_run_id') is not None]
-    if anchored and (not isinstance(evidence, dict) or evidence.get('user_request') not in anchored):
+    if anchored and not manual_edit and (not isinstance(evidence, dict) or evidence.get('user_request') not in anchored):
         raise ApprovalValidationError('需求证据与原始执行记录不一致，请重新核对需求。')
     # New orders preserve pre-rounding quantities; historical orders remain
     # explicitly unknown and use their persisted quantity for safety checks.
@@ -166,7 +167,7 @@ def _validate_order_snapshot(session: Session, order: PurchaseOrder) -> None:
                      DraftItemInput(item.material_id, Decimal(item.quantity)) for item in order.items]
     request = PurchaseDraftInput(order.supplier_id, requested, order.idempotency_key, refs,
                                  total_budget=order.total_budget)
-    if isinstance(evidence, dict) and evidence.get('user_request'):
+    if isinstance(evidence, dict) and evidence.get('user_request') and not manual_edit:
         from backend.app.services.business_feedback import check_request_conditions
         from backend.app.services.source_conditions import validate_saved_request
         saved = evidence['user_request']

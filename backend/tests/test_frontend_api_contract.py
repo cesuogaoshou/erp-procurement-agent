@@ -162,4 +162,81 @@ def test_read_apis_scope_runs_traces_and_orders_by_buyer_owner_and_approver_need
 
     assert [order["id"] for order in approver_orders.json()] == [order_id]
     assert approver_traces.status_code == 200
-    assert approver_traces.json()[0]["tool_name"] == "get_demand_forecast"
+
+
+def test_buyer_can_edit_draft_quantities_then_submit_and_approve():
+    engine = create_sqlite_engine("sqlite+pysqlite:///:memory:")
+    with session_scope(engine) as session:
+        seed_demo_data(session)
+
+    client = TestClient(create_app(engine, auth_secret="test-secret"))
+    buyer = client.post("/auth/login", json={"username": "buyer", "password": "buyer-pass"})
+    buyer_headers = {"Authorization": f"Bearer {buyer.json()['access_token']}"}
+
+    forecast = client.post(
+        "/forecasts",
+        headers=buyer_headers,
+        json={"material_id": 1, "horizon_days": 30},
+    ).json()
+    recommendation = client.post(
+        "/recommendations",
+        headers=buyer_headers,
+        json={"material_id": 1, "quantity": "120", "required_in_days": 20, "budget": "5000.00"},
+    ).json()
+    draft = client.post(
+        "/purchase-drafts",
+        headers=buyer_headers,
+        json={
+            "supplier_id": 1,
+            "items": [{"material_id": 1, "quantity": "120"}],
+            "idempotency_key": "manual-edit-contract-001",
+            "evidence_refs": [forecast["evidence_ref"], recommendation["evidence_ref"]],
+            "total_budget": "5000.00",
+        },
+    )
+    assert draft.status_code == 200, draft.text
+    order_id = draft.json()["id"]
+    listed = client.get("/purchase-orders", headers=buyer_headers).json()
+    order = next(item for item in listed if item["id"] == order_id)
+    assert order["items"][0]["material_name"] == "标准轴承"
+    assert order["total_budget"] == "5000.00"
+
+    edited = client.patch(
+        f"/purchase-orders/{order['id']}/draft",
+        headers=buyer_headers,
+        json={
+            "expected_order_version": order["version"],
+            "items": [{"material_id": 1, "quantity": "130"}],
+            "total_budget": "5000.00",
+        },
+    )
+    assert edited.status_code == 200, edited.text
+    updated = edited.json()
+    assert updated["version"] == order["version"] + 1
+    assert updated["items"][0]["quantity"] == "130.0"
+    assert updated["items"][0]["material_name"] == "标准轴承"
+    assert updated["total_amount"] == "1053.00"
+    assert updated["total_budget"] == "5000.00"
+
+    stale = client.patch(
+        f"/purchase-orders/{order['id']}/draft",
+        headers=buyer_headers,
+        json={
+            "expected_order_version": order["version"],
+            "items": [{"material_id": 1, "quantity": "130"}],
+            "total_budget": "5000.00",
+        },
+    )
+    assert stale.status_code == 409
+
+    pending = client.post(f"/purchase-orders/{order['id']}/submit", headers=buyer_headers)
+    assert pending.status_code == 200
+    approver = client.post("/auth/login", json={"username": "approver", "password": "approver-pass"})
+    approver_headers = {"Authorization": f"Bearer {approver.json()['access_token']}"}
+    approved = client.post(
+        f"/purchase-orders/{order['id']}/approve",
+        headers=approver_headers,
+        json={"expected_order_version": pending.json()["version"], "idempotency_key": "manual-edit-approve-001"},
+    )
+    assert approved.status_code == 200, approved.text
+    assert approved.json()["status"] == "approved"

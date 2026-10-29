@@ -102,6 +102,12 @@ class PurchaseDraftIn(PurchaseDraftParameters):
     total_budget: Money
 
 
+class PurchaseDraftUpdateIn(ParameterModel):
+    expected_order_version: int = Field(ge=1)
+    items: list[PurchaseDraftItemIn] = Field(min_length=1, max_length=100)
+    total_budget: Money | None = None
+
+
 class PurchaseDraftItemOut(BaseModel):
     material_id: int
     material_name: str = ""
