@@ -1,0 +1,1842 @@
+[
+  {
+    "case_id": "V2-M01-normal",
+    "material_id": 1,
+    "scenario": "normal",
+    "quantity": "120.00",
+    "required_in_days": 20,
+    "budget": "1800.00",
+    "acceptable_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "normal",
+      "quantity": 120,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_on_time": "0.93",
+      "min_quality": "0.97",
+      "max_complaint": "0.03"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M01-urgent",
+    "material_id": 1,
+    "scenario": "urgent",
+    "quantity": "120.00",
+    "required_in_days": 3,
+    "budget": "1800.00",
+    "acceptable_supplier_ids": [
+      4
+    ],
+    "eligible_supplier_ids": [
+      4
+    ],
+    "label_conditions": {
+      "name": "urgent",
+      "quantity": 120,
+      "days": 3,
+      "budget_factor": "1.5",
+      "min_on_time": "0.98"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M01-economy",
+    "material_id": 1,
+    "scenario": "economy",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "960.00",
+    "acceptable_supplier_ids": [
+      3
+    ],
+    "eligible_supplier_ids": [
+      3
+    ],
+    "label_conditions": {
+      "name": "economy",
+      "quantity": 120,
+      "days": 26,
+      "budget_factor": "0.8",
+      "max_complaint": "0.05"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M01-bulk",
+    "material_id": 1,
+    "scenario": "bulk",
+    "quantity": "600.00",
+    "required_in_days": 20,
+    "budget": "6600.00",
+    "acceptable_supplier_ids": [
+      2
+    ],
+    "eligible_supplier_ids": [
+      2
+    ],
+    "label_conditions": {
+      "name": "bulk",
+      "quantity": 600,
+      "days": 20,
+      "budget_factor": "1.1",
+      "min_on_time": "0.90",
+      "min_quality": "0.97"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M01-quality",
+    "material_id": 1,
+    "scenario": "quality",
+    "quantity": "80.00",
+    "required_in_days": 20,
+    "budget": "1200.00",
+    "acceptable_supplier_ids": [
+      1,
+      6
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "quality",
+      "quantity": 80,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_quality": "0.995",
+      "max_complaint": "0.01"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M01-no_budget",
+    "material_id": 1,
+    "scenario": "no_budget",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_budget",
+      "quantity": 120,
+      "days": 26,
+      "budget": "1"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M01-no_delivery",
+    "material_id": 1,
+    "scenario": "no_delivery",
+    "quantity": "120.00",
+    "required_in_days": 1,
+    "budget": "1800.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_delivery",
+      "quantity": 120,
+      "days": 1,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M01-no_capacity",
+    "material_id": 1,
+    "scenario": "no_capacity",
+    "quantity": "2500.00",
+    "required_in_days": 26,
+    "budget": "37500.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_capacity",
+      "quantity": 2500,
+      "days": 26,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M02-normal",
+    "material_id": 2,
+    "scenario": "normal",
+    "quantity": "120.00",
+    "required_in_days": 20,
+    "budget": "4320.00",
+    "acceptable_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "normal",
+      "quantity": 120,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_on_time": "0.93",
+      "min_quality": "0.97",
+      "max_complaint": "0.03"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M02-urgent",
+    "material_id": 2,
+    "scenario": "urgent",
+    "quantity": "120.00",
+    "required_in_days": 3,
+    "budget": "4320.00",
+    "acceptable_supplier_ids": [
+      4
+    ],
+    "eligible_supplier_ids": [
+      4
+    ],
+    "label_conditions": {
+      "name": "urgent",
+      "quantity": 120,
+      "days": 3,
+      "budget_factor": "1.5",
+      "min_on_time": "0.98"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M02-economy",
+    "material_id": 2,
+    "scenario": "economy",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "2304.00",
+    "acceptable_supplier_ids": [
+      3
+    ],
+    "eligible_supplier_ids": [
+      3
+    ],
+    "label_conditions": {
+      "name": "economy",
+      "quantity": 120,
+      "days": 26,
+      "budget_factor": "0.8",
+      "max_complaint": "0.05"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M02-bulk",
+    "material_id": 2,
+    "scenario": "bulk",
+    "quantity": "600.00",
+    "required_in_days": 20,
+    "budget": "15840.00",
+    "acceptable_supplier_ids": [
+      2,
+      9
+    ],
+    "eligible_supplier_ids": [
+      2,
+      9
+    ],
+    "label_conditions": {
+      "name": "bulk",
+      "quantity": 600,
+      "days": 20,
+      "budget_factor": "1.1",
+      "min_on_time": "0.90",
+      "min_quality": "0.97"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M02-quality",
+    "material_id": 2,
+    "scenario": "quality",
+    "quantity": "80.00",
+    "required_in_days": 20,
+    "budget": "2880.00",
+    "acceptable_supplier_ids": [
+      1,
+      6
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "quality",
+      "quantity": 80,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_quality": "0.995",
+      "max_complaint": "0.01"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M02-no_budget",
+    "material_id": 2,
+    "scenario": "no_budget",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_budget",
+      "quantity": 120,
+      "days": 26,
+      "budget": "1"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M02-no_delivery",
+    "material_id": 2,
+    "scenario": "no_delivery",
+    "quantity": "120.00",
+    "required_in_days": 1,
+    "budget": "4320.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_delivery",
+      "quantity": 120,
+      "days": 1,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M02-no_capacity",
+    "material_id": 2,
+    "scenario": "no_capacity",
+    "quantity": "2500.00",
+    "required_in_days": 26,
+    "budget": "90000.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_capacity",
+      "quantity": 2500,
+      "days": 26,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M03-normal",
+    "material_id": 3,
+    "scenario": "normal",
+    "quantity": "120.00",
+    "required_in_days": 20,
+    "budget": "16200.00",
+    "acceptable_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "normal",
+      "quantity": 120,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_on_time": "0.93",
+      "min_quality": "0.97",
+      "max_complaint": "0.03"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M03-urgent",
+    "material_id": 3,
+    "scenario": "urgent",
+    "quantity": "120.00",
+    "required_in_days": 3,
+    "budget": "16200.00",
+    "acceptable_supplier_ids": [
+      4
+    ],
+    "eligible_supplier_ids": [
+      4
+    ],
+    "label_conditions": {
+      "name": "urgent",
+      "quantity": 120,
+      "days": 3,
+      "budget_factor": "1.5",
+      "min_on_time": "0.98"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M03-economy",
+    "material_id": 3,
+    "scenario": "economy",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "8640.00",
+    "acceptable_supplier_ids": [
+      3
+    ],
+    "eligible_supplier_ids": [
+      3
+    ],
+    "label_conditions": {
+      "name": "economy",
+      "quantity": 120,
+      "days": 26,
+      "budget_factor": "0.8",
+      "max_complaint": "0.05"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M03-bulk",
+    "material_id": 3,
+    "scenario": "bulk",
+    "quantity": "600.00",
+    "required_in_days": 20,
+    "budget": "59400.00",
+    "acceptable_supplier_ids": [
+      2
+    ],
+    "eligible_supplier_ids": [
+      2
+    ],
+    "label_conditions": {
+      "name": "bulk",
+      "quantity": 600,
+      "days": 20,
+      "budget_factor": "1.1",
+      "min_on_time": "0.90",
+      "min_quality": "0.97"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M03-quality",
+    "material_id": 3,
+    "scenario": "quality",
+    "quantity": "80.00",
+    "required_in_days": 20,
+    "budget": "10800.00",
+    "acceptable_supplier_ids": [
+      1,
+      6,
+      7
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "quality",
+      "quantity": 80,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_quality": "0.995",
+      "max_complaint": "0.01"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M03-no_budget",
+    "material_id": 3,
+    "scenario": "no_budget",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_budget",
+      "quantity": 120,
+      "days": 26,
+      "budget": "1"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M03-no_delivery",
+    "material_id": 3,
+    "scenario": "no_delivery",
+    "quantity": "120.00",
+    "required_in_days": 1,
+    "budget": "16200.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_delivery",
+      "quantity": 120,
+      "days": 1,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M03-no_capacity",
+    "material_id": 3,
+    "scenario": "no_capacity",
+    "quantity": "2500.00",
+    "required_in_days": 26,
+    "budget": "337500.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_capacity",
+      "quantity": 2500,
+      "days": 26,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M04-normal",
+    "material_id": 4,
+    "scenario": "normal",
+    "quantity": "120.00",
+    "required_in_days": 20,
+    "budget": "32400.00",
+    "acceptable_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "normal",
+      "quantity": 120,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_on_time": "0.93",
+      "min_quality": "0.97",
+      "max_complaint": "0.03"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M04-urgent",
+    "material_id": 4,
+    "scenario": "urgent",
+    "quantity": "120.00",
+    "required_in_days": 3,
+    "budget": "32400.00",
+    "acceptable_supplier_ids": [
+      4
+    ],
+    "eligible_supplier_ids": [
+      4
+    ],
+    "label_conditions": {
+      "name": "urgent",
+      "quantity": 120,
+      "days": 3,
+      "budget_factor": "1.5",
+      "min_on_time": "0.98"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M04-economy",
+    "material_id": 4,
+    "scenario": "economy",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "17280.00",
+    "acceptable_supplier_ids": [
+      3
+    ],
+    "eligible_supplier_ids": [
+      3
+    ],
+    "label_conditions": {
+      "name": "economy",
+      "quantity": 120,
+      "days": 26,
+      "budget_factor": "0.8",
+      "max_complaint": "0.05"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M04-bulk",
+    "material_id": 4,
+    "scenario": "bulk",
+    "quantity": "600.00",
+    "required_in_days": 20,
+    "budget": "118800.00",
+    "acceptable_supplier_ids": [
+      2
+    ],
+    "eligible_supplier_ids": [
+      2
+    ],
+    "label_conditions": {
+      "name": "bulk",
+      "quantity": 600,
+      "days": 20,
+      "budget_factor": "1.1",
+      "min_on_time": "0.90",
+      "min_quality": "0.97"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M04-quality",
+    "material_id": 4,
+    "scenario": "quality",
+    "quantity": "80.00",
+    "required_in_days": 20,
+    "budget": "21600.00",
+    "acceptable_supplier_ids": [
+      1,
+      6
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "quality",
+      "quantity": 80,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_quality": "0.995",
+      "max_complaint": "0.01"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M04-no_budget",
+    "material_id": 4,
+    "scenario": "no_budget",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_budget",
+      "quantity": 120,
+      "days": 26,
+      "budget": "1"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M04-no_delivery",
+    "material_id": 4,
+    "scenario": "no_delivery",
+    "quantity": "120.00",
+    "required_in_days": 1,
+    "budget": "32400.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_delivery",
+      "quantity": 120,
+      "days": 1,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M04-no_capacity",
+    "material_id": 4,
+    "scenario": "no_capacity",
+    "quantity": "2500.00",
+    "required_in_days": 26,
+    "budget": "675000.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_capacity",
+      "quantity": 2500,
+      "days": 26,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M05-normal",
+    "material_id": 5,
+    "scenario": "normal",
+    "quantity": "120.00",
+    "required_in_days": 20,
+    "budget": "11700.00",
+    "acceptable_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "normal",
+      "quantity": 120,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_on_time": "0.93",
+      "min_quality": "0.97",
+      "max_complaint": "0.03"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M05-urgent",
+    "material_id": 5,
+    "scenario": "urgent",
+    "quantity": "120.00",
+    "required_in_days": 3,
+    "budget": "11700.00",
+    "acceptable_supplier_ids": [
+      4
+    ],
+    "eligible_supplier_ids": [
+      4
+    ],
+    "label_conditions": {
+      "name": "urgent",
+      "quantity": 120,
+      "days": 3,
+      "budget_factor": "1.5",
+      "min_on_time": "0.98"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M05-economy",
+    "material_id": 5,
+    "scenario": "economy",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "6240.00",
+    "acceptable_supplier_ids": [
+      3
+    ],
+    "eligible_supplier_ids": [
+      3
+    ],
+    "label_conditions": {
+      "name": "economy",
+      "quantity": 120,
+      "days": 26,
+      "budget_factor": "0.8",
+      "max_complaint": "0.05"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M05-bulk",
+    "material_id": 5,
+    "scenario": "bulk",
+    "quantity": "600.00",
+    "required_in_days": 20,
+    "budget": "42900.00",
+    "acceptable_supplier_ids": [
+      2
+    ],
+    "eligible_supplier_ids": [
+      2
+    ],
+    "label_conditions": {
+      "name": "bulk",
+      "quantity": 600,
+      "days": 20,
+      "budget_factor": "1.1",
+      "min_on_time": "0.90",
+      "min_quality": "0.97"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M05-quality",
+    "material_id": 5,
+    "scenario": "quality",
+    "quantity": "80.00",
+    "required_in_days": 20,
+    "budget": "7800.00",
+    "acceptable_supplier_ids": [
+      1,
+      6,
+      7
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "quality",
+      "quantity": 80,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_quality": "0.995",
+      "max_complaint": "0.01"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M05-no_budget",
+    "material_id": 5,
+    "scenario": "no_budget",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_budget",
+      "quantity": 120,
+      "days": 26,
+      "budget": "1"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M05-no_delivery",
+    "material_id": 5,
+    "scenario": "no_delivery",
+    "quantity": "120.00",
+    "required_in_days": 1,
+    "budget": "11700.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_delivery",
+      "quantity": 120,
+      "days": 1,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M05-no_capacity",
+    "material_id": 5,
+    "scenario": "no_capacity",
+    "quantity": "2500.00",
+    "required_in_days": 26,
+    "budget": "243750.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_capacity",
+      "quantity": 2500,
+      "days": 26,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M06-normal",
+    "material_id": 6,
+    "scenario": "normal",
+    "quantity": "120.00",
+    "required_in_days": 20,
+    "budget": "360.00",
+    "acceptable_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "normal",
+      "quantity": 120,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_on_time": "0.93",
+      "min_quality": "0.97",
+      "max_complaint": "0.03"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M06-urgent",
+    "material_id": 6,
+    "scenario": "urgent",
+    "quantity": "120.00",
+    "required_in_days": 3,
+    "budget": "360.00",
+    "acceptable_supplier_ids": [
+      4
+    ],
+    "eligible_supplier_ids": [
+      4
+    ],
+    "label_conditions": {
+      "name": "urgent",
+      "quantity": 120,
+      "days": 3,
+      "budget_factor": "1.5",
+      "min_on_time": "0.98"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M06-economy",
+    "material_id": 6,
+    "scenario": "economy",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "192.00",
+    "acceptable_supplier_ids": [
+      3
+    ],
+    "eligible_supplier_ids": [
+      3
+    ],
+    "label_conditions": {
+      "name": "economy",
+      "quantity": 120,
+      "days": 26,
+      "budget_factor": "0.8",
+      "max_complaint": "0.05"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M06-bulk",
+    "material_id": 6,
+    "scenario": "bulk",
+    "quantity": "600.00",
+    "required_in_days": 20,
+    "budget": "1320.00",
+    "acceptable_supplier_ids": [
+      2
+    ],
+    "eligible_supplier_ids": [
+      2
+    ],
+    "label_conditions": {
+      "name": "bulk",
+      "quantity": 600,
+      "days": 20,
+      "budget_factor": "1.1",
+      "min_on_time": "0.90",
+      "min_quality": "0.97"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M06-quality",
+    "material_id": 6,
+    "scenario": "quality",
+    "quantity": "80.00",
+    "required_in_days": 20,
+    "budget": "240.00",
+    "acceptable_supplier_ids": [
+      1,
+      6
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "quality",
+      "quantity": 80,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_quality": "0.995",
+      "max_complaint": "0.01"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M06-no_budget",
+    "material_id": 6,
+    "scenario": "no_budget",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_budget",
+      "quantity": 120,
+      "days": 26,
+      "budget": "1"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M06-no_delivery",
+    "material_id": 6,
+    "scenario": "no_delivery",
+    "quantity": "120.00",
+    "required_in_days": 1,
+    "budget": "360.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_delivery",
+      "quantity": 120,
+      "days": 1,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M06-no_capacity",
+    "material_id": 6,
+    "scenario": "no_capacity",
+    "quantity": "2500.00",
+    "required_in_days": 26,
+    "budget": "7500.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_capacity",
+      "quantity": 2500,
+      "days": 26,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M07-normal",
+    "material_id": 7,
+    "scenario": "normal",
+    "quantity": "120.00",
+    "required_in_days": 20,
+    "budget": "8640.00",
+    "acceptable_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "normal",
+      "quantity": 120,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_on_time": "0.93",
+      "min_quality": "0.97",
+      "max_complaint": "0.03"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M07-urgent",
+    "material_id": 7,
+    "scenario": "urgent",
+    "quantity": "120.00",
+    "required_in_days": 3,
+    "budget": "8640.00",
+    "acceptable_supplier_ids": [
+      4
+    ],
+    "eligible_supplier_ids": [
+      4
+    ],
+    "label_conditions": {
+      "name": "urgent",
+      "quantity": 120,
+      "days": 3,
+      "budget_factor": "1.5",
+      "min_on_time": "0.98"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M07-economy",
+    "material_id": 7,
+    "scenario": "economy",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "4608.00",
+    "acceptable_supplier_ids": [
+      3
+    ],
+    "eligible_supplier_ids": [
+      3
+    ],
+    "label_conditions": {
+      "name": "economy",
+      "quantity": 120,
+      "days": 26,
+      "budget_factor": "0.8",
+      "max_complaint": "0.05"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M07-bulk",
+    "material_id": 7,
+    "scenario": "bulk",
+    "quantity": "600.00",
+    "required_in_days": 20,
+    "budget": "31680.00",
+    "acceptable_supplier_ids": [
+      2
+    ],
+    "eligible_supplier_ids": [
+      2
+    ],
+    "label_conditions": {
+      "name": "bulk",
+      "quantity": 600,
+      "days": 20,
+      "budget_factor": "1.1",
+      "min_on_time": "0.90",
+      "min_quality": "0.97"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M07-quality",
+    "material_id": 7,
+    "scenario": "quality",
+    "quantity": "80.00",
+    "required_in_days": 20,
+    "budget": "5760.00",
+    "acceptable_supplier_ids": [
+      1,
+      6,
+      7
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "quality",
+      "quantity": 80,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_quality": "0.995",
+      "max_complaint": "0.01"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M07-no_budget",
+    "material_id": 7,
+    "scenario": "no_budget",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_budget",
+      "quantity": 120,
+      "days": 26,
+      "budget": "1"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M07-no_delivery",
+    "material_id": 7,
+    "scenario": "no_delivery",
+    "quantity": "120.00",
+    "required_in_days": 1,
+    "budget": "8640.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_delivery",
+      "quantity": 120,
+      "days": 1,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M07-no_capacity",
+    "material_id": 7,
+    "scenario": "no_capacity",
+    "quantity": "2500.00",
+    "required_in_days": 26,
+    "budget": "180000.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_capacity",
+      "quantity": 2500,
+      "days": 26,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M08-normal",
+    "material_id": 8,
+    "scenario": "normal",
+    "quantity": "120.00",
+    "required_in_days": 20,
+    "budget": "6300.00",
+    "acceptable_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "normal",
+      "quantity": 120,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_on_time": "0.93",
+      "min_quality": "0.97",
+      "max_complaint": "0.03"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M08-urgent",
+    "material_id": 8,
+    "scenario": "urgent",
+    "quantity": "120.00",
+    "required_in_days": 3,
+    "budget": "6300.00",
+    "acceptable_supplier_ids": [
+      4
+    ],
+    "eligible_supplier_ids": [
+      4
+    ],
+    "label_conditions": {
+      "name": "urgent",
+      "quantity": 120,
+      "days": 3,
+      "budget_factor": "1.5",
+      "min_on_time": "0.98"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M08-economy",
+    "material_id": 8,
+    "scenario": "economy",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "3360.00",
+    "acceptable_supplier_ids": [
+      3
+    ],
+    "eligible_supplier_ids": [
+      3
+    ],
+    "label_conditions": {
+      "name": "economy",
+      "quantity": 120,
+      "days": 26,
+      "budget_factor": "0.8",
+      "max_complaint": "0.05"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M08-bulk",
+    "material_id": 8,
+    "scenario": "bulk",
+    "quantity": "600.00",
+    "required_in_days": 20,
+    "budget": "23100.00",
+    "acceptable_supplier_ids": [
+      2
+    ],
+    "eligible_supplier_ids": [
+      2
+    ],
+    "label_conditions": {
+      "name": "bulk",
+      "quantity": 600,
+      "days": 20,
+      "budget_factor": "1.1",
+      "min_on_time": "0.90",
+      "min_quality": "0.97"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M08-quality",
+    "material_id": 8,
+    "scenario": "quality",
+    "quantity": "80.00",
+    "required_in_days": 20,
+    "budget": "4200.00",
+    "acceptable_supplier_ids": [
+      1,
+      6
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "quality",
+      "quantity": 80,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_quality": "0.995",
+      "max_complaint": "0.01"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M08-no_budget",
+    "material_id": 8,
+    "scenario": "no_budget",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_budget",
+      "quantity": 120,
+      "days": 26,
+      "budget": "1"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M08-no_delivery",
+    "material_id": 8,
+    "scenario": "no_delivery",
+    "quantity": "120.00",
+    "required_in_days": 1,
+    "budget": "6300.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_delivery",
+      "quantity": 120,
+      "days": 1,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M08-no_capacity",
+    "material_id": 8,
+    "scenario": "no_capacity",
+    "quantity": "2500.00",
+    "required_in_days": 26,
+    "budget": "131250.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_capacity",
+      "quantity": 2500,
+      "days": 26,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M09-normal",
+    "material_id": 9,
+    "scenario": "normal",
+    "quantity": "120.00",
+    "required_in_days": 20,
+    "budget": "2160.00",
+    "acceptable_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "normal",
+      "quantity": 120,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_on_time": "0.93",
+      "min_quality": "0.97",
+      "max_complaint": "0.03"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M09-urgent",
+    "material_id": 9,
+    "scenario": "urgent",
+    "quantity": "120.00",
+    "required_in_days": 3,
+    "budget": "2160.00",
+    "acceptable_supplier_ids": [
+      4
+    ],
+    "eligible_supplier_ids": [
+      4
+    ],
+    "label_conditions": {
+      "name": "urgent",
+      "quantity": 120,
+      "days": 3,
+      "budget_factor": "1.5",
+      "min_on_time": "0.98"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M09-economy",
+    "material_id": 9,
+    "scenario": "economy",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1152.00",
+    "acceptable_supplier_ids": [
+      3
+    ],
+    "eligible_supplier_ids": [
+      3
+    ],
+    "label_conditions": {
+      "name": "economy",
+      "quantity": 120,
+      "days": 26,
+      "budget_factor": "0.8",
+      "max_complaint": "0.05"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M09-bulk",
+    "material_id": 9,
+    "scenario": "bulk",
+    "quantity": "600.00",
+    "required_in_days": 20,
+    "budget": "7920.00",
+    "acceptable_supplier_ids": [
+      2,
+      9
+    ],
+    "eligible_supplier_ids": [
+      2,
+      9
+    ],
+    "label_conditions": {
+      "name": "bulk",
+      "quantity": 600,
+      "days": 20,
+      "budget_factor": "1.1",
+      "min_on_time": "0.90",
+      "min_quality": "0.97"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M09-quality",
+    "material_id": 9,
+    "scenario": "quality",
+    "quantity": "80.00",
+    "required_in_days": 20,
+    "budget": "1440.00",
+    "acceptable_supplier_ids": [
+      1,
+      6
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "quality",
+      "quantity": 80,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_quality": "0.995",
+      "max_complaint": "0.01"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M09-no_budget",
+    "material_id": 9,
+    "scenario": "no_budget",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_budget",
+      "quantity": 120,
+      "days": 26,
+      "budget": "1"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M09-no_delivery",
+    "material_id": 9,
+    "scenario": "no_delivery",
+    "quantity": "120.00",
+    "required_in_days": 1,
+    "budget": "2160.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_delivery",
+      "quantity": 120,
+      "days": 1,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M09-no_capacity",
+    "material_id": 9,
+    "scenario": "no_capacity",
+    "quantity": "2500.00",
+    "required_in_days": 26,
+    "budget": "45000.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_capacity",
+      "quantity": 2500,
+      "days": 26,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M10-normal",
+    "material_id": 10,
+    "scenario": "normal",
+    "quantity": "120.00",
+    "required_in_days": 20,
+    "budget": "900.00",
+    "acceptable_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      8,
+      9
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "normal",
+      "quantity": 120,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_on_time": "0.93",
+      "min_quality": "0.97",
+      "max_complaint": "0.03"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M10-urgent",
+    "material_id": 10,
+    "scenario": "urgent",
+    "quantity": "120.00",
+    "required_in_days": 3,
+    "budget": "900.00",
+    "acceptable_supplier_ids": [
+      4
+    ],
+    "eligible_supplier_ids": [
+      4
+    ],
+    "label_conditions": {
+      "name": "urgent",
+      "quantity": 120,
+      "days": 3,
+      "budget_factor": "1.5",
+      "min_on_time": "0.98"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M10-economy",
+    "material_id": 10,
+    "scenario": "economy",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "480.00",
+    "acceptable_supplier_ids": [
+      3
+    ],
+    "eligible_supplier_ids": [
+      3
+    ],
+    "label_conditions": {
+      "name": "economy",
+      "quantity": 120,
+      "days": 26,
+      "budget_factor": "0.8",
+      "max_complaint": "0.05"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M10-bulk",
+    "material_id": 10,
+    "scenario": "bulk",
+    "quantity": "600.00",
+    "required_in_days": 20,
+    "budget": "3300.00",
+    "acceptable_supplier_ids": [
+      2
+    ],
+    "eligible_supplier_ids": [
+      2
+    ],
+    "label_conditions": {
+      "name": "bulk",
+      "quantity": 600,
+      "days": 20,
+      "budget_factor": "1.1",
+      "min_on_time": "0.90",
+      "min_quality": "0.97"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M10-quality",
+    "material_id": 10,
+    "scenario": "quality",
+    "quantity": "80.00",
+    "required_in_days": 20,
+    "budget": "600.00",
+    "acceptable_supplier_ids": [
+      1,
+      6
+    ],
+    "eligible_supplier_ids": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "label_conditions": {
+      "name": "quality",
+      "quantity": 80,
+      "days": 20,
+      "budget_factor": "1.5",
+      "min_quality": "0.995",
+      "max_complaint": "0.01"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M10-no_budget",
+    "material_id": 10,
+    "scenario": "no_budget",
+    "quantity": "120.00",
+    "required_in_days": 26,
+    "budget": "1.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_budget",
+      "quantity": 120,
+      "days": 26,
+      "budget": "1"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M10-no_delivery",
+    "material_id": 10,
+    "scenario": "no_delivery",
+    "quantity": "120.00",
+    "required_in_days": 1,
+    "budget": "900.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_delivery",
+      "quantity": 120,
+      "days": 1,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  },
+  {
+    "case_id": "V2-M10-no_capacity",
+    "material_id": 10,
+    "scenario": "no_capacity",
+    "quantity": "2500.00",
+    "required_in_days": 26,
+    "budget": "18750.00",
+    "acceptable_supplier_ids": [],
+    "eligible_supplier_ids": [],
+    "label_conditions": {
+      "name": "no_capacity",
+      "quantity": 2500,
+      "days": 26,
+      "budget_factor": "1.5"
+    },
+    "label_source": "frozen_business_conditions_v2_20261029"
+  }
+]

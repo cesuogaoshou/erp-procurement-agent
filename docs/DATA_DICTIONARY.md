@@ -1,6 +1,12 @@
 # Data Dictionary
 
-All current data is simulated using seed `20261010`. CSV exports are written with UTF-8 encoding to `data/raw/`.
+## V2 independent simulation (2026-10-29 release)
+
+The V1 definitions and frozen files below remain unchanged. V2 lives in `data/v2/raw/`, with the same material codes, supplier IDs/names and activation flags. Only supplier quotes and performance change; the five invariant files are byte-identical to V1. See `docs/V2_DATA_DESIGN_20261029.md` and `docs/V2_RUNBOOK.md` for profiles, constraints, independent label conditions, hashes and empty-only MySQL import.
+
+V2 adds `scenarios.json` (80 frozen business scenarios; acceptable/eligible supplier sets and explicit independent thresholds) and `manifest.json` (version `simulated_procurement_v2_20261029.1`, independent seed `20261029`, dates, full parameters, generator/design/source/output SHA-256, row counts, natural primary keys). `supplier_materials.csv` and `supplier_performance.csv` retain the existing columns below. All data is autonomously generated teaching simulation, never described as enterprise or public procurement records.
+
+Frozen V1 data is simulated using seed `20261010`. Its CSV exports are written with UTF-8 encoding to `data/raw/`.
 
 ## Generation Parameters
 

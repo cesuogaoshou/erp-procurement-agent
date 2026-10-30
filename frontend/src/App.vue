@@ -6,7 +6,7 @@
           <div class="brand-mark">采</div>
           <div>
             <h1>ERP智能采购Agent</h1>
-            <p>最小演示工作台</p>
+            <p>{{ demoLabel || '最小演示工作台' }}</p>
           </div>
         </div>
         <el-menu :default-active="activePage" class="nav" @select="activePage = $event">
@@ -20,7 +20,7 @@
       <main class="workspace">
         <section class="topbar">
           <div>
-            <strong>{{ pageTitle }}</strong>
+            <strong>{{ pageTitle }}{{ demoLabel ? ' · ' + demoLabel : '' }}</strong>
             <span>{{ connectionText }}</span>
           </div>
           <div class="login-panel">
@@ -303,6 +303,7 @@ import zhCn from "element-plus/es/locale/lang/zh-cn";
 import { api, ApiError } from "./api";
 import type { AgentRun, AgentRunSummary, DemandPoint, Forecast, Inventory, Material, PurchaseOrder, Recommendation, Role, Session, ToolTrace } from "./types";
 
+const demoLabel = import.meta.env.VITE_DEMO_LABEL || '';
 const activePage = ref("agent");
 const session = ref<Session | null>(loadSession());
 const loginRole = ref<Role>("buyer");
