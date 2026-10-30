@@ -21,6 +21,16 @@ All current data is simulated using seed `20261010`. CSV exports are written wit
 - `unit`: unit of measure.
 - `safety_stock`: safety stock used in shortage calculation.
 
+### `material_aliases`
+
+- `material_id`: material reference.
+- `alias`: short name, synonym, or English alias used for bounded material resolution.
+- `locale`: alias locale, currently `zh-CN`.
+- `source`: `seed`, `manual`, or future import source.
+- `active`: whether the alias participates in resolution.
+
+Aliases are database-driven. They are not copied into the system prompt; switching to another database keeps resolution data-driven as long as the alias table is migrated and populated.
+
 ### `inventory`
 
 - `material_id`: material reference.

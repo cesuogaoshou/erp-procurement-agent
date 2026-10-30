@@ -27,6 +27,7 @@ def test_seed_dataset_export_writes_csv_and_metadata(tmp_path):
 
     expected = {
         "materials.csv",
+        "material_aliases.csv",
         "inventory_snapshots.csv",
         "demand_history.csv",
         "suppliers.csv",
@@ -36,6 +37,8 @@ def test_seed_dataset_export_writes_csv_and_metadata(tmp_path):
         "generation_metadata.json",
     }
     assert expected.issubset({path.name for path in tmp_path.iterdir()})
+    with (tmp_path / "material_aliases.csv").open(encoding="utf-8", newline="") as handle:
+        assert len(list(csv.DictReader(handle))) >= 20
 
     with (tmp_path / "data_splits.csv").open(encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))

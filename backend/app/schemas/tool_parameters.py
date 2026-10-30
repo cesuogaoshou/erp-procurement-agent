@@ -15,6 +15,11 @@ class ResolveMaterialParameters(ParameterModel):
     query: str = Field(min_length=1, max_length=120, pattern=r"\S")
 
 
+class SearchMaterialsParameters(ParameterModel):
+    query: str = Field(min_length=1, max_length=120, pattern=r"\S")
+    limit: int = Field(default=5, ge=1, le=10)
+
+
 class InventoryParameters(ParameterModel):
     material_id: PositiveId
 
@@ -34,6 +39,7 @@ class CaptureRequestParameters(ParameterModel):
 TOOL_PARAMETER_MODELS = {
     "capture_request": CaptureRequestParameters,
     "list_materials": EmptyParameters,
+    "search_materials": SearchMaterialsParameters,
     "resolve_material": ResolveMaterialParameters,
     "get_inventory": InventoryParameters,
     "get_demand_forecast": ForecastRequest,

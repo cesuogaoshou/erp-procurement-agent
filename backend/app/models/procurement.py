@@ -1,7 +1,7 @@
 from datetime import UTC, date, datetime
 from decimal import Decimal
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.app.models.base import Base
@@ -17,6 +17,20 @@ class Material(Base):
     safety_stock: Mapped[Decimal] = mapped_column(Numeric(12, 2))
 
     inventory: Mapped["Inventory"] = relationship(back_populates="material", uselist=False)
+
+
+class MaterialAlias(Base):
+    __tablename__ = "material_aliases"
+    __table_args__ = (UniqueConstraint("material_id", "alias", name="uq_material_alias"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    material_id: Mapped[int] = mapped_column(ForeignKey("materials.id"), index=True)
+    alias: Mapped[str] = mapped_column(String(120), index=True)
+    locale: Mapped[str] = mapped_column(String(20), default="zh-CN")
+    source: Mapped[str] = mapped_column(String(32), default="seed")
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    material: Mapped[Material] = relationship()
 
 
 class Inventory(Base):

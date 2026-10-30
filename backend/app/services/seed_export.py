@@ -11,6 +11,7 @@ from backend.app.models import (
     DemandHistory,
     Inventory,
     Material,
+    MaterialAlias,
     Supplier,
     SupplierMaterial,
     SupplierPerformance,
@@ -33,6 +34,21 @@ def export_seed_dataset(session: Session, output_dir: str | Path) -> None:
                 "safety_stock": item.safety_stock,
             }
             for item in session.scalars(select(Material).order_by(Material.id))
+        ],
+    )
+    _write_csv(
+        path / "material_aliases.csv",
+        ["id", "material_id", "alias", "locale", "source", "active"],
+        [
+            {
+                "id": item.id,
+                "material_id": item.material_id,
+                "alias": item.alias,
+                "locale": item.locale,
+                "source": item.source,
+                "active": item.active,
+            }
+            for item in session.scalars(select(MaterialAlias).order_by(MaterialAlias.material_id, MaterialAlias.id))
         ],
     )
     _write_csv(

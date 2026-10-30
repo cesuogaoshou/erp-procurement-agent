@@ -9,7 +9,8 @@ import re
 from decimal import Decimal
 
 from sqlalchemy import select
-from backend.app.models import Material
+from backend.app.models import Material, MaterialAlias
+from backend.app.services.material_search import alias_appears_standalone
 
 
 NUMBER = r'负?-?[0-9零〇一二两三四五六七八九十百千万亿点.]+'
@@ -92,14 +93,27 @@ def bind_source(session, request, prompt, budget):
     if re.search(r'数量[^，。；]{0,6}(?:就是|为|是)零', prompt):
         raise ClarificationRequired('您明确说明采购数量为零，采购数量必须大于零，请修改数量。')
     materials = list(session.scalars(select(Material).order_by(Material.id)))
-    mentioned = {m.id: m for m in materials if m.name in prompt or m.code.lower() in prompt.lower()}
+    aliases = list(session.scalars(select(MaterialAlias).where(MaterialAlias.active.is_(True))))
+    aliases_by_material = {}
+    for alias in aliases:
+        aliases_by_material.setdefault(alias.material_id, []).append(str(alias.alias).lower())
+
+    def mentions(material, text):
+        lowered = text.lower()
+        return (
+            material.name in text
+            or material.code.lower() in lowered
+            or any(alias_appears_standalone(alias, text) for alias in aliases_by_material.get(material.id, []))
+        )
+
+    mentioned = {m.id: m for m in materials if mentions(m, prompt)}
     wanted = {i['material_id']: i for i in request['items']}
     if set(mentioned) != set(wanted):
         raise ClarificationRequired('原文物料与提取清单不一致（遗漏、增加或替换物料），请填写完整物料名称和各自数量后重新确认。')
     bound = {}
     unresolved = False
     for clause in re.split(r'[，。；,;]', prompt):
-        names = [m for m in mentioned.values() if m.name in clause or m.code.lower() in clause.lower()]
+        names = [m for m in mentioned.values() if mentions(m, clause)]
         quantities = list(re.finditer(f'({NUMBER})(件|个|套)', clause))
         if re.search(r'上次|历史|以前|原来|原先|之前', clause) and not re.search(r'本次|现在|这次|当前', clause):
             continue

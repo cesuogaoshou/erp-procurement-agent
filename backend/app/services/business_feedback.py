@@ -6,6 +6,7 @@ from decimal import Decimal
 from sqlalchemy import select
 
 from backend.app.models import Material, SupplierMaterial
+from backend.app.services.material_search import search_materials, source_mentions_material
 
 
 class ClarificationRequired(ValueError):
@@ -55,21 +56,39 @@ def capture_request(session, arguments, total_budget, source=None):
         if quantity is not None and quantity <= 0:
             description = "负数" if quantity < 0 else "零"
             raise ClarificationRequired(f"采购数量为{description}（{quantity}），采购数量必须大于零，请修改数量。")
-        materials = list(session.scalars(select(Material).order_by(Material.id)))
-        exact = [m for m in materials if query.lower() in {m.name.lower(), m.code.lower()}]
-        matches = exact or [m for m in materials if query.lower() in m.name.lower() or query.lower() in m.code.lower()]
-        if not matches:
+        candidates = search_materials(session, query, limit=5)
+        if not candidates:
             raise ClarificationRequired(f"未找到“{query}”，本次不会替换为其他物料。请核对名称后重新运行。")
-        if len(matches) > 1:
-            raise ClarificationRequired(f"“{query}”匹配多个物料，请选择并填写完整名称：" + "、".join(m.name for m in matches))
-        material = matches[0]
-        if source and material.name not in source and material.code not in source:
-            raise ClarificationRequired(f"无法从原文确认您指的是“{material.name}”，请填写完整物料名称；系统不会擅自替换。")
+        strong = [candidate for candidate in candidates if candidate["score"] >= 0.9]
+        if len(strong) > 1:
+            raise ClarificationRequired(
+                f"“{query}”匹配多个物料，请选择并填写完整名称："
+                + "、".join(f"{item['name']}（{item['code']}）" for item in strong)
+            )
+        top = candidates[0]
+        if top["score"] < 0.9:
+            raise ClarificationRequired(
+                f"未找到明确匹配“{query}”，可能指以下物料，但无法唯一确认："
+                + "、".join(f"{item['name']}（{item['code']}）" for item in candidates)
+                + "。请确认完整名称或补充更具体的描述。"
+            )
+        material = session.get(Material, top["material_id"])
+        if material is None:
+            raise ClarificationRequired(f"未找到“{query}”，本次不会替换为其他物料。请核对名称后重新运行。")
+        if source and not source_mentions_material(session, material, source):
+            raise ClarificationRequired(f"无法从原文确认您指的是“{material.name}”，请填写完整物料名称或使用数据库中的别名；系统不会擅自替换。")
         quantity = item["quantity"]
         if purchase and quantity is None:
             raise ClarificationRequired(f"您需要购买多少{unit_name(material.unit)}{material.name}？请补充数量。")
-        resolved.append({"material_id": material.id, "name": material.name, "unit": unit_name(material.unit),
-                         "quantity": None if quantity is None else str(quantity)})
+        resolved.append({
+            "material_id": material.id,
+            "name": material.name,
+            "unit": unit_name(material.unit),
+            "quantity": None if quantity is None else str(quantity),
+            "match_type": top["match_type"],
+            "match_score": top["score"],
+            "matched_alias": top["matched_alias"],
+        })
     if len({i["material_id"] for i in resolved}) != len(resolved):
         raise ClarificationRequired("同一物料出现多个数量，请明确最终采购数量后重新运行。")
     if purchase and total_budget is None:

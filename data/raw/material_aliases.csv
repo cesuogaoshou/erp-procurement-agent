@@ -1,0 +1,36 @@
+id,material_id,alias,locale,source,active
+1,1,轴承,zh-CN,seed,1
+2,1,标准件,zh-CN,seed,1
+3,1,轴承件,zh-CN,seed,1
+4,1,bearings,zh-CN,seed,1
+5,2,铝壳,zh-CN,seed,1
+6,2,外壳,zh-CN,seed,1
+7,2,铝合金件,zh-CN,seed,1
+8,2,aluminum shell,zh-CN,seed,1
+9,3,传感器,zh-CN,seed,1
+10,3,感应器,zh-CN,seed,1
+11,3,sensor,zh-CN,seed,1
+12,4,伺服,zh-CN,seed,1
+13,4,电机,zh-CN,seed,1
+14,4,马达,zh-CN,seed,1
+15,4,servo motor,zh-CN,seed,1
+16,5,面板,zh-CN,seed,1
+17,5,控制屏,zh-CN,seed,1
+18,5,control panel,zh-CN,seed,1
+19,6,密封圈,zh-CN,seed,1
+20,6,O型圈,zh-CN,seed,1
+21,6,胶圈,zh-CN,seed,1
+22,6,seal ring,zh-CN,seed,1
+23,7,电源,zh-CN,seed,1
+24,7,模块电源,zh-CN,seed,1
+25,7,power module,zh-CN,seed,1
+26,8,导轨,zh-CN,seed,1
+27,8,滑轨,zh-CN,seed,1
+28,8,guide rail,zh-CN,seed,1
+29,9,托盘,zh-CN,seed,1
+30,9,包装盘,zh-CN,seed,1
+31,9,pallet,zh-CN,seed,1
+32,10,紧固件,zh-CN,seed,1
+33,10,螺丝包,zh-CN,seed,1
+34,10,五金包,zh-CN,seed,1
+35,10,fastener kit,zh-CN,seed,1

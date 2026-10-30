@@ -8,6 +8,7 @@ from backend.app.models import (
     DemandHistory,
     Inventory,
     Material,
+    MaterialAlias,
     Supplier,
     SupplierMaterial,
     SupplierPerformance,
@@ -35,6 +36,24 @@ def seed_demo_data(session: Session, seed: int = DEMO_SEED) -> None:
     ]
     session.add_all(materials)
     session.flush()
+
+    aliases_by_code = {
+        "MAT-001": ("轴承", "标准件", "轴承件", "bearings"),
+        "MAT-002": ("铝壳", "外壳", "铝合金件", "aluminum shell"),
+        "MAT-003": ("传感器", "感应器", "sensor"),
+        "MAT-004": ("伺服", "电机", "马达", "servo motor"),
+        "MAT-005": ("面板", "控制屏", "control panel"),
+        "MAT-006": ("密封圈", "O型圈", "胶圈", "seal ring"),
+        "MAT-007": ("电源", "模块电源", "power module"),
+        "MAT-008": ("导轨", "滑轨", "guide rail"),
+        "MAT-009": ("托盘", "包装盘", "pallet"),
+        "MAT-010": ("紧固件", "螺丝包", "五金包", "fastener kit"),
+    }
+    materials_by_code = {material.code: material for material in materials}
+    for code, aliases in aliases_by_code.items():
+        material = materials_by_code[code]
+        for alias in aliases:
+            session.add(MaterialAlias(material_id=material.id, alias=alias, locale="zh-CN", source="seed"))
 
     for material in materials:
         session.add(

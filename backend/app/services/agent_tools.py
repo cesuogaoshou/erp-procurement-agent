@@ -6,11 +6,11 @@ from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from backend.app.schemas.tool_parameters import TOOL_PARAMETER_MODELS
 
-from backend.app.models import Material
 from backend.app.services.inventory import get_inventory_snapshot, list_materials
 from backend.app.services.purchase_drafts import DraftItemInput, PurchaseDraftInput, create_purchase_draft
 from backend.app.services.recommendations import recommend_for_material
 from backend.app.services.forecasting import get_demand_forecast
+from backend.app.services.material_search import search_materials as search_material_candidates
 
 
 @dataclass(frozen=True)
@@ -23,9 +23,10 @@ class AgentTool:
 
 def build_agent_tools() -> list[AgentTool]:
     descriptions = {
-        "capture_request": "First extract the user's request: material queries exactly as stated (never substitute), final corrected quantity per material (null if missing, zero/negative preserved), purchase_requested false ONLY for analysis-only tasks, stated_budget user's CURRENT whole-order budget (null if absent), required_in_days (null if absent). Backend resolves names and returns IDs; reuse them. Do not infer missing values or consent. Do not repeat this tool.",
-        "list_materials": "List materials with stable IDs/codes. Reuse this mapping throughout the run.",
-        "resolve_material": "Resolve a material code or name fragment; avoid this when the ID is already known.",
+        "capture_request": "First extract the user's request: material queries exactly as stated (never substitute), final corrected quantity per material (null if missing, zero/negative preserved), purchase_requested false ONLY for analysis-only tasks, stated_budget user's CURRENT whole-order budget (null if absent), required_in_days (null if absent). Backend resolves names and aliases and returns IDs; reuse them. Do not infer missing values or consent. Do not repeat this tool.",
+        "list_materials": "List all materials with stable IDs/codes. Prefer search_materials for a short or ambiguous name.",
+        "search_materials": "Search materials by short name, alias, or code. Returns scored candidates with material_id, name, code and match quality. Use this when the wording is ambiguous or aliased; never guess a material_id.",
+        "resolve_material": "Resolve one material code or name fragment; returns resolved, ambiguous, or not_found.",
         "get_inventory": "Inventory only. Usually unnecessary: get_demand_forecast already includes current inventory and available supply.",
         "get_demand_forecast": "Forecast demand AND inventory, available supply, shortage, and evidence for one material (1-180 days). Call once per material/horizon; reuse current-run evidence.",
         "recommend_suppliers": "Recommend suppliers for positive finite quantity. Use forecast shortage or user's smaller quantity. Budget is a per-line filter, never the whole-order budget decision. Evidence must cover final MOQ/package rounded quantity.",
@@ -85,18 +86,25 @@ def execute_agent_tool(
         evidence_registry["user_request"] = validate_saved_request(session, evidence_registry["user_request"], evidence_registry["request_source"]["prompt"], total_budget)
     if evidence_registry and "user_request" in evidence_registry:
         check_request_conditions(session, name, arguments, evidence_registry["user_request"])
+    if name == "search_materials":
+        return {
+            "query": arguments["query"],
+            "candidates": search_material_candidates(session, str(arguments["query"]), limit=int(arguments["limit"])),
+        }
     if name == "resolve_material":
-        query = str(arguments["query"]).lower()
-        matches = [
-            {"id": material.id, "code": material.code, "name": material.name}
-            for material in session.query(Material).order_by(Material.id)
-            if query in material.code.lower() or query in material.name.lower()
-        ]
-        if not matches:
+        candidates = search_material_candidates(session, str(arguments["query"]))
+        if not candidates:
             return {"status": "material_not_found", "matches": []}
-        if len(matches) > 1:
-            return {"status": "material_ambiguous", "matches": matches[:10]}
-        return {"status": "resolved", "material": matches[0]}
+        strong = [candidate for candidate in candidates if candidate["score"] >= 0.9]
+        if len(strong) > 1:
+            return {"status": "material_ambiguous", "matches": strong}
+        if len(strong) == 1:
+            candidate = strong[0]
+            return {
+                "status": "resolved",
+                "material": {"id": candidate["material_id"], "code": candidate["code"], "name": candidate["name"]},
+            }
+        return {"status": "material_ambiguous", "matches": candidates}
     if name == "get_inventory":
         snapshot = get_inventory_snapshot(session, int(arguments["material_id"]))
         return snapshot
