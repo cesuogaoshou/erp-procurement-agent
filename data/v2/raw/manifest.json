@@ -1,0 +1,537 @@
+{
+  "version": "simulated_procurement_v2_20261029.1",
+  "seed": 20261029,
+  "design_date": "2026-10-29",
+  "observation_date": "2026-10-10",
+  "source": "自主生成的教学模拟数据；不是真实企业或公开采购数据",
+  "generator": "backend.app.services.dataset_v2",
+  "generator_sha256": "977830219bd5dc3cf4714d1afb3120cd0cab903f8f028afa986ac99681969566",
+  "design_sha256": "4293a51c33115251e1f4d80d183ab6ef20764ab5cfb0e50ef6fdda0ced0728ec",
+  "parameters": {
+    "version": "simulated_procurement_v2_20261029.1",
+    "seed": 20261029,
+    "design_date": "2026-10-29",
+    "observation_date": "2026-10-10",
+    "source": "自主生成的教学模拟数据；不是真实企业或公开采购数据",
+    "base_prices": [
+      10,
+      24,
+      90,
+      180,
+      65,
+      2,
+      48,
+      35,
+      12,
+      5
+    ],
+    "packaging": {
+      "6": 10,
+      "9": 20,
+      "10": 10
+    },
+    "profiles": [
+      {
+        "supplier_id": 1,
+        "specialties": [
+          1,
+          8
+        ],
+        "price": [
+          "0.98",
+          "1.18"
+        ],
+        "days": [
+          12,
+          12
+        ],
+        "capacity": [
+          180,
+          140
+        ],
+        "moq": 20,
+        "pack": 1,
+        "performance": [
+          [
+            97,
+            9950,
+            1
+          ],
+          [
+            97,
+            9950,
+            1
+          ]
+        ]
+      },
+      {
+        "supplier_id": 2,
+        "specialties": [
+          2,
+          9,
+          10
+        ],
+        "price": [
+          "0.70",
+          "0.86"
+        ],
+        "days": [
+          16,
+          16
+        ],
+        "capacity": [
+          1600,
+          1000
+        ],
+        "moq": 200,
+        "pack": 50,
+        "performance": [
+          [
+            92,
+            9700,
+            3
+          ],
+          [
+            92,
+            9700,
+            3
+          ]
+        ]
+      },
+      {
+        "supplier_id": 3,
+        "specialties": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "price": [
+          "0.72",
+          "0.72"
+        ],
+        "days": [
+          24,
+          24
+        ],
+        "capacity": [
+          500,
+          500
+        ],
+        "moq": 20,
+        "pack": 1,
+        "performance": [
+          [
+            84,
+            9400,
+            5
+          ],
+          [
+            84,
+            9400,
+            5
+          ]
+        ]
+      },
+      {
+        "supplier_id": 4,
+        "specialties": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "price": [
+          "1.28",
+          "1.28"
+        ],
+        "days": [
+          2,
+          2
+        ],
+        "capacity": [
+          250,
+          250
+        ],
+        "moq": 10,
+        "pack": 1,
+        "performance": [
+          [
+            99,
+            9750,
+            2
+          ],
+          [
+            99,
+            9750,
+            2
+          ]
+        ]
+      },
+      {
+        "supplier_id": 5,
+        "specialties": [
+          4,
+          8
+        ],
+        "price": [
+          "0.95",
+          "1.20"
+        ],
+        "days": [
+          12,
+          18
+        ],
+        "capacity": [
+          240,
+          150
+        ],
+        "moq": 20,
+        "pack": 1,
+        "performance": [
+          [
+            97,
+            9920,
+            1
+          ],
+          [
+            93,
+            9700,
+            3
+          ]
+        ]
+      },
+      {
+        "supplier_id": 6,
+        "specialties": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "price": [
+          "1.12",
+          "1.12"
+        ],
+        "days": [
+          10,
+          10
+        ],
+        "capacity": [
+          120,
+          120
+        ],
+        "moq": 20,
+        "pack": 1,
+        "performance": [
+          [
+            98,
+            9980,
+            0
+          ],
+          [
+            98,
+            9980,
+            0
+          ]
+        ]
+      },
+      {
+        "supplier_id": 7,
+        "specialties": [
+          3,
+          5,
+          7
+        ],
+        "price": [
+          "0.96",
+          "1.22"
+        ],
+        "days": [
+          7,
+          18
+        ],
+        "capacity": [
+          200,
+          140
+        ],
+        "moq": 20,
+        "pack": 1,
+        "performance": [
+          [
+            98,
+            9960,
+            1
+          ],
+          [
+            92,
+            9600,
+            4
+          ]
+        ]
+      },
+      {
+        "supplier_id": 8,
+        "specialties": [
+          6,
+          10
+        ],
+        "price": [
+          "0.92",
+          "1.16"
+        ],
+        "days": [
+          9,
+          18
+        ],
+        "capacity": [
+          400,
+          160
+        ],
+        "moq": 20,
+        "pack": 1,
+        "performance": [
+          [
+            96,
+            9850,
+            1
+          ],
+          [
+            93,
+            9700,
+            3
+          ]
+        ]
+      },
+      {
+        "supplier_id": 9,
+        "specialties": [
+          2,
+          9
+        ],
+        "price": [
+          "0.88",
+          "1.15"
+        ],
+        "days": [
+          14,
+          18
+        ],
+        "capacity": [
+          600,
+          300
+        ],
+        "moq": 20,
+        "pack": 1,
+        "performance": [
+          [
+            94,
+            9700,
+            2
+          ],
+          [
+            94,
+            9700,
+            2
+          ]
+        ]
+      },
+      {
+        "supplier_id": 10,
+        "specialties": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "price": [
+          "0.50",
+          "0.50"
+        ],
+        "days": [
+          1,
+          1
+        ],
+        "capacity": [
+          2000,
+          2000
+        ],
+        "moq": 10,
+        "pack": 1,
+        "performance": [
+          [
+            99,
+            9950,
+            0
+          ],
+          [
+            99,
+            9950,
+            0
+          ]
+        ]
+      }
+    ],
+    "scenarios": [
+      {
+        "name": "normal",
+        "quantity": 120,
+        "days": 20,
+        "budget_factor": "1.5",
+        "min_on_time": "0.93",
+        "min_quality": "0.97",
+        "max_complaint": "0.03"
+      },
+      {
+        "name": "urgent",
+        "quantity": 120,
+        "days": 3,
+        "budget_factor": "1.5",
+        "min_on_time": "0.98"
+      },
+      {
+        "name": "economy",
+        "quantity": 120,
+        "days": 26,
+        "budget_factor": "0.8",
+        "max_complaint": "0.05"
+      },
+      {
+        "name": "bulk",
+        "quantity": 600,
+        "days": 20,
+        "budget_factor": "1.1",
+        "min_on_time": "0.90",
+        "min_quality": "0.97"
+      },
+      {
+        "name": "quality",
+        "quantity": 80,
+        "days": 20,
+        "budget_factor": "1.5",
+        "min_quality": "0.995",
+        "max_complaint": "0.01"
+      },
+      {
+        "name": "no_budget",
+        "quantity": 120,
+        "days": 26,
+        "budget": "1"
+      },
+      {
+        "name": "no_delivery",
+        "quantity": 120,
+        "days": 1,
+        "budget_factor": "1.5"
+      },
+      {
+        "name": "no_capacity",
+        "quantity": 2500,
+        "days": 26,
+        "budget_factor": "1.5"
+      }
+    ]
+  },
+  "source_v1_sha256": {
+    "data_splits.csv": "8955422fb38521d3262607f5015eb13ee8fb0dceba2819722810442d88a47b50",
+    "demand_history.csv": "fe1662a2bf0850acc36bd202ae17e14f0e108e89ae257e638e34ac5f91e0c2a5",
+    "generation_metadata.json": "45edcd5febf76bbe975f29117dbd4eeec1bc6eae974ef768cc1d02bdbb4e458e",
+    "inventory_snapshots.csv": "4c2ef747f651e02b55251ea4afaf6c1f7506f37d173b4fa12dce651a32a12766",
+    "materials.csv": "7b6a7052dcfaf886b96c408acb06a18a776bf19137a885cfd2c897e1e320a45d",
+    "recommendation_cases.csv": "0f5646b849d27744d3491eb82e9d918a035759b6b581eca985cadebae9cfd55f",
+    "recommendation_challenge_cases.csv": "1039cd1373974434ab345d7462013af2ca3d616a8191b8b9a35056833342a845",
+    "supplier_materials.csv": "5ce2650ca94bd1ea80290ad6e0e3dc9129e68e12cebe134970c3f27b8f94b2ad",
+    "supplier_performance.csv": "46cf4928bd030ea185e796b5abd4ec4a79174c209d278335e7e7ce377b3b0362",
+    "suppliers.csv": "bf6fbff53dcaab76bb84146a824ec6ce760da04bbb7f936339921964bddee93b"
+  },
+  "invariant_files": [
+    "materials.csv",
+    "suppliers.csv",
+    "demand_history.csv",
+    "inventory_snapshots.csv",
+    "data_splits.csv"
+  ],
+  "files": {
+    "materials.csv": {
+      "sha256": "7b6a7052dcfaf886b96c408acb06a18a776bf19137a885cfd2c897e1e320a45d",
+      "rows": 10
+    },
+    "suppliers.csv": {
+      "sha256": "bf6fbff53dcaab76bb84146a824ec6ce760da04bbb7f936339921964bddee93b",
+      "rows": 10
+    },
+    "demand_history.csv": {
+      "sha256": "fe1662a2bf0850acc36bd202ae17e14f0e108e89ae257e638e34ac5f91e0c2a5",
+      "rows": 5400
+    },
+    "inventory_snapshots.csv": {
+      "sha256": "4c2ef747f651e02b55251ea4afaf6c1f7506f37d173b4fa12dce651a32a12766",
+      "rows": 10
+    },
+    "data_splits.csv": {
+      "sha256": "8955422fb38521d3262607f5015eb13ee8fb0dceba2819722810442d88a47b50",
+      "rows": 3
+    },
+    "supplier_materials.csv": {
+      "sha256": "812e53370c4b5df7543762279bc15da83a306dfcae569c552f843110b12d8ddd",
+      "rows": 100
+    },
+    "supplier_performance.csv": {
+      "sha256": "c43aeec0410b80d05170aa307b5203c8b9770ca555b59dbad23b36206769464e",
+      "rows": 100
+    },
+    "scenarios.json": {
+      "sha256": "b4b6cdb81261fa43ca8130cefced2d2723bca37585c2d8344a349efc6092e749",
+      "rows": 80
+    }
+  },
+  "primary_keys": {
+    "materials": [
+      "id"
+    ],
+    "suppliers": [
+      "id"
+    ],
+    "inventory_snapshots": [
+      "material_id"
+    ],
+    "demand_history": [
+      "material_id",
+      "demand_date"
+    ],
+    "supplier_materials": [
+      "supplier_id",
+      "material_id"
+    ],
+    "supplier_performance": [
+      "supplier_id",
+      "material_id",
+      "observed_until"
+    ]
+  },
+  "label_policy": "independent_hard_constraints_and_business_thresholds; never weighted scoring"
+}

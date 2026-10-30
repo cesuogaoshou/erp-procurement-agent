@@ -267,3 +267,16 @@ User requested acceptance. New docs/INDEPENDENT_NL_ACCEPTANCE_20261029.md: PARTI
 全程124次真实模型业务运行=104接口（4轮各26）+20页面/确认，最终只计26不同接口用例+8页面/确认；模拟注入与MySQL Mock不算真实模型请求。57完整快照、冻结数据/预测源码及旧三轮证据散列一致，错误探针全部回滚。没有提交、推送、清库、迁移、调参或重建交付包。
 
 后端62980/8000和原前端5173保持运行，隔离8001已停。保留复杂NL保守确认、单供应商、演示账号、固定库存、无外部采购与不回填历史锚点的既有边界；不同新AgentRun仍是新业务执行，未新增跨运行客户端去重。下一步仅按用户新任务继续。
+
+## 2026-10-29 Independent acceptance after source binding commit
+
+User requested acceptance again. On clean d1e1524, fresh203 backend/6skip, realMySQL6, frontend type/build/CLI pass; old3 findings closed. Overall PARTIAL PASS:26 real-model HTTP cases25pass, N03 fails actual analysis; browser383 matches HTTP376. bind_source captures one+个 in 未来一个月 as quantity1, despite correct model quantity=None; readonly retains wrong bound value and recommendation406.11 rejected. month_probe.json confirms only replace一个月 with30天 =>quantityNone/recommend succeeds. Do not pass N03 merely for no order/Chinese refusal.9 chain probes(8reject+1correct rollback),2 source-anchor tamper rollback probes,7 realtime confirmation/role/version rejects and10 browser confirmation/workflow checks pass.26HTTP+4browser real runs(383/399/404/405); confirmations changed/old consumed rejected, editing invalidates UI button.404 confirmed→405 draft348(120轴承+80外壳1628),approvedPO-000348;335cancel unchanged thenrejected. Source/data/prior evidence manifest/user57 unchanged; rows278→296=10HTTPdrafts+1confirmation+7MySQL. No code fixes/reset/migration/tuning/commit/push/package work. docs/BINDING_INDEPENDENT_ACCEPTANCE_20261029.md, ignored reports/generated/binding_independent_20261029/. Next fix only upon user request: distinguish timeframe measure words from procurement quantities and preserve unspecified readonly quantity.
+
+
+## 2026-10-30 V2独立模拟数据与验收
+
+遵照AGENTS读取并保护原工作区。先冻结供应商业务画像、独立阈值标签和80例矩阵，再生成simulated_procurement_v2_20261029.1，种子20261029；V1不写、需求库存五文件逐字节复制。空库导入入口使用严格MySQL目标/参数白名单、命名锁、事务及逐值核验，未用旧清库初始化器。原账号1044后用户管理员建库授权，V2导入成功。独立端口8002/5176；源/原库保护完整。
+
+红绿回归覆盖导入/数据质量；独立审查指出连接query覆盖和假就绪两点后均加固，审查代理额度中断，未出完整终审。后端233/8skip，真实MySQL6+2，构建/CLI通过。80例Top148/50、Top350/50、拒绝30/30；两个质量首选失败不改数据。真实API24例20pass4fail，UI7场景通过，35真实业务运行含确认；原轴承外壳不同首选证据与预算模型减量失败保留，一个月问题复现未修。采集器SHARED_TIGHT把等待确认误计通过，原证据保存并校正，补原清单确认后仍判失败；电子件共享预算是新增对照，非替换原失败。
+
+V2订单28批准PO-000028/15360，27取消无变后驳回；权限5/5、旧版本409、重复批准快照不变，重启整V2库一致。原296订单/13表/57及309保护文件、225旧证据一致。报告docs/V2_ACCEPTANCE_20261030.md，运行docs/V2_RUNBOOK.md；结果为数据交付通过、整体业务部分通过。没有提交推送、清库、预测/权重/审批规则修改或课程交付包重建。
