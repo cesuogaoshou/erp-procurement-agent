@@ -735,7 +735,14 @@ function shortJson(value: unknown) {
 }
 
 const FORECAST_NOTE_TEXT: Record<string, string> = {
-  
+  "Phase 1 simplification: confirmed inbound supply is not included.":
+    "当前版本暂未把已确认在途库存计入可用库存，缺口按现有库存和预留量计算。",
+  "Forecast strategy is frozen for course delivery; do not retune without creating a new experiment.":
+    "预测策略已固定为课程演示版本，页面不会自动调参；如需调整，应新建实验并重新评估。",
+  "Hybrid strategy is not a pure Prophet metric.":
+    "当前采用混合预测策略：优先使用 Prophet，异常时自动回退到移动平均，因此结果不等同于纯 Prophet。",
+  "The 365-day yearly-seasonality guard is a project engineering strategy, not a Prophet universal requirement.":
+    "年季节性仅在历史数据超过 365 天时启用，这是本项目的工程阈值，不是 Prophet 的硬性要求。"
 };
 
 function friendlyForecastNote(note: string): string {
